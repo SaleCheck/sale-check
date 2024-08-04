@@ -14,7 +14,9 @@ exports.testPavoniPrice = onRequest(async (req, res) => {
                                             // ?product=driptray-lever-pavone-europiccola
                                             // ?product=kit-wood-handles-for-lever-machine
 
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            headless: true
+        });
         const page = await browser.newPage();
         await page.goto('https://www.lapavoni.com/en/products/domestic-machines/' + product);
 

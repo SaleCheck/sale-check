@@ -10,7 +10,7 @@ const puppeteer = require("puppeteer");
 
 initializeApp();
 
-exports.testPavoniPriceMultiple = onRequest(async (req, res) => {
+exports.testPavoniPriceMultiple = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     try {
         const productsWithPrices = [
             { product: 'wooden-handles-olive-kit', expectedPrice: 99.99 },
@@ -18,7 +18,9 @@ exports.testPavoniPriceMultiple = onRequest(async (req, res) => {
             { product: 'kit-wood-handles-for-lever-machine', expectedPrice: 69.99 }
         ];
 
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({
+            headless: true
+        });
         const priceResults = [];
 
         for (const { product, expectedPrice } of productsWithPrices) {
