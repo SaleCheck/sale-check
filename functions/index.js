@@ -32,7 +32,7 @@ exports.testPavoniPrice = onRequest(async (req, res) => {
                                             // ?product=driptray-lever-pavone-europiccola
                                             // ?product=kit-wood-handles-for-lever-machine
 
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
         await page.goto('https://www.lapavoni.com/en/products/domestic-machines/' + product);
 
@@ -41,12 +41,12 @@ exports.testPavoniPrice = onRequest(async (req, res) => {
 
         const price = await page.evaluate(() => {
             return Array.from(document.querySelectorAll('p.fs-4.fw-bold.text-title.text-secondary'))
-                        .map(element => element.innerText)
-                        .map(text => {
-                            const numberString = text.split(' ')[1]; // Get the part after the space
-                            const numberWithDot = numberString.replace(',', '.') // Replace comma with dot
-                            return parseFloat(numberWithDot);
-                        });
+                .map(element => element.innerText)
+                .map(text => {
+                    const numberString = text.split(' ')[1]; // Get the part after the space
+                    const numberWithDot = numberString.replace(',', '.') // Replace comma with dot
+                    return parseFloat(numberWithDot);
+                });
         });
 
         await browser.close();
