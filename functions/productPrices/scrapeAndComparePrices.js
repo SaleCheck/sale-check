@@ -7,7 +7,7 @@ const puppeteer = require("puppeteer");
 initializeApp();
 const db = getFirestore();
 
-exports.scrapeAndComparePrices = onRequest(async (req, res) => {
+exports.scrapeAndComparePrices = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     try {
         const executionResults = [];
 
