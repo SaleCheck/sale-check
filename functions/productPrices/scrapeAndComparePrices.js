@@ -1,6 +1,6 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { initializeApp } = require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+const { getFirestore, Timestamp } = require("firebase-admin/firestore");
 
 const puppeteer = require("puppeteer");
 
@@ -9,7 +9,7 @@ const db = getFirestore();
 
 exports.scrapeAndComparePrices = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     if (req.method !== "GET") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only GET requests are allowed.' });
-    
+
     try {
         const executionResults = [];
 
@@ -56,7 +56,7 @@ exports.scrapeAndComparePrices = onRequest({ timeoutSeconds: 300, memory: "1GiB"
                 const priceMatched = productPrice[0] === expectedPrice;
                 const executionRef = productsRef.doc(docId).collection('executions').doc(executionTimestamp);
                 const productSaleCheckSummary = {
-                    executedOn: executionTimestamp,
+                    executedOn: Timestamp.now(),
                     foundPrice: productPrice[0],
                     samePriceAsExpected: priceMatched,
                     executionSuccessful: true
@@ -72,7 +72,7 @@ exports.scrapeAndComparePrices = onRequest({ timeoutSeconds: 300, memory: "1GiB"
 
                 const executionRef = productsRef.doc(docId).collection('executions').doc(executionTimestamp);
                 const productSaleCheckSummary = {
-                    executedOn: executionTimestamp,
+                    executedOn: Timestamp.now(),
                     executionSuccessful: false,
                     executionError: error.message
                 };
