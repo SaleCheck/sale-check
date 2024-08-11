@@ -54,9 +54,9 @@ exports.scrapeAndComparePrices = onRequest(async (req, res) => {
                 const priceMatched = productPrice[0] === expectedPrice;
                 const executionRef = productsRef.doc(docId).collection('executions').doc(executionTimestamp);
                 const productSaleCheckSummary = {
-                    executionTimestamp: executionTimestamp,
+                    executedOn: executionTimestamp,
                     foundPrice: productPrice[0],
-                    priceIsAsExpected: priceMatched,
+                    samePriceAsExpected: priceMatched,
                     executionSuccessful: true
                 };
 
@@ -70,7 +70,7 @@ exports.scrapeAndComparePrices = onRequest(async (req, res) => {
 
                 const executionRef = productsRef.doc(docId).collection('executions').doc(executionTimestamp);
                 const productSaleCheckSummary = {
-                    executionTimestamp: executionTimestamp,
+                    executedOn: executionTimestamp,
                     executionSuccessful: false,
                     executionError: error.message
                 };
