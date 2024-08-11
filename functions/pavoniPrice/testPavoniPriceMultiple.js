@@ -8,7 +8,7 @@ const { getFirestore } = require("firebase-admin/firestore");
 
 const puppeteer = require("puppeteer");
 
-initializeApp();
+//initializeApp();
 
 exports.testPavoniPriceMultiple = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     try {
