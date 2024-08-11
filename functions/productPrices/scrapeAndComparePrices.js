@@ -8,6 +8,8 @@ initializeApp();
 const db = getFirestore();
 
 exports.scrapeAndComparePrices = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
+    if (req.method !== "GET") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only GET requests are allowed.' });
+    
     try {
         const executionResults = [];
 
