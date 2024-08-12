@@ -1,3 +1,4 @@
+require("firebase-functions/logger/compat");
 const functions = require('firebase-functions');
 const { getFirestore, Timestamp } = require("firebase-admin/firestore");
 const admin = require('firebase-admin');
@@ -28,7 +29,7 @@ async function sendEmail(mailOptions) {
 
 exports.onProductSaleCheckExecution = functions.firestore
     .document('productsToCheck/{productId}/executions/{executionId}')
-    .onCreate({ timeoutSeconds: 150}, async (snap, context) => {
+    .onCreate( async (snap, context) => {
         try {
             const executionRef = snap.ref;
             const executionData = snap.data();
