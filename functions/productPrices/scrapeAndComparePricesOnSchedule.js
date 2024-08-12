@@ -3,7 +3,7 @@ const { onSchedule } = require("firebase-functions/v2/scheduler");
 const scrapeAndComparePricesAlgorithm = require("../utils/scrapeAndComparePricesAlgorithm");
 
 exports.scrapeAndComparePricesOnSchedule = onSchedule({
-        schedule: "0 8 * * 1,3,5",
+        schedule: "0 7 * * 1,3,5",
         timeoutSeconds: 300,
         memory: "2GiB",
     }, async () => {
