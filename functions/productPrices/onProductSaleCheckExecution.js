@@ -28,7 +28,7 @@ async function sendEmail(mailOptions) {
 
 exports.onProductSaleCheckExecution = functions.firestore
     .document('productsToCheck/{productId}/executions/{executionId}')
-    .onCreate(async (snap, context) => {
+    .onCreate({ timeoutSeconds: 150}, async (snap, context) => {
         try {
             const executionRef = snap.ref;
             const executionData = snap.data();
