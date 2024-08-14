@@ -18,13 +18,14 @@ async function scrapeAndComparePricesAlgorithm() {
     
         const productUrl = docData.url;
         const expectedPrice = docData.expectedPrice;
+        const cssSelector = docData.cssSelector;
     
         let executionTimestamp = new Date().toISOString();
         let browser;
     
         // Start scraping the data
         try {
-            const browser = await puppeteer.launch({
+            browser = await puppeteer.launch({
                 headless: true
             });
             const page = await browser.newPage();
@@ -33,15 +34,15 @@ async function scrapeAndComparePricesAlgorithm() {
             // Return body of page
             await page.waitForSelector('body');
     
-            const productPrice = await page.evaluate(() => {
-                return Array.from(document.querySelectorAll('p.fs-4.fw-bold.text-title.text-secondary'))
+            const productPrice = await page.evaluate((cssSelector) => {
+                return Array.from(document.querySelectorAll(cssSelector))
                     .map(element => element.innerText)
                     .map(text => {
                         const numberString = text.split(' ')[1]; // Get the part after the space
                         const numberWithDot = numberString.replace(',', '.') // Replace comma with dot
                         return parseFloat(numberWithDot);
                     });
-            });
+            }, cssSelector);
     
             console.log(`Price found for ${docData.productName}: ${productPrice} \n\n`);
     
