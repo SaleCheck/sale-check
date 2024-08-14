@@ -4,6 +4,7 @@ const scrapeAndComparePricesAlgorithm = require("../utils/scrapeAndComparePrices
 
 exports.scrapeAndComparePricesOnSchedule = onSchedule({
         schedule: "0 7 * * 1,3,5",
+        timeZone: "Europe/Paris",
         timeoutSeconds: 300,
         memory: "2GiB",
     }, async () => {
@@ -13,6 +14,7 @@ exports.scrapeAndComparePricesOnSchedule = onSchedule({
     //  *: Day of the month (every day)
     //  *: Month (every month)
     //  1,3,5: Days of the week (Monday, Wednesday, Friday)
+    // Timezone: ID in https://docs.sentinel.thalesgroup.com/softwareandservices/ems/EMSdocs/WSG/Content/TimeZone.htm
 
     try {
         console.log("Scheduled function triggered.");
