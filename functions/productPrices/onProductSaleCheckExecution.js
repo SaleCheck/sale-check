@@ -50,52 +50,55 @@ exports.onProductSaleCheckExecution = functions.firestore
                 emailNotification: emailTo
             } = snapshot.data();
 
-            const { foundPrice, samePriceAsExpected } = executionData;
-            const discountPercentage = Math.round(((productExpectedPrice - foundPrice) / productExpectedPrice) * 100);
+            if (emailNotification) {
+                const { foundPrice, samePriceAsExpected } = executionData;
+                const discountPercentage = Math.round(((productExpectedPrice - foundPrice) / productExpectedPrice) * 100);
+    
+                const emailSubject = samePriceAsExpected
+                    ? `SaleChecker Execution Successful`
+                    : `ON SALE: ${productName} Costs ${foundPrice} € Now!`;
+                const emailBody = samePriceAsExpected
+                    ? `<p>
+                            Found price ${foundPrice} € for product ${productName} during successful execution of SaleChecker today.
+                            <br>
+                            Verify yourself by checking: <a href="${productUrl}">${productUrl}</a>
+                            <br><br>
+                            Have a smiley day
+                            <br>– Team SaleChecker
+                        </p>`
+                    :
+                    `<p>
+                            Hello!👋
+                            <br><br>
+                            The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} € as found during today's execution of your SaleChecker service!
+                            <br><br>
+                            This is different from the normal price which is ${productExpectedPrice} €, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
+                            <br><br>
+                            Kind regards and smiley day to you☀️
+                            <br>– Team SaleChecker😻
+                        </p>`
+    
+                const mailOptions = {
+                    from: 'mathingvid@gmail.com',
+                    to: emailTo,
+                    subject: emailSubject,
+                    html: emailBody
+                };
+    
+                await sendEmail(mailOptions);
+    
+                // Update Firestore document with email details
+                await executionRef.update({
+                    emailStatus: {
+                        emailSent: true,
+                        emailSentBody: emailBody,
+                        emailSentOn: Timestamp.now(),
+                        emailSentSubject: emailSubject,
+                        emailSentTo: emailTo,
+                    }
+                });
+            }
 
-            const emailSubject = samePriceAsExpected
-                ? `SaleChecker Execution Successful`
-                : `ON SALE: ${productName} Costs ${foundPrice} € Now!`;
-            const emailBody = samePriceAsExpected
-                ? `<p>
-                        Found price ${foundPrice} € for product ${productName} during successful execution of SaleChecker today.
-                        <br>
-                        Verify yourself by checking: <a href="${productUrl}">${productUrl}</a>
-                        <br><br>
-                        Have a smiley day
-                        <br>– Team SaleChecker
-                    </p>`
-                :
-                `<p>
-                        Hello!👋
-                        <br><br>
-                        The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} € as found during today's execution of your SaleChecker service!
-                        <br><br>
-                        This is different from the normal price which is ${productExpectedPrice} €, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
-                        <br><br>
-                        Kind regards and smiley day to you☀️
-                        <br>– Team SaleChecker😻
-                    </p>`
-
-            const mailOptions = {
-                from: 'mathingvid@gmail.com',
-                to: emailTo,
-                subject: emailSubject,
-                html: emailBody
-            };
-
-            await sendEmail(mailOptions);
-
-            // Update Firestore document with email details
-            await executionRef.update({
-                emailStatus: {
-                    emailSent: true,
-                    emailSentBody: emailBody,
-                    emailSentOn: Timestamp.now(),
-                    emailSentSubject: emailSubject,
-                    emailSentTo: emailTo,
-                }
-            });
 
         } catch (error) {
             console.error("Error during Firestore trigger execution: ", error);
