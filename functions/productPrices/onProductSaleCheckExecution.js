@@ -49,35 +49,45 @@ exports.onProductSaleCheckExecution = functions.firestore
                 expectedPriceCurrency: productExpectedPriceCurrency,
                 url: productUrl,
                 emailNotification: emailTo,
+                imageUrl
             } = snapshot.data();
 
             if (emailTo) {
                 const { foundPrice, samePriceAsExpected } = executionData;
                 const discountPercentage = Math.round(((productExpectedPrice - foundPrice) / productExpectedPrice) * 100);
 
+                const imageHtml = imageUrl
+                    ? `<br><img src="${imageUrl}" alt="${productName}" style="height: 300px; width: auto;">`
+                    : '';
+
                 const emailSubject = samePriceAsExpected
                     ? `SaleChecker Execution Successful`
                     : `ON SALE: ${productName} Costs ${foundPrice} ${productExpectedPriceCurrency} Now!`;
+
                 const emailBody = samePriceAsExpected
                     ? `<p>
-                            Found price ${foundPrice} ${productExpectedPriceCurrency} for product ${productName} during successful execution of SaleChecker today.
+                            ${imageHtml}        
+                            <br>
+                            Found price ${foundPrice} ${productExpectedPriceCurrency} for product <em>${productName}</em>, which is the <strong>same price as expected</strong>, during successful execution of SaleChecker today.
                             <br>
                             Verify yourself by checking: <a href="${productUrl}">${productUrl}</a>
                             <br><br>
                             Have a smiley day
-                            <br>– Team SaleChecker
+                            <br>– Team SaleChecker
                         </p>`
                     :
                     `<p>
                             Hello!👋
                             <br><br>
+                            ${imageHtml}
+                            <br>
                             The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} ${productExpectedPriceCurrency} as found during today's execution of your SaleChecker service!
-                            <br><br>
+                            <br>
                             This is different from the normal price which is ${productExpectedPrice} ${productExpectedPriceCurrency}, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
                             <br><br>
                             Kind regards and smiley day to you☀️
-                            <br>– Team SaleChecker😻
-                        </p>`
+                            <br>– Team SaleChecker😻
+                        </p>`;
 
                 const mailOptions = {
                     from: 'mathingvid@gmail.com',
@@ -100,11 +110,10 @@ exports.onProductSaleCheckExecution = functions.firestore
                 });
             }
 
-
         } catch (error) {
             console.error("Error during Firestore trigger execution: ", error);
 
-            if (emailTo) {  
+            if (emailTo) {
                 const errorMailOptions = {
                     from: 'mathingvid@gmail.com',
                     to: emailTo,
@@ -117,7 +126,7 @@ exports.onProductSaleCheckExecution = functions.firestore
                         Please check the function logs for more details.
                         <br><br>
                         Kind regards,
-                        <br>– Team SaleChecker
+                        <br>– Team SaleChecker
                     </p>`
                 };
 
