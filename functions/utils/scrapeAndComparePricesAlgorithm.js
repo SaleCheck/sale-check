@@ -30,20 +30,22 @@ async function scrapeAndComparePricesAlgorithm() {
             const page = await browser.newPage();
             await page.goto(productUrl, { waitUntil: 'domcontentloaded' });
     
-            // Select all elements with the CSS selector and extract their text content
+            // Select all elements with the CSS selector, extract the price text, strip out non-numeric characters, and convert to a float
             const productPrices = await page.$$eval(cssSelector, elements => 
-                elements.map(el => el.textContent.trim().replace(',', '.'))
+                elements.map(el => el.textContent.trim())
             );
+
+            // Process found price
+            const rawPrice = productPrices[0];
+            const priceNumber = parseFloat(rawPrice.replace(/[^\d,.-]/g, '').replace(',', '.')); // Keep only digits, commas, periods, and minus signs.
+
+            console.log(`Price found for ${docData.productName}: ${priceNumber} \n\n`);
     
-            const productPrice = parseFloat(productPrices[0]);  // Assuming only one price is found
-    
-            console.log(`Price found for ${docData.productName}: ${productPrice} \n\n`);
-    
-            const priceMatched = productPrice === expectedPrice;
+            const priceMatched = priceNumber === expectedPrice;
             const executionRef = productsRef.doc(docId).collection('executions').doc(executionTimestamp);
             const productSaleCheckSummary = {
                 executedOn: Timestamp.now(),
-                foundPrice: productPrice,
+                foundPrice: priceNumber,
                 samePriceAsExpected: priceMatched,
                 executionSuccessful: true
             };
