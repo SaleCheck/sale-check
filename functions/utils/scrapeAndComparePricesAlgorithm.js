@@ -23,35 +23,27 @@ async function scrapeAndComparePricesAlgorithm() {
         let executionTimestamp = new Date().toISOString();
         let browser;
     
-        // Start scraping the data
         try {
             browser = await puppeteer.launch({
                 headless: true
             });
             const page = await browser.newPage();
-            await page.goto(productUrl);
+            await page.goto(productUrl, { waitUntil: 'domcontentloaded' });
     
-            // Return body of page
-            await page.waitForSelector('body');
+            // Select all elements with the CSS selector and extract their text content
+            const productPrices = await page.$$eval(cssSelector, elements => 
+                elements.map(el => el.textContent.trim().replace(',', '.'))
+            );
     
-            const productPrice = await page.evaluate((cssSelector) => {
-                return Array.from(document.querySelectorAll(cssSelector))
-                    .map(element => element.innerText)
-                    .map(text => {
-                        const numberString = text.split(' ')[1]; // Get the part after the space
-                        const numberWithDot = numberString.replace(',', '.') // Replace comma with dot
-                        return parseFloat(numberWithDot);
-                    });
-            }, cssSelector);
+            const productPrice = parseFloat(productPrices[0]);  // Assuming only one price is found
     
             console.log(`Price found for ${docData.productName}: ${productPrice} \n\n`);
     
-            // Create a new document in the subcollection "executions"
-            const priceMatched = productPrice[0] === expectedPrice;
+            const priceMatched = productPrice === expectedPrice;
             const executionRef = productsRef.doc(docId).collection('executions').doc(executionTimestamp);
             const productSaleCheckSummary = {
                 executedOn: Timestamp.now(),
-                foundPrice: productPrice[0],
+                foundPrice: productPrice,
                 samePriceAsExpected: priceMatched,
                 executionSuccessful: true
             };
