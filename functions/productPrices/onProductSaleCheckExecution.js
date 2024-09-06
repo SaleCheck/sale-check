@@ -46,8 +46,9 @@ exports.onProductSaleCheckExecution = functions.firestore
             const {
                 productName,
                 expectedPrice: productExpectedPrice,
+                expectedPriceCurrency: productExpectedPriceCurrency,
                 url: productUrl,
-                emailNotification: emailTo
+                emailNotification: emailTo,
             } = snapshot.data();
 
             if (emailTo) {
@@ -56,10 +57,10 @@ exports.onProductSaleCheckExecution = functions.firestore
 
                 const emailSubject = samePriceAsExpected
                     ? `SaleChecker Execution Successful`
-                    : `ON SALE: ${productName} Costs ${foundPrice} € Now!`;
+                    : `ON SALE: ${productName} Costs ${foundPrice} ${productExpectedPriceCurrency} Now!`;
                 const emailBody = samePriceAsExpected
                     ? `<p>
-                            Found price ${foundPrice} € for product ${productName} during successful execution of SaleChecker today.
+                            Found price ${foundPrice} ${productExpectedPriceCurrency} for product ${productName} during successful execution of SaleChecker today.
                             <br>
                             Verify yourself by checking: <a href="${productUrl}">${productUrl}</a>
                             <br><br>
@@ -70,9 +71,9 @@ exports.onProductSaleCheckExecution = functions.firestore
                     `<p>
                             Hello!👋
                             <br><br>
-                            The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} € as found during today's execution of your SaleChecker service!
+                            The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} ${productExpectedPriceCurrency} as found during today's execution of your SaleChecker service!
                             <br><br>
-                            This is different from the normal price which is ${productExpectedPrice} €, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
+                            This is different from the normal price which is ${productExpectedPrice} ${productExpectedPriceCurrency}, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
                             <br><br>
                             Kind regards and smiley day to you☀️
                             <br>– Team SaleChecker😻
