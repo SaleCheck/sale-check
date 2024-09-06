@@ -29,7 +29,7 @@ async function sendEmail(mailOptions) {
 
 exports.onProductSaleCheckExecution = functions.firestore
     .document('productsToCheck/{productId}/executions/{executionId}')
-    .onCreate( async (snap, context) => {
+    .onCreate(async (snap, context) => {
         try {
             const executionRef = snap.ref;
             const executionData = snap.data();
@@ -50,10 +50,10 @@ exports.onProductSaleCheckExecution = functions.firestore
                 emailNotification: emailTo
             } = snapshot.data();
 
-            if (emailNotification) {
+            if (emailTo) {
                 const { foundPrice, samePriceAsExpected } = executionData;
                 const discountPercentage = Math.round(((productExpectedPrice - foundPrice) / productExpectedPrice) * 100);
-    
+
                 const emailSubject = samePriceAsExpected
                     ? `SaleChecker Execution Successful`
                     : `ON SALE: ${productName} Costs ${foundPrice} € Now!`;
@@ -77,16 +77,16 @@ exports.onProductSaleCheckExecution = functions.firestore
                             Kind regards and smiley day to you☀️
                             <br>– Team SaleChecker😻
                         </p>`
-    
+
                 const mailOptions = {
                     from: 'mathingvid@gmail.com',
                     to: emailTo,
                     subject: emailSubject,
                     html: emailBody
                 };
-    
+
                 await sendEmail(mailOptions);
-    
+
                 // Update Firestore document with email details
                 await executionRef.update({
                     emailStatus: {
@@ -102,22 +102,26 @@ exports.onProductSaleCheckExecution = functions.firestore
 
         } catch (error) {
             console.error("Error during Firestore trigger execution: ", error);
-            const errorMailOptions = {
-                from: 'mathingvid@gmail.com',
-                to: emailTo,
-                subject: `Error in SaleChecker Execution for☹️`,
-                html: `<p>
+
+            if (emailTo) {  
+                const errorMailOptions = {
+                    from: 'mathingvid@gmail.com',
+                    to: emailTo,
+                    subject: `Error in SaleChecker Execution for ${productName}☹️`,
+                    html: `<p>
                         An error occurred during the execution of SaleChecker.
                         <br><br>
-                        <strong>Error Details:</strong> ${error.message}
+                        <strong>Error Details:</strong> ${error.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
                         <br><br>
                         Please check the function logs for more details.
                         <br><br>
                         Kind regards,
                         <br>– Team SaleChecker
                     </p>`
-            };
-            await sendEmail(errorMailOptions);
+                };
+
+                await sendEmail(errorMailOptions);
+            }
         }
 
         return null;
