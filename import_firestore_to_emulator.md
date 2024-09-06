@@ -11,7 +11,8 @@ Must have installed the Google Cloud CLI `gcloud`: https://cloud.google.com/sdk/
 
 4. Ensure to be in `functions` directory of Firebase repository. 
 
-5. Download the Firestore Export to folder in `functions` with the command `gsutil cp -r "gs://<bucketName>/<arbitraryFolderName>" .`
+5. Download the Firestore Export to folder in `functions` with the command `gsutil cp -r "gs://<bucketName>/<arbitraryFolderName>" .` 
+  - NB: The *dot* (i.e. `"."`) is important to add at the end. O/w the destination is missing.
 
 6. Run Firebase emulator with `firebase emulators:start --import ./<arbitraryFolderName>`
 
