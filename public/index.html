@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaleCheck Configuration</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/favicon.png" type="image/x-icon">
+</head>
+
+<body style="text-align: center;">
+
+  <!-- Favicon Image -->
+  <img src="assets/favicon.png" alt="SaleCheck Favicon" style="height: 250px; display: block; margin: 0 auto;">
+
+  <!-- Main Header -->
+  <h1>Welcome to SaleCheck</h1>
+
+  <!-- Introduction Text -->
+  <p class="intro-text">
+    We provide you with the service that makes tracking price drops a breeze. Enter the product URL and your target
+    price, and our system will keep a close eye on any price changes for you. We’ll notify you the moment your item is
+    on sale, so you can seize the deal without having to constantly check.
+    <br><br>
+    Let us do the hard work of monitoring prices, so you can enjoy your savings effortlessly!
+  </p>
+
+  <!-- Form -->
+  <form id="crud-form">
+    <label for="product-name">Product Name:</label>
+    <input type="text" id="product-name" required>
+
+    <div class="price-container">
+      <div class="price-group">
+        <label for="expected-price">Expected Price:</label>
+        <input type="number" id="expected-price" required>
+      </div>
+      <div class="price-group">
+        <label for="currency">Currency:</label>
+        <input type="text" id="currency">
+      </div>
+    </div>
+
+    <label for="product-url">Product URL:</label>
+    <input type="text" id="product-url" required>
+
+    <label for="email-for-notifications">Email for Notifications:</label>
+    <input type="text" id="email-for-notifications" required>
+
+    <label for="css-selector">CSS Selector:</label>
+    <input type="text" id="css-selector" required>
+
+    <button type="submit">Add Item</button>
+  </form>
+
+  <ul id="item-list" style="list-style-type: none; padding: 0; margin: 0; display: inline-block; text-align: left;">
+  </ul>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
