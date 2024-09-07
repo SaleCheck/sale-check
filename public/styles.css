@@ -2,7 +2,8 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    text-align: center; /* Moved from inline style */
+    text-align: center;
+    /* Moved from inline style */
 }
 
 /* Styling for the form */
@@ -12,7 +13,8 @@ form {
     align-items: center;
     max-width: 600px;
     margin: 0 auto;
-    margin-bottom: 20px; /* Moved from internal style */
+    margin-bottom: 20px;
+    /* Moved from internal style */
 }
 
 /* Form element styling */
@@ -23,7 +25,8 @@ label {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+input[type="file"] {
     width: 100%;
     max-width: 300px;
     padding: 8px;
@@ -31,9 +34,16 @@ input[type="number"] {
     box-sizing: border-box;
 }
 
-button {
+/* Container for buttons */
+.button-container {
+    display: flex;
+    gap: 10px;
+    /* Space between the buttons */
+}
+
+/* Submit button styling */
+button.submit-button {
     padding: 10px 20px;
-    margin-top: 10px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -41,8 +51,24 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+button.submit-button:hover {
     background-color: #0056b3;
+}
+
+/* Clear button styling */
+button.clear-button {
+    padding: 10px 20px;
+    background-color: #e0e0e0;
+    /* Neutral gray */
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.clear-button:hover {
+    background-color: #bdbdbd;
+    /* Darker gray on hover */
 }
 
 /* Introduction text styling */
@@ -70,7 +96,8 @@ li {
 .price-container {
     display: flex;
     align-items: flex-start;
-    gap: 10px; /* Space between the input groups */
+    gap: 10px;
+    /* Space between the input groups */
     margin-top: 10px;
 }
 
@@ -85,11 +112,13 @@ li {
 
 /* Specific input field widths */
 #expected-price {
-    width: 200px; /* Adjust this width as needed */
+    width: 200px;
+    /* Adjust this width as needed */
 }
 
 #currency {
-    width: calc(200px / 3); /* One-third the width of the expected-price input */
+    width: calc(200px / 3);
+    /* One-third the width of the expected-price input */
 }
 
 /* Favicon image styling */
@@ -97,4 +126,47 @@ img[src="assets/favicon.png"] {
     height: 250px;
     display: block;
     margin: 0 auto;
+}
+
+
+/* Loading overlay styling */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(211, 211, 211, 0.7);
+    /* Light gray with transparency */
+    z-index: 999;
+    /* Ensure it's below the spinner */
+}
+
+/* Loading spinner styling */
+#loading-spinner {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    /* Ensure it's above the overlay */
+}
+
+.spinner {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
