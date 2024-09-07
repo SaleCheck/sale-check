@@ -38,7 +38,7 @@
       </div>
       <div class="price-group">
         <label for="currency">Currency:</label>
-        <input type="text" id="currency">
+        <input type="text" id="currency" required>
       </div>
     </div>
 
@@ -48,11 +48,26 @@
     <label for="email-for-notifications">Email for Notifications:</label>
     <input type="text" id="email-for-notifications" required>
 
-    <label for="css-selector">CSS Selector:</label>
-    <input type="text" id="css-selector" required>
+    <label for="css-selector" class="label-container">CSS Selector:</label>
+    <input type="text" id="css-selector" required>    
 
-    <button type="submit">Add Item</button>
+    <label for="product-image">Attach Image (optional):</label>
+    <input type="file" id="product-image" accept="image/*">
+
+    <div class="button-container">
+      <button type="submit" class="submit-button">Add Item</button>
+      <button type="button" id="clear-button" class="clear-button">Clear Selections</button>
+    </div>
   </form>
+
+  <!-- Loading Spinner and Overlay -->
+  <div id="loading-overlay" style="display: none;"></div>
+  <div id="loading-spinner" style="display: none;">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Message Display -->
+  <div id="message" style="margin-top: 20px;"></div>
 
   <ul id="item-list" style="list-style-type: none; padding: 0; margin: 0; display: inline-block; text-align: left;">
   </ul>
