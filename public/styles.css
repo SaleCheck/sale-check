@@ -170,3 +170,18 @@ img[src="assets/favicon.png"] {
         transform: rotate(360deg);
     }
 }
+
+.test-button {
+    background-color: #007bff; /* Change to desired color */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 3px;
+  }
+  
+  .test-button:hover {
+    background-color: #0056b3; /* Change to desired hover color */
+  }
+  
