@@ -6,9 +6,7 @@ const db = getFirestore();
 
 exports.createProductToCheck = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     cors(req, res, async () => {
-        if (req.method !== "POST") {
-            return res.status(405).send({ success: false, error: 'Method Not Allowed. Only POST requests are allowed.' });
-        }
+        if (req.method !== "POST") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only POST requests are allowed.' });
 
         try {
             const data = req.body.data;
