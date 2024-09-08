@@ -1,18 +1,18 @@
-const functions = require('firebase-functions');
+const { onRequest } = require("firebase-functions/v2/https");
 const puppeteer = require('puppeteer');
 const cors = require('cors')({ origin: true });
 
-exports.testPuppeteer = functions.https.onRequest(async (req, res) => {
+exports.testPuppeteer = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     cors(req, res, async () => {
         const productUrl = req.query.productUrl || req.body.productUrl;
         const cssSelector = req.query.cssSelector || req.body.cssSelector;
 
-        if (req.method !== "GET") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only GET requests are allowed.' });
+        if (req.method !== "POST") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only POST requests are allowed.' });
         if (!productUrl || !cssSelector) return res.status(400).send('Missing productUrl or cssSelector parameter');
 
         let browser;
         try {
-            browser = await puppeteer.launch();
+            browser = await puppeteer.launch({ headless: true });
 
             const page = await browser.newPage();
             await page.goto(productUrl, { waitUntil: 'domcontentloaded' });
