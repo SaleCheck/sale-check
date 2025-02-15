@@ -61,49 +61,37 @@ exports.onProductSaleCheckExecution = functions.firestore
                 if (samePriceAsExpected && foundPrice === productExpectedPrice) {
                     console.log(`Skipping email; No price change found for product ${productName}`);
                     return null;
+                    
                 } else {
                     const discountPercentage = Math.round(((productExpectedPrice - foundPrice) / productExpectedPrice) * 100);
-    
+
                     const imageHtml = imageUrl
                         ? `<br><img src="${imageUrl}" alt="${productName}" style="height: 300px; width: auto;">`
                         : '';
-    
-                    const emailSubject = samePriceAsExpected
-                        ? `SaleChecker Execution Successful`
-                        : `ON SALE: ${productName} Costs ${foundPrice} ${productExpectedPriceCurrency} Now!`;
-    
-                    const emailBody = samePriceAsExpected
-                        ? `<p>
-                                ${imageHtml}        
-                                <br>
-                                Found price ${foundPrice} ${productExpectedPriceCurrency} for product <em>${productName}</em>, which is the <strong>same price as expected</strong>, during successful execution of SaleChecker today.
-                                <br>
-                                Verify yourself by checking: <a href="${productUrl}">${productUrl}</a>
-                                <br><br>
-                                Have a smiley day
-                                <br>– Team SaleChecker
-                            </p>`
-                        :
-                        `<p>
-                                Hello!👋
-                                <br><br>
-                                ${imageHtml}
-                                <br>
-                                The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} ${productExpectedPriceCurrency} as found during today's execution of your SaleChecker service!
-                                <br>
-                                This is different from the normal price which is ${productExpectedPrice} ${productExpectedPriceCurrency}, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
-                                <br><br>
-                                Kind regards and smiley day to you☀️
-                                <br>– Team SaleChecker😻
-                            </p>`;
-    
+
+                    const emailSubject = `ON SALE: ${productName} Costs ${foundPrice} ${productExpectedPriceCurrency} Now!`;
+
+                    const emailBody = `
+                        <p>
+                            Hello!👋
+                            <br><br>
+                            ${imageHtml}
+                            <br>
+                            The product <em>${productName}</em> seems to be on <b>${discountPercentage} % SALE</b>🚨, since its price is now just ${foundPrice} ${productExpectedPriceCurrency} as found during today's execution of your SaleChecker service!
+                            <br>
+                            This is different from the normal price which is ${productExpectedPrice} ${productExpectedPriceCurrency}, so go get yours now on <a href="${productUrl}">${productUrl}</a>!💪💥
+                            <br><br>
+                            Kind regards and smiley day to you☀️
+                            <br>– Team SaleChecker😻
+                        </p>`;
+
                     const mailOptions = {
                         from: 'mathingvid@gmail.com',
                         to: emailTo,
                         subject: emailSubject,
                         html: emailBody
                     };
-    
+
                     // Update Firestore document with email details
                     await sendEmail(mailOptions);
                     await executionRef.update({
