@@ -21,9 +21,11 @@ jobs:
           
           # Get the list of files that were changed in the last commit
           CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
+          echo "Changed files: $CHANGED_FILES"
           
           # Check if any files outside the 'functions' directory were changed
           OUTSIDE_FUNCTIONS=$(echo "$CHANGED_FILES" | grep -v "^functions/" || true)
+          echo "Files outside the 'functions' directory: $OUTSIDE_PUBLIC"
           
           # If there are files outside 'functions', fail the action
           if [ -n "$OUTSIDE_FUNCTIONS" ]; then

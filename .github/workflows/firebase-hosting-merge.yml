@@ -18,9 +18,11 @@ jobs:
           
           # Get the list of files that were changed in the last commit
           CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
+          echo "Changed files: $CHANGED_FILES"
           
           # Check if any files outside the 'public' directory were changed
           OUTSIDE_PUBLIC=$(echo "$CHANGED_FILES" | grep -v "^public/" || true)
+          echo "Files outside the 'public' directory: $OUTSIDE_PUBLIC"
           
           # If there are files outside 'public', fail the action
           if [ -n "$OUTSIDE_PUBLIC" ]; then
