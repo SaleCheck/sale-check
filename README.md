@@ -50,4 +50,5 @@ firebase emulators:start
 Contributions are welcome! If you'd like to improve the project, feel free to fork the repository and create a pull request. Please ensure that your code follows our contribution guidelines.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [LICENSE](https://github.com/sale-check/blob/HEAD/LICENSE) for the full
+license text. 
