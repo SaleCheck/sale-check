@@ -27,7 +27,7 @@ jobs:
           # Check if no changes were made or changes are outside 'public'
           if [ -z "$CHANGED_FILES" ]; then
             echo "No changes detected. Skipping deployment."
-            exit 0
+            exit 78
           elif [ -n "$OUTSIDE_PUBLIC" ]; then
             echo "Deployment aborted: Changes detected outside 'public' folder."
             exit 1
@@ -42,3 +42,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
           channelId: live
           projectId: sale-check-b611b
+          continue-on-error: false
