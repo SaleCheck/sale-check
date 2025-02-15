@@ -3,6 +3,19 @@
 
 SaleCheck is a smart price tracking tool built with Firebase and Google Cloud Functions. This web application allows users to effortlessly monitor price drops on their desired products, ensuring they never miss a deal.
 
+Contributors are expected to act in a collaborative manner to move the project forward. We encourage the constructive exchange of contrary opinions and compromise. The maintainer reserves the right to limit or block contributors who repeatedly act in ways that discourage, exhaust, or otherwise negatively affect other participants.
+
+**This project has a [Code of Conduct](./CODE_OF_CONDUCT.md).**
+
+## Table of Contents
+- [About](#about)
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Technologies](#technologies)
+- [How to Run Locally](#how-to-run-locally)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## About
 SaleCheck provides a service that makes tracking price drops a breeze. Simply enter the product URL and price CSS Selector and set your target price. Our system will constantly check for any price changes and notify you the moment your item is on sale. You can save time and money by letting us handle the monitoring, so you can focus on enjoying your savings!
 
@@ -20,7 +33,7 @@ Website: [sale-check-b611b.web.app](sale-check-b611b.web.app)
 - **Set your target price**: Choose the price you want to be notified at.
 - **Wait for the notification**: Our system will monitor the price and send you an alert when the price drops to or below your target.
 
-## Technologies Used
+## Technologies
 - **Firebase**: Firebase Hosting for the web app, Firebase Functions for backend logic.
 - **Google Cloud Functions**: Serverless functions that handle the price monitoring.
 - **Firestore**: A NoSQL database used to store user data and track product prices.
@@ -50,5 +63,5 @@ firebase emulators:start
 Contributions are welcome! If you'd like to improve the project, feel free to fork the repository and create a pull request. Please ensure that your code follows our contribution guidelines.
 
 ## License
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [LICENSE](https://github.com/sale-check/blob/HEAD/LICENSE) for the full
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT). See [LICENSE](./LICENSE) for the full
 license text. 
