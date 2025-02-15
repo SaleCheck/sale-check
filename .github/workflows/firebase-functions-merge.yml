@@ -16,8 +16,11 @@ jobs:
       - name: Check if changes are only in 'functions' directory
         id: check_changes
         run: |
+          # Fetch the previous commit on the main branch
+          git fetch origin main
+          
           # Get the list of files that were changed in the last commit
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
           
           # Check if any files outside the 'functions' directory were changed
           OUTSIDE_FUNCTIONS=$(echo "$CHANGED_FILES" | grep -v "^functions/" || true)
