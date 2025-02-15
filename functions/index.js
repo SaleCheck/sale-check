@@ -22,6 +22,6 @@ const cors = require('cors')({ origin: true });
 
 exports.gitHubActionTestDeployOnlyFunctions = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (req, res) => {
     cors(req, res, async () => {
-        res.status(200).send(`Hello world`);
+        res.status(200).send(`Smiley day to ya☀`);
     })
 });
