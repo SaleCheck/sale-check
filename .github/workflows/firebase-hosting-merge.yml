@@ -26,10 +26,10 @@ jobs:
           
           # Check if no changes were made or changes are outside 'public'
           if [ -z "$CHANGED_FILES" ]; then
-            echo "No changes detected. Skipping deployment."
+            echo "Deployment aborted: No changes detected in 'public' directory."
             exit 1
           elif [ -n "$OUTSIDE_PUBLIC" ]; then
-            echo "Deployment aborted: Changes detected outside 'public' folder."
+            echo "Deployment aborted: Changes detected outside 'public' directory."
             exit 1
           else
             echo "Only 'public' folder was changed. Proceeding with deployment."
