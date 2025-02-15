@@ -24,8 +24,11 @@ jobs:
           OUTSIDE_PUBLIC=$(echo "$CHANGED_FILES" | grep -v "^public/" || true)
           echo "Files outside the 'public' directory: $OUTSIDE_PUBLIC"
           
-          # If there are files outside 'public', fail the action
-          if [ -n "$OUTSIDE_PUBLIC" ]; then
+          # Check if no changes were made or changes are outside 'public'
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changes detected. Skipping deployment."
+            exit 0
+          elif [ -n "$OUTSIDE_PUBLIC" ]; then
             echo "Deployment aborted: Changes detected outside 'public' folder."
             exit 1
           else
