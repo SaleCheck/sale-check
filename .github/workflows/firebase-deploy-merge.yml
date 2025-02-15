@@ -30,7 +30,7 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
 
-      - name: Deploy Firebase Project
+      - name: Deploy Firebase Functions
         run: firebase deploy --only functions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # Points to my Firebase service account key
