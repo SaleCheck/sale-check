@@ -1,8 +1,6 @@
 const { initializeApp } = require("firebase-admin/app");
 initializeApp();
 
-//const scrapeAndComparePricesOnRequest = require('./productPrices/scrapeAndComparePricesOnRequest');
-//const scrapeAndComparePricesOnSchedule = require('./productPrices/scrapeAndComparePricesOnSchedule');
 const {
     scrapeAndComparePricesOnRequest,
     scrapeAndComparePricesOnSchedule
