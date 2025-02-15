@@ -1,6 +1,14 @@
 # SaleCheck
 ![SaleCheck Icon](https://sale-check-b611b.web.app/assets/favicon.png)
 
+![Build Status](https://img.shields.io/github/workflow/status/MathiasSchindlerCPH/sale-check/CI)
+![Last commit](https://img.shields.io/github/last-commit/MathiasSchindlerCPH/sale-check)
+[![GitHub release](https://img.shields.io/github/release/MathiasSchindlerCPH/sale-check.svg)](https://github.com/MathiasSchindlerCPH/sale-check/releases)
+[![Issues](https://img.shields.io/github/issues/MathiasSchindlerCPH/sale-check.svg)](https://github.com/MathiasSchindlerCPH/sale-check/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/MathiasSchindlerCPH/sale-check.svg)](https://github.com/MathiasSchindlerCPH/sale-check/pulls)
+[![Contributors](https://img.shields.io/github/contributors/MathiasSchindlerCPH/sale-check.svg)](https://github.com/MathiasSchindlerCPH/sale-check/graphs/contributors)
+[![License](https://img.shields.io/github/license/MathiasSchindlerCPH/sale-check.svg)](https://opensource.org/licenses/MIT)
+
 SaleCheck is a smart price tracking tool built with Firebase and Google Cloud Functions. This web application allows users to effortlessly monitor price drops on their desired products, ensuring they never miss a deal.
 
 Contributors are expected to act in a collaborative manner to move the project forward. We encourage the constructive exchange of contrary opinions and compromise. The maintainer reserves the right to limit or block contributors who repeatedly act in ways that discourage, exhaust, or otherwise negatively affect other participants.
@@ -43,7 +51,7 @@ To run this project locally, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/sale-check.git
+git clone https://github.com/MathiasSchindlerCPH/sale-check.git
 cd sale-check
 ```
 
