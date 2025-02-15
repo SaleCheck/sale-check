@@ -1,31 +1,10 @@
-require("firebase-functions/logger/compat");
+require('firebase-functions/logger/compat');
 const functions = require('firebase-functions');
-const { getFirestore, Timestamp } = require("firebase-admin/firestore");
+const { getFirestore, Timestamp } = require('firebase-admin/firestore');
 const admin = require('firebase-admin');
-const nodemailer = require('nodemailer');
+const { sendEmail } = require('../utils/emailService');
 
 const db = getFirestore();
-
-const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAILUSER,
-        pass: process.env.EMAILAPPPWD,
-    },
-});
-
-// Helper function to send emails
-async function sendEmail(mailOptions) {
-    try {
-        const info = await transporter.sendMail(mailOptions);
-        console.log("Email sent: ", info.response);
-    } catch (error) {
-        console.error("Error sending email: ", error);
-    }
-}
 
 exports.onProductSaleCheckExecution = functions.firestore
     .document('productsToCheck/{productId}/executions/{executionId}')
@@ -72,7 +51,7 @@ exports.onProductSaleCheckExecution = functions.firestore
                             ? `<br><img src="${imageUrl}" alt="${productName}" style="height: 300px; width: auto;">`
                             : '';
 
-                        const emailSubject = `ON SALE: ${productName} Costs ${foundPrice} ${productExpectedPriceCurrency} Now!`;
+                        const emailSubject = `🚨ON SALE🤑: ${productName} Costs ${foundPrice} ${productExpectedPriceCurrency} Now!`;
 
                         const emailBody = `
                             <p>
@@ -94,9 +73,9 @@ exports.onProductSaleCheckExecution = functions.firestore
                             subject: emailSubject,
                             html: emailBody
                         };
+                        await sendEmail(mailOptions);
 
                         // Update Firestore document with email details
-                        await sendEmail(mailOptions);
                         await executionRef.update({
                             emailStatus: {
                                 emailSent: true,
@@ -116,16 +95,17 @@ exports.onProductSaleCheckExecution = functions.firestore
                         from: process.env.EMAILUSER,
                         to: emailTo,
                         subject: `Error in SaleChecker Execution for ${productName}☹️`,
-                        html: `<p>
-                        An error occurred during the execution of SaleChecker.
-                        <br><br>
-                        <strong>Error Details:</strong> ${error.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
-                        <br><br>
-                        Please check the function logs for more details.
-                        <br><br>
-                        Kind regards,
-                        <br>– Team SaleChecker
-                    </p>`
+                        html: `
+                            <p>
+                                An error occurred during the execution of SaleChecker.
+                                <br><br>
+                                <strong>Error Details:</strong> ${error.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                                <br><br>
+                                Please check the function logs for more details.
+                                <br><br>
+                                Kind regards,
+                                <br>– Team SaleChecker
+                            </p>`
                     };
                     await sendEmail(errorMailOptions);
                 }
