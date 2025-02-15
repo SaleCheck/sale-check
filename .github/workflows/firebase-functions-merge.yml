@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4  # Checks out repository code
 
-      - name: Check if changes are only in 'functions' directory
+      - name: Verify Changes Exclusively in 'functions' Directory
         id: check_changes
         run: |
           # Fetch the previous commit on the main branch
@@ -42,12 +42,12 @@ jobs:
         run: npm install -g firebase-tools  # Install Firebase CLI globally
 
       - name: Authenticate with Firebase
-        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}" > $HOME/firebase-key.json  # Authenticate with Firebase using my service account
-        env:
-          FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}  # Uses the GitHub token to authenticate
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}  # Pass in service account JSON
 
       - name: Deploy Firebase Functions
         run: firebase deploy --only functions  # Run the deploy only for functions
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # Points to my Firebase service account key
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}  # (Optional) If you store the Firebase auth token as a secret
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # Points to the Firebase service account key
