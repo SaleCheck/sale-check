@@ -18,13 +18,18 @@ jobs:
           
           # Get the list of files that were changed in the last commit
           CHANGED_FILES=$(git diff --name-only origin/main ${{ github.sha }})
+          echo "Changed files: $CHANGED_FILES"
           
           # Check if any files outside the 'public' directory were changed
           OUTSIDE_PUBLIC=$(echo "$CHANGED_FILES" | grep -v "^public/" || true)
+          echo "Files outside the 'public' directory: $OUTSIDE_PUBLIC"
           
-          # If there are files outside 'public', fail the action
-          if [ -n "$OUTSIDE_PUBLIC" ]; then
-            echo "Deployment aborted: Changes detected outside 'public' folder."
+          # Check if no changes were made or changes are outside 'public'
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "Deployment aborted: No changes detected in 'public' directory."
+            exit 1
+          elif [ -n "$OUTSIDE_PUBLIC" ]; then
+            echo "Deployment aborted: Changes detected outside 'public' directory."
             exit 1
           else
             echo "Only 'public' folder was changed. Proceeding with deployment."
@@ -37,3 +42,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
           channelId: live
           projectId: sale-check-b611b
+          continue-on-error: false
