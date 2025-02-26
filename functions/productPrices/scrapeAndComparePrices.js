@@ -11,7 +11,7 @@ async function runSaleCheckerAlgorithm() {
         await scrapeAndComparePricesAlgorithm();
         console.log("Scraping and comparison algorithm completed successfully.");
 
-        const emailSubject = `✅SaleCheck Price Monitoring Ran Successfully`;
+        const emailSubject = `SaleCheck Price Monitoring Ran Successfully`;
         const emailBody = `
                 <p>
                     The SaleCheck price monitoring scheduler has successfully run today.
