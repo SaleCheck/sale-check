@@ -9,6 +9,7 @@ const onProductSaleCheckExecution = require('./productPrices/onProductSaleCheckE
 const testPuppeteer = require('./utils/testPuppeteer');
 const createProductToCheck = require('./firestore/createProductToCheck');
 const getProductToCheck = require('./firestore/getProductToCheck');
+const deleteProductToCheck = require('./firestore/deleteProductToCheck');
 
 exports.scrapeAndComparePricesOnRequest = scrapeAndComparePricesOnRequest;
 exports.scrapeAndComparePricesOnSchedule = scrapeAndComparePricesOnSchedule;
@@ -16,4 +17,4 @@ exports.onProductSaleCheckExecution = onProductSaleCheckExecution.onProductSaleC
 exports.testPuppeteer = testPuppeteer.testPuppeteer;
 exports.createProductToCheck = createProductToCheck.createProductToCheck;
 exports.getProductToCheck = getProductToCheck.getProductToCheck;
-
+exports.deleteProductToCheck = deleteProductToCheck.deleteProductToCheck;
