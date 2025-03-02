@@ -10,11 +10,11 @@ exports.createProductToCheck = onRequest({ timeoutSeconds: 300, memory: "1GiB" }
 
         try {
             const data = req.body.data;
-            if (!data) return res.status(400).send("Bad Request: No data provided");
+            if (!data) return res.status(400).send("Bad Request: No data in payload provided");
 
-            const allowedKeys = ["productName", "expectedPrice", "expectedPriceCurrency", "url", "emailNotification", "cssSelector"];
+            const allowedPayloadKeys = ["productName", "expectedPrice", "expectedPriceCurrency", "url", "emailNotification", "cssSelector"];
             const filteredData = {};
-            for (const key of allowedKeys) {
+            for (const key of allowedPayloadKeys) {
                 if (data.hasOwnProperty(key)) {
                     filteredData[key] = data[key];
                 }
