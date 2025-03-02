@@ -10,18 +10,16 @@ exports.getProductToCheck = onRequest(async (req, res) => {
 
         try {
             const data = req.body.data;
-            if (!data) return res.status(400).send("Bad request: No data in payload provided");
+            if (!data || !data.id) return res.status(400).send("Bad request: 'id' is required in the payload.");
 
-            const allowedPayloadKeys = "id";
-            if (!data.hasOwnProperty(allowedPayloadKeys)) return res.status(400).send("Bad Request: Payload must include 'id' property.");
+            const productId = data.id;
+            const docRef = db.collection("productsToCheck").doc(productId);
+            const docSnap = await docRef.get();
 
-            const productId = data[allowedPayloadKeys]
-            const doc = await db.collection("productsToCheck").doc(productId).get();
-
-            if (!doc.exists) {
+            if (!docSnap.exists) {
                 res.status(404).json({ success: false, error: "Document not found." });
             } else {
-                res.status(200).send(doc.data());
+                res.status(200).send(docSnap.data());   
             }
         } catch (error) {
             console.error("Error fetching product:", error);
