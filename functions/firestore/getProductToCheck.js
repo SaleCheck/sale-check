@@ -19,12 +19,12 @@ exports.getProductToCheck = onRequest(async (req, res) => {
             const doc = await db.collection("productsToCheck").doc(productId).get();
 
             if (!doc.exists) {
-                res.status(400).send("Error: Document not found.");
+                res.status(404).json({ success: false, error: "Document not found." });
             } else {
                 res.status(200).send(doc.data());
             }
         } catch (error) {
-            console.error("Error adding document: ", error);
+            console.error("Error fetching product:", error);
             res.status(500).send("Internal Server Error");
         }
     })
