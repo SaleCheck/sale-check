@@ -1,5 +1,5 @@
 const { onRequest } = require("firebase-functions/v2/https");
-const { getFirestore, recursiveDelete } = require("firebase-admin/firestore");
+const { getFirestore } = require("firebase-admin/firestore");
 const cors = require('cors')({ origin: true });
 
 const db = getFirestore();
@@ -7,6 +7,9 @@ const db = getFirestore();
 exports.deleteProductToCheck = onRequest(async (req, res) => {
     cors(req, res, async () => {
         if (req.method !== "DELETE") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only DELETE requests are allowed.' });
+        if (req.get('Content-Type') !== 'application/json') {
+            return res.status(400).send({ success: false, error: 'Content-Type must be application/json.' });
+        }
 
         try {
             const data = req.body.data;

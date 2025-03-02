@@ -7,6 +7,9 @@ const db = getFirestore();
 exports.getProductToCheck = onRequest(async (req, res) => {
     cors(req, res, async () => {
         if (req.method !== "GET") return res.status(405).send({ success: false, error: 'Method Not Allowed. Only GET requests are allowed.' });
+        if (req.get('Content-Type') !== 'application/json') {
+            return res.status(400).send({ success: false, error: 'Content-Type must be application/json.' });
+        }   
 
         try {
             const data = req.body.data;
