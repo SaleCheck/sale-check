@@ -16,6 +16,12 @@ exports.createProductToCheck = onRequest({ timeoutSeconds: 300, memory: "1GiB" }
             const data = req.body.data;
             if (!data) return res.status(400).send("Bad Request: No data in payload provided");
 
+            for (const key of ALLOWED_FIELDS) {
+                if (!data.hasOwnProperty(key)) {
+                    return res.status(400).send({ success: false, error: `Bad Request: Missing field ${key} in payload.` });
+                }
+            }
+
             const filteredData = {};
             for (const key of ALLOWED_FIELDS) {
                 if (data.hasOwnProperty(key)) {
