@@ -4,17 +4,16 @@ const admin = require('firebase-admin');
 const db = admin.firestore();
 
 exports.copyUserObjectToFirestore = functions.auth.user().onCreate( async (user) => {
-    console.log('User created:', user, '\n Copying user object to Firestore ...');
-    
+    console.log('User created:', user, '\n Copying user object to Firestore ...');    
     
     const userData = {
-        uid: user.uid || null,
-        email: user.email || null,
-        emailVerified: user.emailVerified || null,
-        displayName: user.displayName || null,
-        photoURL: user.photoURL || null,
-        phoneNumber: user.phoneNumber || null,
-        disabled: user.disabled || null,
+        uid: user.uid ?? null,
+        email: user.email ?? null,
+        emailVerified: user.emailVerified ?? null,
+        displayName: user.displayName ?? null,
+        photoURL: user.photoURL ?? null,
+        phoneNumber: user.phoneNumber ?? null,
+        disabled: user.disabled ?? null,
     }
     
     try {
