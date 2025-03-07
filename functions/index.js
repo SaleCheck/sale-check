@@ -24,6 +24,8 @@ const createProductToCheck = require('./firestore/products/createProductToCheck'
 const getProductToCheck = require('./firestore/products/getProductToCheck');
 const updateProductToCheck = require('./firestore/products/updateProductToCheck');
 const deleteProductToCheck = require('./firestore/products/deleteProductToCheck');
+const copyUserObjectToFirestore = require('./firestore/users/copyUserObjectToFirestore');
+const deleteUserObjectFromFirestore = require('./firestore/users/deleteUserObjectFromFirestore');
 const createUser = require('./auth/createUser');
 const getUser = require('./auth/getUser');
 
@@ -35,5 +37,7 @@ exports.createProductToCheck = createProductToCheck.createProductToCheck;
 exports.getProductToCheck = getProductToCheck.getProductToCheck;
 exports.updateProductToCheck = updateProductToCheck.updateProductToCheck;
 exports.deleteProductToCheck = deleteProductToCheck.deleteProductToCheck;
+exports.copyUserObjectToFirestore = copyUserObjectToFirestore.copyUserObjectToFirestore;
+exports.deleteUserObjectFromFirestore = deleteUserObjectFromFirestore.deleteUserObjectFromFirestore;
 exports.createUser = createUser.createUser;
 exports.getUser = getUser.getUser;
