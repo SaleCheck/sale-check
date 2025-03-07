@@ -1,10 +1,11 @@
 module.exports = {
     ALLOWED_FIELDS: [
-        "productName",
+        "cssSelector",
+        "emailNotification",
         "expectedPrice",
         "expectedPriceCurrency",
+        "productName",
         "url",
-        "emailNotification",
-        "cssSelector"
+        "user"
     ]
 };
