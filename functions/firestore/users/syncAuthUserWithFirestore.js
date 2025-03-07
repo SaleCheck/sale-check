@@ -3,7 +3,16 @@ const admin = require('firebase-admin');
 
 const db = admin.firestore();
 
-exports.copyUserObjectToFirestore = functions.auth.user().onCreate( async (user) => {
+exports.copyAuthUserToFirestore = functions.auth.user().onCreate( async (user) => {
+    await syncAuthUserWithFirestore(user);
+});
+
+exports.updateAuthUserToFirestore = functions.auth.user().onUpdate( async (change) => {
+    const user = change.after;
+    await syncAuthUserWithFirestore(user);
+});
+
+async function syncAuthUserWithFirestore(user) {
     console.log('User created:', user, '\n Copying user object to Firestore ...');    
     
     const userData = {
@@ -23,4 +32,4 @@ exports.copyUserObjectToFirestore = functions.auth.user().onCreate( async (user)
     } catch (error) {
         console.error(`Error copying user object for uid ${uid} to Firestore:`, error);
     }
-});
+} 
