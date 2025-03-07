@@ -2,7 +2,8 @@ const { onRequest } = require("firebase-functions/v2/https");
 const { 
     getAuth, 
     createUserWithEmailAndPassword, 
-    updateProfile 
+    updateProfile ,
+    sendEmailVerification
 } = require("firebase/auth");
 const cors = require('cors')({ origin: true });
 
@@ -14,7 +15,7 @@ exports.createUser = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (r
             return res.status(400).send({ success: false, error: 'Content-Type must be application/json.' });
         }
         
-        const { email, pwd, displayName, photoURL, phoneNumber } = req.body.data;
+        const { email, pwd, displayName, photoURL } = req.body.data;
         if (!email || !pwd) {
             return res.status(400).send({ error: 'Bad Request: Email and password are required' });
         }
@@ -23,11 +24,12 @@ exports.createUser = onRequest({ timeoutSeconds: 300, memory: "1GiB" }, async (r
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, pwd);
             const user = userCredential.user;
+
+            await sendEmailVerification(auth.currentUser);
             
             await updateProfile(user, {
                 displayName: displayName || null,
                 photoURL: photoURL || null,
-                phoneNumber: phoneNumber || null
             })
             
             return res.status(201).send({ status: "Success", user: user });
