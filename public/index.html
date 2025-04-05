@@ -11,6 +11,15 @@
 
 <body style="text-align: center;">
 
+    <div class="container">
+      <label>Login</label>
+      <input type="text" placeholder="Username" id="user">
+      <input type="password" placeholder="Password" id="pwd">
+
+      <div>
+        <button type="submit" id="login-btn">Login</button>
+      </div>
+
   <!-- Favicon Image -->
   <img src="assets/favicon.png" alt="SaleCheck Favicon" style="height: 250px; display: block; margin: 0 auto;">
 
@@ -49,7 +58,7 @@
     <input type="text" id="email-for-notifications" required>
 
     <label for="css-selector" class="label-container">CSS Selector:</label>
-    <input type="text" id="css-selector" required>    
+    <input type="text" id="css-selector" required>
     <button type="button" id="test-button" class="test-button">Test Selector</button>
 
     <label for="product-image">Attach Image (optional):</label>
@@ -76,7 +85,7 @@
   <!-- Load Firebase SDKs from reserved URLs. See https://firebase.google.com/docs/hosting/reserved-urls. -->
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
-  
+
   <!-- Load custom scripts -->
   <script src="index.js"></script>
 </body>
