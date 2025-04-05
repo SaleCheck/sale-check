@@ -1,0 +1,99 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaleCheck Configuration</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/favicon.png" type="image/x-icon">
+</head>
+
+<body style="text-align: center;">
+    <!-- User Header -->
+    <div id="user-header" style="display: none; margin-bottom: 20px;">
+        <h2 id="welcome-message"></h2>
+        <img id="user-avatar" src="" alt="User Avatar" style="border-radius: 50%; width: 50px; height: 50px;">
+    </div>
+
+    <!-- Form -->
+    <form id="crud-form">
+        <label for="product-name">Product Name:</label>
+        <input type="text" id="product-name" required>
+
+        <div class="price-container">
+            <div class="price-group">
+                <label for="expected-price">Expected Price:</label>
+                <input type="number" id="expected-price" required>
+            </div>
+            <div class="price-group">
+                <label for="currency">Currency:</label>
+                <input type="text" id="currency" required>
+            </div>
+        </div>
+
+        <label for="product-url">Product URL:</label>
+        <input type="text" id="product-url" required>
+
+        <label for="email-for-notifications">Email for Notifications:</label>
+        <input type="text" id="email-for-notifications" required>
+
+        <label for="css-selector" class="label-container">CSS Selector:</label>
+        <input type="text" id="css-selector" required>
+        <button type="button" id="test-button" class="test-button">Test Selector</button>
+
+        <label for="product-image">Attach Image (optional):</label>
+        <input type="file" id="product-image" accept="image/*">
+
+        <div class="button-container">
+            <button type="submit" class="submit-button">Add Item</button>
+            <button type="button" id="clear-button" class="clear-button">Clear Selections</button>
+        </div>
+    </form>
+
+    <!-- Loading Spinner and Overlay -->
+    <div id="loading-overlay" style="display: none;"></div>
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Load Firebase SDKs from reserved URLs. See https://firebase.google.com/docs/hosting/reserved-urls. -->
+    <script src="/__/firebase/8.10.1/firebase-app.js"></script>
+    <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
+
+    <!-- Load custom scripts -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZOYnEHUA3I1PS36teLMmKirTXpMVzFAc",
+            authDomain: "sale-check-b611b.firebaseapp.com",
+            projectId: "sale-check-b611b",
+            storageBucket: "sale-check-b611b.appspot.com",
+            messagingSenderId: "712429550284",
+            appId: "1:712429550284:web:3fdb2d4ab2e5b99448a069",
+            measurementId: "G-743W5CC4YL"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                const email = user.email;
+                const photoURL = user.photoURL || 'https://via.placeholder.com/50'; // Default avatar if none is provided
+
+                // Update the header
+                const userHeader = document.getElementById('user-header');
+                const welcomeMessage = document.getElementById('welcome-message');
+                const userAvatar = document.getElementById('user-avatar');
+
+                welcomeMessage.textContent = `Welcome, ${email}`;
+                userAvatar.src = photoURL;
+
+                userHeader.style.display = 'block';
+            } else {
+                // User is not signed in, redirect to login page
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+</body>
+
+</html>
