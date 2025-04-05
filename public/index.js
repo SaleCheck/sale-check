@@ -12,6 +12,21 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 console.log("Firebase Auth instance:", auth);
 
+document.getElementById('login-btn').addEventListener('click', function () {
+    const user = document.getElementById('user').value;
+    const pwd = document.getElementById('pwd').value;
+    
+    auth.signInWithEmailAndPassword(user, pwd)
+    .then((userCredential) => {
+      console.log("Signed in successfully:", userCredential.user);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error("Error signing in:", errorCode, errorMessage);
+    });
+});
+
 document.getElementById('crud-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
