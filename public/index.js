@@ -12,10 +12,12 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 console.log("Firebase Auth instance:", auth);
 
-document.getElementById('login-btn').addEventListener('click', function () {
+document.getElementById('login-submit').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent the default form submission i.e. automatic, immediate closing of form element
+    
     document.getElementById('loading-overlay').style.display = 'block';
     document.getElementById('loading-spinner').style.display = 'block';
-
+    
     const user = document.getElementById('user').value;
     const pwd = document.getElementById('pwd').value;
     
@@ -31,66 +33,24 @@ document.getElementById('login-btn').addEventListener('click', function () {
     .finally(() => {
         document.getElementById('loading-overlay').style.display = 'none';
         document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('login-modal').style.display = 'none';
+        
+        document.getElementById('user').value = '';
+        document.getElementById('pwd').value = '';
+
+        window.location.href = "CRUD.html";
     });
 });
 
-document.getElementById('crud-form').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    // Show the loading overlay and spinner
-    document.getElementById('loading-overlay').style.display = 'block';
-    document.getElementById('loading-spinner').style.display = 'block';
-
-    const productName = document.getElementById('product-name').value;
-    const expectedPrice = document.getElementById('expected-price').value;
-    const currency = document.getElementById('currency').value;
-    const productUrl = document.getElementById('product-url').value;
-    const emailForNotifications = document.getElementById('email-for-notifications').value.split(',');
-    const cssSelector = document.getElementById('css-selector').value;
-    const payload = {
-        data: {
-            productName: productName,
-            expectedPrice: parseFloat(expectedPrice),
-            expectedPriceCurrency: currency,
-            url: productUrl,
-            emailNotification: emailForNotifications.map(email => email.trim()),
-            cssSelector: cssSelector
-        }
-    };
-
-    fetch('https://us-central1-sale-check-b611b.cloudfunctions.net/createProductToCheck', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            document.getElementById('message').innerHTML = '<p style="color: green;">Success! Your item has been added.</p>';
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            document.getElementById('message').innerHTML = '<p style="color: red;">Error: Unable to add the item. Please try again.</p>';
-            if (error.response && error.response.data && error.response.data.message) {
-                document.getElementById('message').innerHTML = `<p style="color: red;">Error: ${error.response.data.message}</p>`;
-            }
-        })
-        .finally(() => {
-            // Hide the loading overlay and spinner
-            document.getElementById('loading-overlay').style.display = 'none';
-            document.getElementById('loading-spinner').style.display = 'none';
-        });
-
-    //document.getElementById('crud-form').reset();
-    //document.getElementById('product-image').value = '';
+document.getElementById('login-btn').addEventListener('click', function () {
+    document.getElementById('login-modal').style.display = 'block';
 });
-
-document.getElementById('clear-button').addEventListener('click', function () {
-    var form = document.getElementById('crud-form');
-    form.reset();
-    document.getElementById('product-image').value = '';
-
-    document.getElementById('message').innerHTML = '';
+document.getElementById('signup-btn').addEventListener('click', function () {
+    document.getElementById('signup-modal').style.display = 'block';
+});
+document.getElementById('close-login-modal').addEventListener('click', function () {
+    document.getElementById('login-modal').style.display = 'none';
+});
+document.getElementById('close-signup-modal').addEventListener('click', function () {
+    document.getElementById('signup-modal').style.display = 'none';
 });
