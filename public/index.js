@@ -13,6 +13,9 @@ const auth = firebase.auth();
 console.log("Firebase Auth instance:", auth);
 
 document.getElementById('login-btn').addEventListener('click', function () {
+    document.getElementById('loading-overlay').style.display = 'block';
+    document.getElementById('loading-spinner').style.display = 'block';
+
     const user = document.getElementById('user').value;
     const pwd = document.getElementById('pwd').value;
     
@@ -24,6 +27,10 @@ document.getElementById('login-btn').addEventListener('click', function () {
       const errorCode = error.code;
         const errorMessage = error.message;
         console.error("Error signing in:", errorCode, errorMessage);
+    })
+    .finally(() => {
+        document.getElementById('loading-overlay').style.display = 'none';
+        document.getElementById('loading-spinner').style.display = 'none';
     });
 });
 
