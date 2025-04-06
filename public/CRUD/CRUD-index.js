@@ -11,11 +11,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.firestore();
+
 auth.onAuthStateChanged((user) => {
     if (user) {
         // User is signed in
         const email = user.email;
-        const photoURL = user.photoURL || 'https://via.placeholder.com/50'; // Default avatar if none is provided
+        const photoURL = user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/sale-check-b611b.appspot.com/o/users%2Favatar%2F__default__.png?alt=media&token=2f3d5dc7-bf5b-4b23-9511-996394b40275'; 
 
         // Update the header
         const userHeader = document.getElementById('user-header');
@@ -26,11 +28,28 @@ auth.onAuthStateChanged((user) => {
         userAvatar.src = photoURL;
 
         userHeader.style.display = 'block';
+
+
+        const userId = user.uid;
+        console.log(`User ID: ${userId}`);
+        
+        db.collection('productsToCheck')
+            .where('user', '==', userId)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    console.log(`Document ID: ${doc.id}`, doc.data());
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching documents:', error);
+            });
     } else {
         // User is not signed in, redirect to login page
         window.location.href = "index.html";
     }
 });
+
 
 
 document.getElementById('crud-form').addEventListener('submit', function (event) {

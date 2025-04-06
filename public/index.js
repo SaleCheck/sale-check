@@ -38,7 +38,7 @@ document.getElementById('login-submit').addEventListener('click', function (even
         document.getElementById('user').value = '';
         document.getElementById('pwd').value = '';
 
-        window.location.href = "CRUD.html";
+        window.location.href = "CRUD/CRUD-main.html";
     });
 });
 
@@ -53,4 +53,4 @@ document.getElementById('close-login-modal').addEventListener('click', function 
 });
 document.getElementById('close-signup-modal').addEventListener('click', function () {
     document.getElementById('signup-modal').style.display = 'none';
-});
+}); 
