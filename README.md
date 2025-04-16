@@ -15,6 +15,8 @@ Contributors are expected to act in a collaborative manner to move the project f
 
 **This project has a [Code of Conduct](./CODE_OF_CONDUCT.md).**
 
+**This project is currently published on: [sale-check-b611b.web.app](https://sale-check-b611b.web.app/).**
+
 ## Table of Contents
 - [About](#about)
 - [Features](#features)
@@ -26,8 +28,6 @@ Contributors are expected to act in a collaborative manner to move the project f
 
 ## About
 SaleCheck provides a service that makes tracking price drops a breeze. Simply enter the product URL and price CSS Selector and set your target price. Our system will constantly check for any price changes and notify you the moment your item is on sale. You can save time and money by letting us handle the monitoring, so you can focus on enjoying your savings!
-
-Website: [sale-check-b611b.web.app](https://sale-check-b611b.web.app/)
 
 
 ## Features
