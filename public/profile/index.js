@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         // Create table header
                         const headerRow = document.createElement('tr');
-                        ['Image', 'Product Name', 'Expected Price', 'CSS Selector', 'URL'].forEach((headerText, index) => {
+                        ['Image', 'Product Name', 'Expected Price', 'CSS Selector', 'URL', ''].forEach((headerText, index) => {
                             const th = document.createElement('th');
                             th.textContent = headerText;
                             th.style.border = '1px solid #ddd';
@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Populate table rows with product data
                         querySnapshot.forEach((doc) => {
                             const product = doc.data();
+                            const productId = doc.id; // Get the document ID
                             const row = document.createElement('tr');
                             row.style.height = '100px';
 
@@ -119,6 +120,44 @@ document.addEventListener('DOMContentLoaded', () => {
                             urlCell.style.padding = '8px';
                             urlCell.style.width = '10%';
                             row.appendChild(urlCell);
+
+                            // Add Actions column (Trash Icon)
+                            const actionsCell = document.createElement('td');
+                            const trashIcon = document.createElement('button');
+                            trashIcon.innerHTML = '<span class="material-icons">delete</span>';
+                            trashIcon.style.border = 'none';
+                            trashIcon.style.background = 'none';
+                            trashIcon.style.cursor = 'pointer';
+                            trashIcon.title = 'Delete Product';
+                            trashIcon.addEventListener('click', () => {
+                                if (confirm(`Are you sure you want to delete ${product.productName}?`)) {
+                                    document.getElementById('loading-overlay').style.display = 'block';
+                                    document.getElementById('loading-spinner').style.display = 'block';
+
+                                    fetch('https://us-central1-sale-check-b611b.cloudfunctions.net/deleteProductToCheck', {
+                                        method: 'DELETE',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ data: { id: productId, }, }),
+                                    })
+                                        .then((response) => {
+                                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                                            return response.text();
+                                        })
+                                        .then((data) => {
+                                            console.log('Product deleted successfully:', data);
+                                            location.reload();
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error deleting product:', error);
+                                            alert('Failed to delete the product. Please try again.');
+                                        });
+                                }
+                            });
+                            actionsCell.appendChild(trashIcon);
+                            actionsCell.style.border = '1px solid #ddd';
+                            actionsCell.style.padding = '8px';
+                            actionsCell.style.textAlign = 'center';
+                            row.appendChild(actionsCell);
 
                             table.appendChild(row);
                         });

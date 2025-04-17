@@ -208,3 +208,8 @@ img[src="assets/favicon.png"] {
 #add-button:hover {
     background-color: darkorange;
 }
+
+.material-icons {
+    font-size: 24px;
+    color: #969696;
+}
