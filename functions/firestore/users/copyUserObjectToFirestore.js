@@ -14,6 +14,8 @@ exports.copyUserObjectToFirestore = functions.auth.user().onCreate( async (user)
         photoURL: user.photoURL ?? null,
         phoneNumber: user.phoneNumber ?? null,
         disabled: user.disabled ?? null,
+        disabled: user.firstName ?? null,
+        disabled: user.lastName ?? null,
     }
     
     try {
