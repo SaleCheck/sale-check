@@ -16,21 +16,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     auth.onAuthStateChanged((user) => {
         if (user) {
-            // User is signed in
-            const email = user.email;
-            const photoURL = user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/sale-check-b611b.appspot.com/o/users%2Favatar%2F__default__.png?alt=media&token=2f3d5dc7-bf5b-4b23-9511-996394b40275';
+            const userId = user.uid;
 
-            // Update the header
+            // Fetch user details from Firestore
+            db.collection('users').doc(userId).get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const userData = doc.data();
+                        const firstName = userData.firstName || 'User';
+                        const lastName = userData.lastName || '';
+
+                        // Update the welcome message
+                        const welcomeMessage = document.getElementById('welcome-message');
+                        welcomeMessage.textContent = `Welcome, ${firstName} ${lastName}`;
+                    } else {
+                        console.error('No such user document!');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching user details:', error);
+                });
+
+            const photoURL = user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/sale-check-b611b.appspot.com/o/users%2Favatar%2F__default__.png?alt=media&token=2f3d5dc7-bf5b-4b23-9511-996394b40275';
             const userHeader = document.getElementById('user-header');
-            const welcomeMessage = document.getElementById('welcome-message');
             const userAvatar = document.getElementById('user-avatar');
 
-            welcomeMessage.textContent = `Welcome, ${email}`;
             userAvatar.src = photoURL;
-
             userHeader.style.display = 'block';
 
-            const userId = user.uid;
             console.log(`User ID: ${userId}`);
 
             // Fetch products and display them in a table
