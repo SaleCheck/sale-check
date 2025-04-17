@@ -42,6 +42,38 @@ document.getElementById('login-submit').addEventListener('click', function (even
         });
 });
 
+document.getElementById('signup-submit').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    document.getElementById('loading-overlay').style.display = 'block';
+    document.getElementById('loading-spinner').style.display = 'block';
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('signup-password').value;
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            console.log("User signed up successfully:", userCredential.user);
+            alert("Sign up successful! You can now log in.");
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Error signing up:", errorCode, errorMessage);
+            alert(`Error: ${errorMessage}`);
+        })
+        .finally(() => {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('signup-modal').style.display = 'none';
+
+            document.getElementById('firstname').value = '';
+            document.getElementById('lastname').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('signup-password').value = '';
+        });
+});
+
 document.getElementById('login-btn').addEventListener('click', function () {
     document.getElementById('login-modal').style.display = 'block';
 });
@@ -53,4 +85,4 @@ document.getElementById('close-login-modal').addEventListener('click', function 
 });
 document.getElementById('close-signup-modal').addEventListener('click', function () {
     document.getElementById('signup-modal').style.display = 'none';
-}); 
+});
