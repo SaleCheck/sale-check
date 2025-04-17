@@ -14,32 +14,32 @@ console.log("Firebase Auth instance:", auth);
 
 document.getElementById('login-submit').addEventListener('click', function (event) {
     event.preventDefault(); // Prevent the default form submission i.e. automatic, immediate closing of form element
-    
+
     document.getElementById('loading-overlay').style.display = 'block';
     document.getElementById('loading-spinner').style.display = 'block';
-    
+
     const user = document.getElementById('user').value;
     const pwd = document.getElementById('pwd').value;
-    
-    auth.signInWithEmailAndPassword(user, pwd)
-    .then((userCredential) => {
-      console.log("Signed in successfully:", userCredential.user);
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error("Error signing in:", errorCode, errorMessage);
-    })
-    .finally(() => {
-        document.getElementById('loading-overlay').style.display = 'none';
-        document.getElementById('loading-spinner').style.display = 'none';
-        document.getElementById('login-modal').style.display = 'none';
-        
-        document.getElementById('user').value = '';
-        document.getElementById('pwd').value = '';
 
-        window.location.href = "profile/main.html";
-    });
+    auth.signInWithEmailAndPassword(user, pwd)
+        .then((userCredential) => {
+            console.log("Signed in successfully:", userCredential.user);
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error("Error signing in:", errorCode, errorMessage);
+        })
+        .finally(() => {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('login-modal').style.display = 'none';
+
+            document.getElementById('user').value = '';
+            document.getElementById('pwd').value = '';
+
+            window.location.href = "profile/main.html";
+        });
 });
 
 document.getElementById('login-btn').addEventListener('click', function () {
