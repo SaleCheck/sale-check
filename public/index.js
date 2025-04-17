@@ -65,7 +65,8 @@ document.getElementById('signup-submit').addEventListener('click', async functio
         try {
             await db.collection('users').doc(user.uid).update({
                 firstName: firstName,
-                lastName: lastName
+                lastName: lastName,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
             });
         } catch (error) {
             console.error("Error updating user profile:", error);
