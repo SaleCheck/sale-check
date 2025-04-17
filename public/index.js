@@ -69,6 +69,9 @@ document.getElementById('signup-submit').addEventListener('click', async functio
                 const photoURL = await storageRef.getDownloadURL();
                 await user.updateProfile({ photoURL });
 
+                const db = firebase.firestore();
+                await db.collection('users').doc(user.uid).update({ photoURL: photoURL });
+
             } catch (uploadError) {
                 console.error("Error uploading avatar:", uploadError);
 
