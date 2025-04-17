@@ -42,7 +42,7 @@ document.getElementById('login-submit').addEventListener('click', function (even
         });
 });
 
-document.getElementById('signup-submit').addEventListener('click', function (event) {
+document.getElementById('signup-submit').addEventListener('click', async function (event) {
     event.preventDefault(); // Prevent default form submission
 
     document.getElementById('loading-overlay').style.display = 'block';
@@ -50,28 +50,52 @@ document.getElementById('signup-submit').addEventListener('click', function (eve
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('signup-password').value;
+    const avatarFile = document.getElementById('user-avatar').files[0]; // Get the uploaded file
 
-    auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            console.log("User signed up successfully:", userCredential.user);
-            alert("Sign up successful! You can now log in.");
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.error("Error signing up:", errorCode, errorMessage);
-            alert(`Error: ${errorMessage}`);
-        })
-        .finally(() => {
-            document.getElementById('loading-overlay').style.display = 'none';
-            document.getElementById('loading-spinner').style.display = 'none';
-            document.getElementById('signup-modal').style.display = 'none';
+    try {
+        // Create user with email and password
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
 
-            document.getElementById('firstname').value = '';
-            document.getElementById('lastname').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('signup-password').value = '';
-        });
+        // Ensure the user is authenticated before uploading the avatar
+        await auth.currentUser.reload();
+
+        // Upload avatar to Firebase Storage
+        if (avatarFile) {
+            try {
+                const storageRef = firebase.storage().ref(`users/avatar/${user.uid}/${user.uid}.png`);
+                await storageRef.put(avatarFile);
+
+                const photoURL = await storageRef.getDownloadURL();
+                await user.updateProfile({ photoURL });
+
+            } catch (uploadError) {
+                console.error("Error uploading avatar:", uploadError);
+
+                await user.delete();
+                alert("Error uploading avatar. Please try signing up again.");
+
+                return;
+            }
+        }
+
+        alert("Sign up successful! You can now log in.");
+    } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error("Error signing up:", errorCode, errorMessage);
+        alert(`Error: ${errorMessage}`);
+    } finally {
+        document.getElementById('loading-overlay').style.display = 'none';
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('signup-modal').style.display = 'none';
+
+        document.getElementById('firstname').value = '';
+        document.getElementById('lastname').value = '';
+        document.getElementById('email').value = '';
+        document.getElementById('signup-password').value = '';
+        document.getElementById('user-avatar').value = ''; // Clear the file input
+    }
 });
 
 document.getElementById('login-btn').addEventListener('click', function () {
