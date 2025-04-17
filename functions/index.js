@@ -28,6 +28,8 @@ const copyUserObjectToFirestore = require('./firestore/users/copyUserObjectToFir
 const deleteUserObjectFromFirestore = require('./firestore/users/deleteUserObjectFromFirestore');
 const createUser = require('./auth/createUser');
 const getUser = require('./auth/getUser');
+const updateUser = require('./auth/updateUser');
+const deleteUser = require('./auth/deleteUser');
 
 exports.scrapeAndComparePricesOnRequest = scrapeAndComparePricesOnRequest;
 exports.scrapeAndComparePricesOnSchedule = scrapeAndComparePricesOnSchedule;
@@ -41,3 +43,5 @@ exports.copyUserObjectToFirestore = copyUserObjectToFirestore.copyUserObjectToFi
 exports.deleteUserObjectFromFirestore = deleteUserObjectFromFirestore.deleteUserObjectFromFirestore;
 exports.createUser = createUser.createUser;
 exports.getUser = getUser.getUser;
+exports.updateUser = updateUser.updateUser;
+exports.deleteUser = deleteUser.deleteUser;
