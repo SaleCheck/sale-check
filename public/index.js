@@ -10,7 +10,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
-console.log("Firebase Auth instance:", auth);
+const db = firebase.firestore();
 
 document.getElementById('login-submit').addEventListener('click', function (event) {
     event.preventDefault(); // Prevent the default form submission i.e. automatic, immediate closing of form element
@@ -49,8 +49,10 @@ document.getElementById('signup-submit').addEventListener('click', async functio
     document.getElementById('loading-spinner').style.display = 'block';
 
     const email = document.getElementById('email').value;
+    const firstName = document.getElementById('firstname').value;
+    const lastName = document.getElementById('lastname').value;
     const password = document.getElementById('signup-password').value;
-    const avatarFile = document.getElementById('user-avatar').files[0]; // Get the uploaded file
+    const avatarFile = document.getElementById('user-avatar').files[0]; 
 
     try {
         // Create user with email and password
@@ -60,7 +62,16 @@ document.getElementById('signup-submit').addEventListener('click', async functio
         // Ensure the user is authenticated before uploading the avatar
         await auth.currentUser.reload();
 
-        // Upload avatar to Firebase Storage
+        try {
+            await db.collection('users').doc(user.uid).update({
+                firstName: firstName,
+                lastName: lastName
+            });
+        } catch (error) {
+            console.error("Error updating user profile:", error);
+            return;
+        }
+
         if (avatarFile) {
             try {
                 const storageRef = firebase.storage().ref(`users/avatar/${user.uid}/${user.uid}.png`);
