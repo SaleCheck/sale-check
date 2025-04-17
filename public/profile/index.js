@@ -175,10 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('crud-form')?.addEventListener('submit', function (event) {
+    document.getElementById('crud-form')?.addEventListener('submit', async function (event) {
         event.preventDefault();
+        console.log('Form submitted');
 
-        // Show the loading overlay and spinner
         document.getElementById('loading-overlay').style.display = 'block';
         document.getElementById('loading-spinner').style.display = 'block';
 
@@ -186,46 +186,75 @@ document.addEventListener('DOMContentLoaded', () => {
         const expectedPrice = document.getElementById('expected-price').value;
         const currency = document.getElementById('currency').value;
         const productUrl = document.getElementById('product-url').value;
-        const emailForNotifications = document.getElementById('email-for-notifications').value.split(',');
         const cssSelector = document.getElementById('css-selector').value;
+        const productImage = document.getElementById('product-image').files[0];
+
+        // Get the logged-in user's UID
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            console.error('No user is logged in.');
+            alert('Error: No user is logged in. Please log in to continue.');
+            
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('loading-spinner').style.display = 'none';
+            return;
+        }
+
         const payload = {
             data: {
                 productName: productName,
                 expectedPrice: parseFloat(expectedPrice),
                 expectedPriceCurrency: currency,
                 url: productUrl,
-                emailNotification: emailForNotifications.map(email => email.trim()),
-                cssSelector: cssSelector
-            }
+                emailNotification: [user.email],
+                cssSelector: cssSelector,
+                user: user.uid,
+            },
         };
 
-        fetch('https://us-central1-sale-check-b611b.cloudfunctions.net/createProductToCheck', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                document.getElementById('message').innerHTML = '<p style="color: green;">Success! Your item has been added.</p>';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                document.getElementById('message').innerHTML = '<p style="color: red;">Error: Unable to add the item. Please try again.</p>';
-                if (error.response && error.response.data && error.response.data.message) {
-                    document.getElementById('message').innerHTML = `<p style="color: red;">Error: ${error.response.data.message}</p>`;
-                }
-            })
-            .finally(() => {
-                // Hide the loading overlay and spinner
-                document.getElementById('loading-overlay').style.display = 'none';
-                document.getElementById('loading-spinner').style.display = 'none';
+        try {
+            // Step 1: Add product using createProductToCheck
+            const response = await fetch('https://us-central1-sale-check-b611b.cloudfunctions.net/createProductToCheck', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
             });
 
-        //document.getElementById('crud-form').reset();
-        //document.getElementById('product-image').value = '';
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const productId = data.documentId; 
+            console.log('Product added successfully with ID:', productId);
+
+            if (productImage) {
+                // Step 2: Upload image to Firebase Storage
+                const storageRef = firebase.storage().ref(`productImages/${productId}/${productId}.png`);
+                await storageRef.put(productImage);
+
+                // Step 3: Get the public URL of the uploaded image
+                const imageUrl = await storageRef.getDownloadURL();
+
+                // Step 4: Update Firestore with the image URL
+                await firebase.firestore().collection('productsToCheck').doc(productId).update({ imageUrl });
+
+                console.log('Image uploaded and Firestore updated successfully.');
+            } else {
+                console.log('No image uploaded.');
+            }
+
+            alert('Success! Your item has been added.');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error: Unable to add the item. Please try again.');
+        } finally {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('loading-spinner').style.display = 'none';
+        }
     });
 
     document.getElementById('clear-button')?.addEventListener('click', function () {
@@ -256,5 +285,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('add-button')?.addEventListener('click', function () {
         window.location.href = "/profile/add.html";
+    });
+
+    document.getElementById('test-button')?.addEventListener('click', function () {
+        const productUrl = document.getElementById('product-url').value;
+        const cssSelector = document.getElementById('css-selector').value;
+
+        if (!productUrl || !cssSelector) {
+            alert('Please provide both Product URL and CSS Selector.');
+            return;
+        }
+
+        document.getElementById('loading-overlay').style.display = 'block';
+        document.getElementById('loading-spinner').style.display = 'block';
+
+        const payload = {
+            productUrl: productUrl,
+            cssSelector: cssSelector
+        };
+
+        fetch('https://us-central1-sale-check-b611b.cloudfunctions.net/testPuppeteer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(err => {
+                        throw new Error(err || `HTTP error! status: ${response.status}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert(`Response: ${data}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`Error: ${error.message || 'Unable to test the selector. Please try again.'}`);
+            })
+            .finally(() => {
+                document.getElementById('loading-overlay').style.display = 'none';
+                document.getElementById('loading-spinner').style.display = 'none';
+            });
     });
 });
