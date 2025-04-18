@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             alert('Success! Your item has been added.');
+            window.location.href = '/profile/main.html';
         } catch (error) {
             console.error('Error:', error);
             alert('Error: Unable to add the item. Please try again.');
