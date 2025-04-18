@@ -134,8 +134,22 @@ document.addEventListener('DOMContentLoaded', () => {
                             urlCell.style.width = '10%';
                             row.appendChild(urlCell);
 
-                            // Add Actions column (Trash Icon)
+                            // Add Actions column (Edit and Trash Icons)
                             const actionsCell = document.createElement('td');
+
+                            // Edit Button
+                            const editButton = document.createElement('button');
+                            editButton.innerHTML = '<span class="material-icons">edit</span>';
+                            editButton.style.border = 'none';
+                            editButton.style.background = 'none';
+                            editButton.style.cursor = 'pointer';
+                            editButton.title = 'Edit Product';
+                            editButton.addEventListener('click', () => {
+                                window.location.href = `/profile/edit.html?productId=${productId}`;
+                            });
+                            actionsCell.appendChild(editButton);
+
+                            // Trash Icon (Delete)
                             const trashIcon = document.createElement('button');
                             trashIcon.innerHTML = '<span class="material-icons">delete</span>';
                             trashIcon.style.border = 'none';
@@ -167,6 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 }
                             });
                             actionsCell.appendChild(trashIcon);
+
                             actionsCell.style.border = '1px solid #ddd';
                             actionsCell.style.padding = '8px';
                             actionsCell.style.textAlign = 'center';
