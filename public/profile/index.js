@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`User ID: ${userId}`);
 
             // Fetch products and display them in a table
-            if (window.location.pathname === '/profile/main.html') {
+            if (window.location.pathname === '/profile/index.html') {
                 db.collection('productsToCheck')
                     .where('user', '==', userId)
                     .get()

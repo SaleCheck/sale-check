@@ -38,7 +38,7 @@ document.getElementById('login-submit').addEventListener('click', function (even
             document.getElementById('user').value = '';
             document.getElementById('pwd').value = '';
 
-            window.location.href = "profile/main.html";
+            window.location.href = "profile/index.html";
         });
 });
 

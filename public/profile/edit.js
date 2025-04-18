@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!productId) {
         alert('No product ID provided.');
-        window.location.href = '/profile/main.html';
+        window.location.href = '/profile/index.html';
         return;
     }
 
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('Error fetching product:', error);
         alert('Failed to load product details. Please try again.');
-        window.location.href = '/profile/main.html';
+        window.location.href = '/profile/index.html';
     } finally {
         document.getElementById('loading-overlay').style.display = 'none';
         document.getElementById('loading-spinner').style.display = 'none';
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (!response.ok) throw new Error(`Failed to update product: ${response.statusText}`);
             alert('Product updated successfully!');
-            window.location.href = '/profile/main.html';
+            window.location.href = '/profile/index.html';
         } catch (error) {
             console.error('Error updating product:', error);
             alert('Failed to update product. Please try again.');
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 .then((data) => {
                     console.log('Product deleted successfully:', data);
                     alert('Product deleted successfully.');
-                    window.location.href = '/profile/main.html';
+                    window.location.href = '/profile/index.html';
                 })
                 .catch((error) => {
                     console.error('Error deleting product:', error);
