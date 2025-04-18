@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         measurementId: "G-743W5CC4YL"
     };
     firebase.initializeApp(firebaseConfig);
+    
+    const auth = firebase.auth();
     const db = firebase.firestore();
 
-    const auth = firebase.auth();
     auth.onAuthStateChanged((user) => {
         if (user) {
             const userId = user.uid;
