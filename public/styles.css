@@ -71,6 +71,26 @@ button.clear-button:hover {
     /* Darker gray on hover */
 }
 
+/* Delete button styling */
+button.delete-button {
+    padding: 10px 20px;
+    background-color: #f44336; /* Red color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+    outline: none; /* Remove blue outline */
+}
+
+button.delete-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+button.delete-button:focus {
+    outline: none; /* Remove focus outline */
+}
+
 /* Introduction text styling */
 .intro-text {
     font-style: italic;

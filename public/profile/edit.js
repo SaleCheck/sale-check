@@ -124,4 +124,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Failed to update product. Please try again.');
         }
     });
+
+    document.getElementById('delete-button')?.addEventListener('click', function () {
+        if (confirm('Are you sure you want to delete this product?')) {
+            document.getElementById('loading-overlay').style.display = 'block';
+            document.getElementById('loading-spinner').style.display = 'block';
+
+            fetch('https://us-central1-sale-check-b611b.cloudfunctions.net/deleteProductToCheck', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: { id: productId } }),
+            })
+                .then((response) => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.text();
+                })
+                .then((data) => {
+                    console.log('Product deleted successfully:', data);
+                    alert('Product deleted successfully.');
+                    window.location.href = '/profile/main.html';
+                })
+                .catch((error) => {
+                    console.error('Error deleting product:', error);
+                    alert('Failed to delete the product. Please try again.');
+                })
+                .finally(() => {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    document.getElementById('loading-spinner').style.display = 'none';
+                });
+        }
+    });
 });
