@@ -125,3 +125,35 @@ document.getElementById('close-login-modal').addEventListener('click', function 
 document.getElementById('close-signup-modal').addEventListener('click', function () {
     document.getElementById('signup-modal').style.display = 'none';
 });
+
+// Show the Reset Password Modal
+document.getElementById('forgot-password-link').addEventListener('click', function () {
+    document.getElementById('reset-password-modal').style.display = 'block';
+    document.getElementById('login-modal').style.display = 'none';
+});
+
+// Close the Reset Password Modal
+document.getElementById('close-reset-password-modal').addEventListener('click', function () {
+    document.getElementById('reset-password-modal').style.display = 'none';
+});
+
+// Handle Password Reset
+document.getElementById('reset-password-submit').addEventListener('click', function () {
+    const email = document.getElementById('reset-email').value;
+
+    if (!email) {
+        alert("Please enter your email address.");
+        return;
+    }
+
+    auth.sendPasswordResetEmail(email)
+        .then(() => {
+            alert("Password reset email sent. Please check your inbox.");
+            document.getElementById('reset-password-modal').style.display = 'none';
+            document.getElementById('reset-email').value = ''; // Clear the input field
+        })
+        .catch((error) => {
+            console.error("Error sending password reset email:", error);
+            alert(`Error: ${error.message}`);
+        });
+});

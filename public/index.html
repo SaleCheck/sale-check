@@ -48,7 +48,6 @@
           style="width: 100%; padding: 10px;"><br>
         <input type="password" id="pwd" name="pwd" placeholder="Password" required
           style="width: 100%; padding: 10px;"><br>
-
         <div style="margin-top: 35px;">
           <div>
             <button type="submit" id="login-submit"
@@ -57,6 +56,10 @@
               style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancel</button>
           </div>
         </div>
+        <!-- Add "Forgot Password" link in the Login Modal -->
+        <p style="text-align: center; margin-top: 10px;">
+          <a href="#" id="forgot-password-link" style="color: #008CBA; text-decoration: none;">Forgot Password?</a>
+        </p>
       </form>
     </div>
   </div>
@@ -80,6 +83,27 @@
             <button type="submit" id="signup-submit"
               style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
             <button type="button" id="close-signup-modal"
+              style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Password Reset Modal -->
+  <div id="reset-password-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div
+      style="background-color: white; width: 300px; margin: 100px auto; padding: 20px; border-radius: 10px; text-align: left;">
+      <h2 style="text-align: center;">Reset Password</h2>
+      <form>
+        <input type="email" id="reset-email" name="reset-email" placeholder="Enter your email" required
+          style="width: 100%; padding: 10px;"><br>
+        <div style="margin-top: 35px;">
+          <div>
+            <button type="button" id="reset-password-submit"
+              style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+            <button type="button" id="close-reset-password-modal"
               style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancel</button>
           </div>
         </div>
