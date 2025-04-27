@@ -1,8 +1,10 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { getFirestore } = require("firebase-admin/firestore");
+const { getStorage } = require("firebase-admin/storage");
 const cors = require('cors')({ origin: true });
 
 const db = getFirestore();
+const storage = getStorage();
 
 exports.deleteProductToCheck = onRequest(async (req, res) => {
     cors(req, res, async () => {
@@ -23,7 +25,14 @@ exports.deleteProductToCheck = onRequest(async (req, res) => {
                 return res.status(404).json({ success: false, error: "Document not found." });
             } else {
                 await db.recursiveDelete(docRef);
-                return res.status(200).send(`Document ${productId} and all subcollections deleted successfully.`);
+
+                const bucket = storage.bucket();
+                const [files] = await bucket.getFiles({ prefix: `productImages/${productId}/` });
+                if (files.length > 0) {
+                    await Promise.all(files.map(file => file.delete()));
+                }
+
+                return res.status(200).send(`Document ${productId} and all associated files in Storage deleted successfully.`);
             }
         } catch (error) {
             console.error("Error deleting product:", error);

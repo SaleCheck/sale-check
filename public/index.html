@@ -10,7 +10,6 @@
 </head>
 
 <body style="text-align: center;">
-
   <!-- Favicon Image -->
   <img src="assets/favicon.png" alt="SaleCheck Favicon" style="height: 250px; display: block; margin: 0 auto;">
 
@@ -26,40 +25,91 @@
     Let us do the hard work of monitoring prices, so you can enjoy your savings effortlessly!
   </p>
 
-  <!-- Form -->
-  <form id="crud-form">
-    <label for="product-name">Product Name:</label>
-    <input type="text" id="product-name" required>
+  <!-- Login and Sign Up Buttons -->
+  <div style="margin-top: 100px;">
+    <button id="login-btn"
+      style="background-color: #4CAF50; color: white; padding: 15px 32px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin: 10px;">
+      Login
+    </button>
+    <button id="signup-btn"
+      style="background-color: #008CBA; color: white; padding: 15px 32px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin: 10px;">
+      Sign Up
+    </button>
+  </div>
 
-    <div class="price-container">
-      <div class="price-group">
-        <label for="expected-price">Expected Price:</label>
-        <input type="number" id="expected-price" required>
-      </div>
-      <div class="price-group">
-        <label for="currency">Currency:</label>
-        <input type="text" id="currency" required>
-      </div>
+  <!-- Login Modal -->
+  <div id="login-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div
+      style="background-color: white; width: 300px; margin: 100px auto; padding: 20px; border-radius: 10px; text-align: left;">
+      <h2 style="text-align: center;">Login</h2>
+      <form>
+        <input type="text" id="user" name="user" placeholder="Username" required
+          style="width: 100%; padding: 10px;"><br>
+        <input type="password" id="pwd" name="pwd" placeholder="Password" required
+          style="width: 100%; padding: 10px;"><br>
+        <div style="margin-top: 35px;">
+          <div>
+            <button type="submit" id="login-submit"
+              style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+            <button type="button" id="close-login-modal"
+              style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancel</button>
+          </div>
+        </div>
+        <!-- Add "Forgot Password" link in the Login Modal -->
+        <p style="text-align: center; margin-top: 10px;">
+          <a href="#" id="forgot-password-link" style="color: #008CBA; text-decoration: none;">Forgot Password?</a>
+        </p>
+      </form>
     </div>
+  </div>
 
-    <label for="product-url">Product URL:</label>
-    <input type="text" id="product-url" required>
+  <!-- Sign Up Modal -->
+  <div id="signup-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div
+      style="background-color: white; width: 300px; margin: 100px auto; padding: 20px; border-radius: 10px; text-align: left;">
+      <h2 style="text-align: center;">Sign Up</h2>
+      <form id="signup-form">
+        <input type="text" id="firstname" name="firstname" placeholder="First Name" style="width: 100%; padding: 10px;"><br>
+        <input type="text" id="lastname" name="lastname" placeholder="Last Name" style="width: 100%; padding: 10px;"><br>
+        <input type="email" id="email" name="email" placeholder="Email" style="width: 100%; padding: 10px;"><br>
+        <input type="password" id="signup-password" name="signup-password" placeholder="Password"
+          style="width: 100%; padding: 10px;"><br>
+          <input type="file" id="user-avatar" accept="image/*">
 
-    <label for="email-for-notifications">Email for Notifications:</label>
-    <input type="text" id="email-for-notifications" required>
-
-    <label for="css-selector" class="label-container">CSS Selector:</label>
-    <input type="text" id="css-selector" required>    
-    <button type="button" id="test-button" class="test-button">Test Selector</button>
-
-    <label for="product-image">Attach Image (optional):</label>
-    <input type="file" id="product-image" accept="image/*">
-
-    <div class="button-container">
-      <button type="submit" class="submit-button">Add Item</button>
-      <button type="button" id="clear-button" class="clear-button">Clear Selections</button>
+        <div style="margin-top: 35px;">
+          <div>
+            <button type="submit" id="signup-submit"
+              style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+            <button type="button" id="close-signup-modal"
+              style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancel</button>
+          </div>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
+
+  <!-- Password Reset Modal -->
+  <div id="reset-password-modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div
+      style="background-color: white; width: 300px; margin: 100px auto; padding: 20px; border-radius: 10px; text-align: left;">
+      <h2 style="text-align: center;">Reset Password</h2>
+      <form>
+        <input type="email" id="reset-email" name="reset-email" placeholder="Enter your email" required
+          style="width: 100%; padding: 10px;"><br>
+        <div style="margin-top: 35px;">
+          <div>
+            <button type="button" id="reset-password-submit"
+              style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
+            <button type="button" id="close-reset-password-modal"
+              style="background-color: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Loading Spinner and Overlay -->
   <div id="loading-overlay" style="display: none;"></div>
@@ -73,7 +123,14 @@
   <ul id="item-list" style="list-style-type: none; padding: 0; margin: 0; display: inline-block; text-align: left;">
   </ul>
 
-  <script src="script.js"></script>
+  <!-- Load Firebase SDKs from reserved URLs. See https://firebase.google.com/docs/hosting/reserved-urls. -->
+  <script src="/__/firebase/8.10.1/firebase-app.js"></script>
+  <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
+  <script src="/__/firebase/8.10.1/firebase-storage.js"></script>
+  <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
+
+  <!-- Load custom scripts -->
+  <script src="index.js"></script>
 </body>
 
 </html>

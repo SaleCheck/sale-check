@@ -1,0 +1,42 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaleCheck Configuration</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="icon" href="../assets/favicon.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body style="text-align: center;">
+    <!-- User Header -->
+    <div id="user-header" style="display: none; margin-bottom: 20px;">
+        <h2 id="welcome-message"></h2>
+        <img id="user-avatar" src="" alt="User Avatar" style="border-radius: 50%; width: 50px; height: 50px;">
+        <div style="margin-top: 10px;">
+            <button id="sign-out-button" class="action-button">Sign Out</button>
+        </div>
+    </div>
+
+    <div>
+        <button id="add-button" class="action-button" title="Add Product">+</button>
+    </div>
+
+
+    <!-- Loading Spinner and Overlay -->
+    <div id="loading-overlay" style="display: none;"></div>
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Load Firebase SDKs from reserved URLs. See https://firebase.google.com/docs/hosting/reserved-urls. -->
+    <script src="/__/firebase/8.10.1/firebase-app.js"></script>
+    <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
+    <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Load custom scripts -->
+    <script src="./index.js"></script>
+</body>
+
+</html>
