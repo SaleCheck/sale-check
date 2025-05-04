@@ -46,10 +46,22 @@ jobs:
           echo "Listing files in the directory:"
           ls -la
 
-          echo "Running npm audit and saving output to audit-report.json..."
+          npm audit
+          echo "npm audit successful. "
+
+          npm audit --json
+          echo "npm audit --json successful."
+
+          echo "Current directory: $(pwd)"
+          echo "Listing files in the directory:"
+          ls -la
 
           npm audit --json > audit-report.json
           echo "npm audit completed. Parsing audit-report.json..."
+
+          echo "Current directory: $(pwd)"
+          echo "Listing files in the directory:"
+          ls -la
 
           audit_output=$(npm audit)
           echo "Audit output captured."
