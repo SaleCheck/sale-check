@@ -24,7 +24,7 @@
     "firebase-functions": "^5.0.0",
     "is-svg": "^4.2.2",
     "kind-of": "^6.0.3",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.19",
     "minimist": "^1.2.2",
     "nodemailer": "^6.9.14",
     "puppeteer": "^24.6.1",

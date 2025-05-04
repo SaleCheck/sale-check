@@ -47,20 +47,20 @@ jobs:
             non_severe_packages=$(jq -r '.vulnerabilities | to_entries[] | select(.value.severity != "critical" and .value.severity != "high") | .key' audit-report.json | paste -sd "," -)
 
             if [ "$critical_count" -gt 0 ] && [ "$high_count" -gt 0 ]; then
-              echo "::error:: Critical vulnerabilities found: $critical_count. %n Critical packages: $critical_packages."
-              echo "::error:: High vulnerabilities found: $high_count. %n High severity packages: $high_packages."
+              echo "::error:: Critical vulnerabilities found: $critical_count. Critical packages: $critical_packages."
+              echo "::error:: High vulnerabilities found: $high_count. High severity packages: $high_packages."
               echo "$audit_output"
               exit 1
             elif [ "$critical_count" -gt 0 ]; then
-              echo "::error:: Critical vulnerabilities found: $critical_count. %n Critical packages: $critical_packages."
+              echo "::error:: Critical vulnerabilities found: $critical_count. Critical packages: $critical_packages."
               echo "$audit_output"
               exit 1
             elif [ "$high_count" -gt 0 ]; then
-              echo "::error:: High vulnerabilities found: $high_count. %n High severity packages: $high_packages."
+              echo "::error:: High vulnerabilities found: $high_count. High severity packages: $high_packages."
               echo "$audit_output"
               exit 1
             elif [ "$critical_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$vuln_count" -gt 0 ]; then
-              echo "::warning:: Non-severe vulnerabilities found: $vuln_count. %n Non-severe packages: $non_severe_packages."
+              echo "::warning:: Non-severe vulnerabilities found: $vuln_count. Non-severe packages: $non_severe_packages."
               echo "$audit_output"
               exit 0
             elif [ "$vuln_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$critical_count" -eq 0 ]; then
