@@ -7,6 +7,9 @@ on:
         description: "The directory to run npm audit in"
         required: true
         type: string
+  pull_request:
+    branches:
+      - main
 
 jobs: 
   npm-audit:
@@ -22,13 +25,13 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd ${{ inputs.working-directory }}
+          cd ${{ github.event.inputs.working-directory || '.' }}
           npm install
           sudo apt-get install -y jq  #install jq for JSON parsing
 
       - name: Run `npm audit`
         run: |
-          cd ${{ inputs.working-directory }}
+          cd ${{ github.event.inputs.working-directory || '.' }}
           npm audit --json > audit-report.json || true
           audit_output=$(npm audit) || true
 
@@ -84,4 +87,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: audit-report
-          path: ${{ inputs.working-directory }}/audit-report.json
+          path: ${{ github.event.inputs.working-directory || '.' }}/audit-report.json
