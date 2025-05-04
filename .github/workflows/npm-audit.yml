@@ -24,9 +24,7 @@ jobs:
         run: |
           cd ${{ inputs.working-directory }}
           npm install
-
-      - name: Install `jq`
-        run: sudo apt-get install -y jq
+          sudo apt-get install -y jq
 
       - name: Run `npm audit`
         run: |
