@@ -33,35 +33,45 @@ jobs:
           cd ${{ inputs.working-directory }}
           npm audit --json > audit-report.json || true
           audit_output=$(npm audit) || true
-          
-          critical_count=$(jq '.metadata.vulnerabilities.critical' audit-report.json)
-          high_count=$(jq '.metadata.vulnerabilities.high' audit-report.json)
-          vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
 
-          if [ "$critical_count" -gt 0 ] && [ "$high_count" -gt 0 ]; then
-            echo "::error:: Critical vulnerabilities found: $critical_count"
-            echo "::error:: High vulnerabilities found: $high_count"
-            echo "$audit_output"
-            exit 1
-          elif [ "$critical_count" -gt 0 ]; then
-            echo "::error:: Critical vulnerabilities found: $critical_count"
-            echo "$audit_output"
-            exit 1
-          elif [ "$high_count" -gt 0 ]; then
-            echo "::error:: High vulnerabilities found: $high_count"
-            echo "$audit_output"
-            # exit 1
-          elif [ "$critical_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$vuln_count" -gt 0 ]; then
-            echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
-            echo "$audit_output"
-            exit 0
-          elif [ "$vuln_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$critical_count" -eq 0 ]; then
-            echo "No vulnerabilities found."
-            exit 0
+          if [ -f "audit-report.json" ]; then
+            echo "Printing Working Directory:"
+            pwd
+            echo "Listing all files in printed working directory:"
+            ls -al
+
+            critical_count=$(jq '.metadata.vulnerabilities.critical' audit-report.json)
+            high_count=$(jq '.metadata.vulnerabilities.high' audit-report.json)
+            vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
+
+            if [ "$critical_count" -gt 0 ] && [ "$high_count" -gt 0 ]; then
+              echo "::error:: Critical vulnerabilities found: $critical_count"
+              echo "::error:: High vulnerabilities found: $high_count"
+              echo "$audit_output"
+              exit 1
+            elif [ "$critical_count" -gt 0 ]; then
+              echo "::error:: Critical vulnerabilities found: $critical_count"
+              echo "$audit_output"
+              exit 1
+            elif [ "$high_count" -gt 0 ]; then
+              echo "::error:: High vulnerabilities found: $high_count"
+              echo "$audit_output"
+              # exit 1
+            elif [ "$critical_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$vuln_count" -gt 0 ]; then
+              echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
+              echo "$audit_output"
+              exit 0
+            elif [ "$vuln_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$critical_count" -eq 0 ]; then
+              echo "No vulnerabilities found."
+              exit 0
+            else
+              echo "::error:: Security Scan Failed!"
+              echo "Terminating the workflow due to unknown state of security."
+              echo "$audit_output"
+              exit 1
+            fi
           else
-            echo "::error:: Security Scan Failed with Unknown Reason!"
-            echo "Terminating the workflow due to unknown state of security."
-            echo "$audit_output"
+            echo "::error:: audit-report.json not found. Security scan terminated."
             exit 1
           fi
 
