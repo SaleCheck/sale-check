@@ -5,6 +5,11 @@ on:
     branches:
       - main  
 jobs:
+  npm-audit:
+    uses: ./.github/workflows/CI/npm-audit.yml
+    with:
+      working-directory: "functions"
+
   firebase_functions_deploy:
     runs-on: ubuntu-latest  
     steps:

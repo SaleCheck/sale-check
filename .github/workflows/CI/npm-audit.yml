@@ -1,0 +1,48 @@
+name: npm-audit
+
+on:
+  workflow_call: 
+    inputs:
+      working-directory:
+        description: "The directory to run npm audit in"
+        required: false
+        default: "."
+
+jobs: 
+  npm-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd ${{ inputs.working-directory }}
+          npm install
+
+      - name: Run npm audit
+        run: |
+          cd ${{ inputs.working-directory }}
+          npm audit --json > audit-report.json
+          audit_output=$(npm audit)
+          
+          severe_count=$(jq '.metadata.vulnerabilities.critical + .metadata.vulnerabilities.high' audit-report.json)
+          if [ "$severe_count" -gt 0 ]; then
+            echo "::error:: Severe vulnerabilities found: $severe_count"
+            echo "$audit_output"
+            exit 1
+          fi
+          
+          vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
+          if [ "$vuln_count" -gt 0 ]; then
+            echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
+            echo "$audit_output"
+            exit 0
+          fi
+          
+          echo "No vulnerabilities found."
