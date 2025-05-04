@@ -28,6 +28,11 @@ jobs:
         run: |
           echo "Changing directory to ${{ inputs.working-directory }}"
           cd ${{ inputs.working-directory }}
+          # Debugging: Check if the directory exists
+          echo "Current directory: $(pwd)"
+          echo "Listing files in the directory:"
+          ls -la
+
           echo "Running npm install..."
           npm install
           echo "npm install completed."
@@ -36,7 +41,13 @@ jobs:
         run: |
           echo "Changing directory to ${{ inputs.working-directory }}"
           cd ${{ inputs.working-directory }}
+          # Debugging: Check if the directory exists
+          echo "Current directory: $(pwd)"
+          echo "Listing files in the directory:"
+          ls -la
+
           echo "Running npm audit and saving output to audit-report.json..."
+
           npm audit --json > audit-report.json
           echo "npm audit completed. Parsing audit-report.json..."
 
