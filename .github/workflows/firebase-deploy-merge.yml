@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main  
+  pull_request:
+    branches-ignore:
+      - main
+      
 jobs:
   npm-audit:
     uses: ./.github/workflows/npm-audit.yml
