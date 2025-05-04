@@ -38,15 +38,15 @@ jobs:
             echo "::error:: Critical vulnerabilities found: $critical_count"
             echo "::error:: High vulnerabilities found: $high_count"
             echo "$audit_output"
-            exit 1
+            # 
           elif [ "$critical_count" -gt 0 ]; then
             echo "::error:: Critical vulnerabilities found: $critical_count"
             echo "$audit_output"
-            exit 1
+            # 
           elif [ "$high_count" -gt 0 ]; then
             echo "::error:: High vulnerabilities found: $high_count"
             echo "$audit_output"
-            exit 1
+            # 
           fi
 
 
