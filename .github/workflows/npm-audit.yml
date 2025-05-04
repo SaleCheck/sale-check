@@ -14,86 +14,47 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: (Debug) Checkout completed
-        run: echo "Checkout step completed."
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22'
-      - name: (Debug) Node.js setup completed
-        run: echo "Node.js setup completed with version 18."
 
       - name: Install dependencies
         run: |
-          echo "Changing directory to ${{ inputs.working-directory }}"
           cd ${{ inputs.working-directory }}
-          # Debugging: Check if the directory exists
-          echo "Current directory: $(pwd)"
-          echo "Listing files in the directory:"
-          ls -la
-
-          echo "Running npm install..."
           npm install
-          echo "npm install completed."
 
       - name: Run npm audit
         run: |
-          echo "Changing directory to ${{ inputs.working-directory }}"
           cd ${{ inputs.working-directory }}
-          # Debugging: Check if the directory exists
-          echo "Current directory: $(pwd)"
-          echo "Listing files in the directory:"
-          ls -la
-
-          npm audit
-          echo "npm audit successful. "
-
-          npm audit --json
-          echo "npm audit --json successful."
-
-          echo "Current directory: $(pwd)"
-          echo "Listing files in the directory:"
-          ls -la
-
           npm audit --json > audit-report.json
-          echo "npm audit completed. Parsing audit-report.json..."
-
-          echo "Current directory: $(pwd)"
-          echo "Listing files in the directory:"
-          ls -la
-
           audit_output=$(npm audit)
-          echo "Audit output captured."
-
+          
           critical_count=$(jq '.metadata.vulnerabilities.critical' audit-report.json)
-          echo "Critical vulnerabilities count: $critical_count"
-
           high_count=$(jq '.metadata.vulnerabilities.high' audit-report.json)
-          echo "High vulnerabilities count: $high_count"
 
-          if [ "$critical_count" -gt 0 ]; then
+          if [ "$critical_count" -gt 0 ] && [ "$high_count" -gt 0 ]; then
             echo "::error:: Critical vulnerabilities found: $critical_count"
-          fi
-
-          if [ "$high_count" -gt 0 ]; then
             echo "::error:: High vulnerabilities found: $high_count"
+            echo "$audit_output"
+            exit 1
+          elif [ "$critical_count" -gt 0 ]; then
+            echo "::error:: Critical vulnerabilities found: $critical_count"
+            echo "$audit_output"
+            exit 1
+          elif [ "$high_count" -gt 0 ]; then
+            echo "::error:: High vulnerabilities found: $high_count"
+            echo "$audit_output"
+            exit 1
           fi
 
-          if [ "$critical_count" -gt 0 ] || [ "$high_count" -gt 0 ]; then
-            echo "Critical or high vulnerabilities found. Outputting audit details..."
-            echo "$audit_output"
-            # exit 1
-          fi
 
           vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
-          echo "Total vulnerabilities count: $vuln_count"
-
           if [ "$vuln_count" -gt 0 ]; then
             echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
-            echo "Outputting audit details..."
             echo "$audit_output"
             exit 0
           fi
           
-          echo "No vulnerabilities found. Process completed successfully."
+          echo "No vulnerabilities found."
