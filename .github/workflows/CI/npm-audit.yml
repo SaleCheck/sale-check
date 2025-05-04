@@ -31,13 +31,25 @@ jobs:
           npm audit --json > audit-report.json
           audit_output=$(npm audit)
           
-          severe_count=$(jq '.metadata.vulnerabilities.critical + .metadata.vulnerabilities.high' audit-report.json)
-          if [ "$severe_count" -gt 0 ]; then
-            echo "::error:: Severe vulnerabilities found: $severe_count"
+          critical_count=$(jq '.metadata.vulnerabilities.critical' audit-report.json)
+          high_count=$(jq '.metadata.vulnerabilities.high' audit-report.json)
+
+          if [ "$critical_count" -gt 0 ] && [ "$high_count" -gt 0 ]; then
+            echo "::error:: Critical vulnerabilities found: $critical_count"
+            echo "::error:: High vulnerabilities found: $high_count"
+            echo "$audit_output"
+            exit 1
+          elif [ "$critical_count" -gt 0 ]; then
+            echo "::error:: Critical vulnerabilities found: $critical_count"
+            echo "$audit_output"
+            exit 1
+          elif [ "$high_count" -gt 0 ]; then
+            echo "::error:: High vulnerabilities found: $high_count"
             echo "$audit_output"
             exit 1
           fi
-          
+
+
           vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
           if [ "$vuln_count" -gt 0 ]; then
             echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
