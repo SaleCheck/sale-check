@@ -62,4 +62,10 @@ jobs:
             # exit 1
           fi
 
-          echo "Security scan complete."
+          echo "::notice:: Security scan complete."
+
+      - name: Upload Audit Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: audit-report
+          path: ${{ inputs.working-directory }}/audit-report.json
