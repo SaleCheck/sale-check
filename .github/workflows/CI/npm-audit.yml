@@ -5,8 +5,8 @@ on:
     inputs:
       working-directory:
         description: "The directory to run npm audit in"
-        required: true
-        type: string
+        required: false
+        default: "."
 
 jobs: 
   npm-audit:
