@@ -25,13 +25,13 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd ${{ inputs.working-directory }}
+          cd ${{ inputs.working-directory || 'functions' }}
           npm install
           sudo apt-get install -y jq  #install jq for JSON parsing
 
       - name: Run `npm audit`
         run: |
-          cd ${{ inputs.working-directory }}
+          cd ${{ inputs.working-directory || 'functions'}}
           npm audit --json > audit-report.json || true
           audit_output=$(npm audit) || true
 
@@ -87,4 +87,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: audit-report
-          path: ${{ inputs.working-directory }}/audit-report.json
+          path: ${{ inputs.working-directory || 'functions' }}/audit-report.json
