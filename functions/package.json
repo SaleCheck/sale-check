@@ -20,6 +20,7 @@
     "firebase": "^11.4.0",
     "firebase-admin": "^12.1.0",
     "firebase-functions": "^5.0.0",
+    "lodash": "^4.17.19",
     "nodemailer": "^6.9.14",
     "puppeteer": "^24.6.1"
   },
