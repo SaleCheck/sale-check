@@ -16,13 +16,19 @@
   "main": "index.js",
   "dependencies": {
     "@google-cloud/scheduler": "^4.3.0",
+    "ansi-regex": "^5.0.1",
     "cors": "^2.8.5",
+    "debug": "^2.6.9",
     "firebase": "^11.4.0",
     "firebase-admin": "^12.1.0",
     "firebase-functions": "^5.0.0",
-    "lodash": "^4.17.19",
+    "is-svg": "^4.2.2",
+    "kind-of": "^6.0.3",
+    "lodash": "^4.17.20",
+    "minimist": "^1.2.2",
     "nodemailer": "^6.9.14",
-    "puppeteer": "^24.6.1"
+    "puppeteer": "^24.6.1",
+    "seajs": "^2.2.1"
   },
   "devDependencies": {
     "eslint": "^8.15.0",
