@@ -78,7 +78,7 @@ jobs:
           echo "::notice:: Security scan complete."
 
       - name: Upload Audit Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: audit-report
           path: ${{ inputs.working-directory }}/audit-report.json
