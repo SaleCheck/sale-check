@@ -54,7 +54,7 @@ jobs:
             elif [ "$high_count" -gt 0 ]; then
               echo "::error:: High vulnerabilities found: $high_count"
               echo "$audit_output"
-              # exit 1
+              exit 1
             elif [ "$critical_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$vuln_count" -gt 0 ]; then
               echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
               echo "$audit_output"
