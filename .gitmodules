@@ -1,0 +1,3 @@
+[submodule "wiki-internal"]
+	path = wiki-internal
+	url = https://github.com/SaleCheck/wiki-internal
