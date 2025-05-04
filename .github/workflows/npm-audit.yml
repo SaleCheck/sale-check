@@ -28,8 +28,8 @@ jobs:
       - name: Run npm audit
         run: |
           cd ${{ inputs.working-directory }}
-          npm audit --json > audit-report.json
-          audit_output=$(npm audit)
+          npm audit --json > audit-report.json || true
+          audit_output=$(npm audit) || true
           
           critical_count=$(jq '.metadata.vulnerabilities.critical' audit-report.json)
           high_count=$(jq '.metadata.vulnerabilities.high' audit-report.json)
