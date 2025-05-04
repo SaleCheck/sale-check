@@ -28,7 +28,8 @@
     "minimist": "^1.2.2",
     "nodemailer": "^6.9.14",
     "puppeteer": "^24.6.1",
-    "seajs": "^2.2.1"
+    "seajs": "^2.2.1",
+    "utils-extend": "^1.0.8"
   },
   "devDependencies": {
     "eslint": "^8.15.0",
