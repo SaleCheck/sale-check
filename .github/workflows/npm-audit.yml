@@ -33,28 +33,33 @@ jobs:
           
           critical_count=$(jq '.metadata.vulnerabilities.critical' audit-report.json)
           high_count=$(jq '.metadata.vulnerabilities.high' audit-report.json)
+          vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
 
           if [ "$critical_count" -gt 0 ] && [ "$high_count" -gt 0 ]; then
             echo "::error:: Critical vulnerabilities found: $critical_count"
             echo "::error:: High vulnerabilities found: $high_count"
             echo "$audit_output"
-            # 
+            # exit 1
           elif [ "$critical_count" -gt 0 ]; then
             echo "::error:: Critical vulnerabilities found: $critical_count"
             echo "$audit_output"
-            # 
+            # exit 1
           elif [ "$high_count" -gt 0 ]; then
             echo "::error:: High vulnerabilities found: $high_count"
             echo "$audit_output"
-            # 
-          fi
-
-
-          vuln_count=$(jq '.metadata.vulnerabilities.total' audit-report.json)
-          if [ "$vuln_count" -gt 0 ]; then
+            # exit 1
+          elif [ "$critical_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$vuln_count" -gt 0 ]; then
             echo "::warning:: Non-severe vulnerabilities found: $vuln_count"
             echo "$audit_output"
-            exit 0
+            # exit 0
+          elif [ "$vuln_count" -eq 0 ] && [ "$high_count" -eq 0 ] && [ "$critical_count" -eq 0 ]; then
+            echo "No vulnerabilities found."
+            # exit 0
+          else
+            echo ":error: Security Scan Failed!"
+            echo "Terminating the workflow due to unknown state of security."
+            echo "$audit_output"
+            # exit 1
           fi
-          
-          echo "No vulnerabilities found."
+
+          echo "Security scan complete."
