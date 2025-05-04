@@ -25,7 +25,15 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          echo "Current Working Directory:"
+          pwd
+
+          echo "Switching to the working directory:"
           cd ${{ inputs.working-directory || 'functions' }}
+
+          echo "Listing all files in printed working directory:"
+          ls -al
+
           npm install
           sudo apt-get install -y jq  #install jq for JSON parsing
 
