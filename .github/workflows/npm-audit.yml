@@ -25,7 +25,10 @@ jobs:
           cd ${{ inputs.working-directory }}
           npm install
 
-      - name: Run npm audit
+      - name: Install `jq`
+        run: sudo apt-get install -y jq
+
+      - name: Run `npm audit`
         run: |
           cd ${{ inputs.working-directory }}
           npm audit --json > audit-report.json || true
