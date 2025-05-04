@@ -6,7 +6,7 @@ on:
       - main  
 jobs:
   npm-audit:
-    uses: ./.github/workflows/CI/npm-audit.yml
+    uses: ./.github/workflows/npm-audit.yml
     with:
       working-directory: "functions"
 

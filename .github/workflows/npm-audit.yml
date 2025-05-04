@@ -1,12 +1,12 @@
-name: npm-audit
+name: Security Scan for Vulnerabilities using `npm audit`
 
 on:
   workflow_call: 
     inputs:
       working-directory:
         description: "The directory to run npm audit in"
-        required: false
-        default: "."
+        required: true
+        type: string
 
 jobs: 
   npm-audit:
