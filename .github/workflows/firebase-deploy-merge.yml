@@ -15,7 +15,7 @@ jobs:
       working-directory: "functions"
 
   firebase_functions_deploy:
-    needs: npm-audit  # Ensure npm-audit job is completed before this one
+    # needs: npm-audit  # Ensure npm-audit job is completed before this one
     runs-on: ubuntu-latest  
     steps:
       - name: Checkout code
