@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_HTTPS_TOKEN }}
 
       - name: Set Up Node.js
         uses: actions/setup-node@v3
