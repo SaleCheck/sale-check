@@ -13,6 +13,8 @@ jobs:
     uses: ./.github/workflows/npm-audit.yml
     with:
       working-directory: "functions"
+    secrets:
+      GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
 
   firebase_functions_deploy:
     needs: npm-audit  # Ensure npm-audit job is completed before this one

@@ -7,6 +7,10 @@ on:
         description: "The directory to run npm audit in"
         required: true
         type: string
+    secrets:
+      GH_HTTPS_TOKEN:
+        description: "GitHub token for HTTPS operations"
+        required: true
   pull_request:
     branches:
       - main
