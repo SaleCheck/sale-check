@@ -1,6 +1,6 @@
 [submodule "wiki-internal"]
 	path = wiki-internal
-	url = git@github.com:SaleCheck/wiki-internal.git
+	url = https://github.com/SaleCheck/wiki-internal
 [submodule "functions"]
 	path = functions
-	url = git@github.com:SaleCheck/functions.git
+	url = https://github.com/SaleCheck/functions
