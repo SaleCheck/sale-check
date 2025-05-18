@@ -18,6 +18,9 @@ jobs:
       - name: Debug secrets
         run: |
           echo "Secrets: ${{ toJson(secrets) }}"
+
+      - name: Print .gitmodules
+        run: cat .gitmodules || echo "No .gitmodules file"
           
       - name: Checkout Code
         uses: actions/checkout@v4
