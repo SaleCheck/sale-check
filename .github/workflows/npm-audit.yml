@@ -13,12 +13,17 @@ on:
 
 jobs: 
   npm-audit:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/npm-audit.yml
+    with:
+      working-directory: "functions"
+    secrets:
+      GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
+      
     steps:
       - name: Debug secrets
         run: |
           echo "Secrets: ${{ toJson(secrets) }}"
-          
+
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
