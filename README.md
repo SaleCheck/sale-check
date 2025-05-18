@@ -15,16 +15,16 @@ Contributors are expected to act in a collaborative manner to move the project f
 
 **This project has a [Code of Conduct](./CODE_OF_CONDUCT.md).**
 
-**This project is currently published on: [sale-check-b611b.web.app](https://sale-check-b611b.web.app/).**
-
 ## Table of Contents
-- [About](#about)
-- [Features](#features)
-- [How It Works](#how-it-works)
-- [Technologies](#technologies)
-- [How to Run Locally](#how-to-run-locally)
-- [Contributing](#contributing)
-- [License](#license)
+- [SaleCheck](#salecheck)
+  - [Table of Contents](#table-of-contents)
+  - [About](#about)
+  - [Features](#features)
+  - [How It Works](#how-it-works)
+  - [Technologies](#technologies)
+  - [How to Run Locally](#how-to-run-locally)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## About
 SaleCheck provides a service that makes tracking price drops a breeze. Simply enter the product URL and price CSS Selector and set your target price. Our system will constantly check for any price changes and notify you the moment your item is on sale. You can save time and money by letting us handle the monitoring, so you can focus on enjoying your savings!
@@ -51,21 +51,23 @@ To run this project locally, follow these steps:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/MathiasSchindlerCPH/sale-check.git
+git clone --recursive https://github.com/SaleCheck/sale-check
 cd sale-check
 ```
 
-2. Install dependencies:
+2. Add a `.env` file to the `functions` directory (see `.env.sample` for reference).
+
+3. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Start the Firebase Emulator for local development:
+4. Start the Firebase Emulator for local development:
 ```bash
 firebase emulators:start
 ```
 
-4. Access the app locally by visiting [http://localhost:5000](http://localhost:5000).
+5. Access the app locally by visiting [http://localhost:5000](http://localhost:5000).
 
 ## Contributing
 Contributions are welcome! If you'd like to improve the project, feel free to fork the repository and create a pull request. Please ensure that your code follows our contribution guidelines.
