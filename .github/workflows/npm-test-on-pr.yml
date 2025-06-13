@@ -64,4 +64,4 @@ jobs:
           cd ${{ inputs.working-directory || 'functions' }}
 
           echo "Starting Firebase Emulators and running tests:"
-          firebase emulators:exec 'npm test' --log-verbosity SILENT
+          firebase emulators:exec 'npm test' --token="${{ secrets.FIREBASE_CI_TOKEN }}" --log-verbosity SILENT
