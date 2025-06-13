@@ -6,8 +6,17 @@ on:
   push:
     branches:
       - main
+
 jobs:
+  npm-audit:
+    uses: ./.github/workflows/npm-audit.yml
+    with:
+      working-directory: "functions"
+    secrets:
+      GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
+
   firebase_hosting_build_and_deploy:
+    needs: npm-audit  # Ensure npm-audit job is completed before this one
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
