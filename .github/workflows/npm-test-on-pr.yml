@@ -32,6 +32,9 @@ on:
       FIREBASE_MEASUREMENT_ID:
         description: "Firebase Measurement ID"
         required: true
+      FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B:
+        description: "Firebase Service Account for Sale Check B611B"
+        required: true
   pull_request:
     branches:
       - main

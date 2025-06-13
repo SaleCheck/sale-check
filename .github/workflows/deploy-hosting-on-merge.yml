@@ -29,6 +29,7 @@ jobs:
       FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
       FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
       FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+      FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
 
   firebase_hosting_build_and_deploy:
     needs: [npm-test]  # Ensure npm-test (and npm-audit implicitly) job is completed before this one
