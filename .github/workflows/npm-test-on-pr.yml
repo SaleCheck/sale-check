@@ -63,13 +63,17 @@ jobs:
           MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-          FIRESTORE_EMULATOR_HOST: 'localhost:8080'
-          FIREBASE_AUTH_EMULATOR_HOST: 'localhost:9099'
-          FIREBASE_STORAGE_EMULATOR_HOST: 'localhost:9199'
-          STORAGE_EMULATOR_HOST: 'http://localhost:9199'
+          # FIRESTORE_EMULATOR_HOST: 'localhost:8080'
+          # FIREBASE_AUTH_EMULATOR_HOST: 'localhost:9099'
+          # FIREBASE_STORAGE_EMULATOR_HOST: 'localhost:9199'
+          # STORAGE_EMULATOR_HOST: 'http://localhost:9199'
         run: |
           echo "Switching to the working directory:"
           cd ${{ inputs.working-directory || 'functions' }}
 
+          echo "Writing service account credentials..."
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}' > /tmp/firebase-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-key.json
+
           echo "Starting Firebase Emulators and running tests:"
-          firebase emulators:exec 'npm test' --token="${{ secrets.FIREBASE_CI_TOKEN }}" --log-verbosity SILENT
+          firebase emulators:exec 'npm test' --log-verbosity SILENT
