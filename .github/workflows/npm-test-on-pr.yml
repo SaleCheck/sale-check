@@ -11,6 +11,27 @@ on:
       GH_HTTPS_TOKEN:
         description: "GitHub token for HTTPS operations"
         required: true
+      FIREBASE_API_KEY:
+        description: "Firebase API Key"
+        required: true
+      FIREBASE_AUTH_DOMAIN:
+        description: "Firebase Auth Domain"
+        required: true
+      FIREBASE_PROJECT_ID:
+        description: "Firebase Project ID"
+        required: true
+      FIREBASE_STORAGE_BUCKET: 
+        description: "Firebase Storage Bucket"
+        required: true
+      FIREBASE_MESSAGING_SENDER_ID:
+        description: "Firebase Messaging Sender ID"
+        required: true
+      FIREBASE_APP_ID:
+        description: "Firebase App ID"
+        required: true
+      FIREBASE_MEASUREMENT_ID:
+        description: "Firebase Measurement ID"
+        required: true
   pull_request:
     branches:
       - main
