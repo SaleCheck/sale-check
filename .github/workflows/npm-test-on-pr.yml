@@ -44,4 +44,14 @@ jobs:
           npm install
 
       - name: Run Tests
-        run: npm test
+        run: |
+          echo "Current Working Directory:"
+          pwd
+
+          echo "Switching to the working directory:"
+          cd ${{ inputs.working-directory || 'functions' }}
+
+          echo "Listing all files in printed working directory:"
+          ls -al
+          
+          npm test
