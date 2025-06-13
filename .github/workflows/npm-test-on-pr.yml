@@ -1,13 +1,13 @@
 name: Run Tests using `npm test` on PR to `main`
 
 on:
-  workflow-call: 
-    input: 
+  workflow_call: 
+    inputs:
       working-directory:
         description: "The directory to run npm test in"
         required: true
         type: string
-    sectres:
+    secrets:
       GH_HTTPS_TOKEN:
         description: "GitHub token for HTTPS operations"
         required: true
@@ -18,7 +18,7 @@ on:
 jobs:
   npm-test:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
