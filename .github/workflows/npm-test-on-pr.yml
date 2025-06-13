@@ -1,0 +1,47 @@
+name: Run Tests using `npm test` on PR to `main`
+
+on:
+  workflow-call: 
+    input: 
+      working-directory:
+        description: "The directory to run npm test in"
+        required: true
+        type: string
+    sectres:
+      GH_HTTPS_TOKEN:
+        description: "GitHub token for HTTPS operations"
+        required: true
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_HTTPS_TOKEN }}
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install Dependencies
+        run: |
+          echo "Current Working Directory:"
+          pwd
+
+          echo "Switching to the working directory:"
+          cd ${{ inputs.working-directory || 'functions' }}
+
+          echo "Listing all files in printed working directory:"
+          ls -al
+
+          npm install
+
+      - name: Run Tests
+        run: npm test
