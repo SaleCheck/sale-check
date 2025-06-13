@@ -1,4 +1,4 @@
-name: Security Scan for Vulnerabilities using `npm audit`
+name: Security Scan for Vulnerabilities using `npm audit` on PR to `main`
 
 on:
   workflow_call: 
@@ -15,7 +15,7 @@ on:
     branches:
       - main
 
-jobs: 
+jobs:
   npm-audit:
     runs-on: ubuntu-latest
     steps:
