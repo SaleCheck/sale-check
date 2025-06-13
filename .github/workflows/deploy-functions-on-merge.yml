@@ -17,6 +17,7 @@ jobs:
       GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
 
   npm-test:
+    needs: [npm-audit] # Ensure npm-audit job is completed before this one
     uses: ./.github/workflows/npm-test-on-pr.yml
     with:
       working-directory: "functions"
@@ -31,7 +32,7 @@ jobs:
       FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
 
   firebase_functions_deploy:
-    needs: [npm-audit, npm-test]  # Ensure npm-audit and npm-test job is completed before this one
+    needs: [npm-test]  # Ensure npm-test (and npm-audit implicitly) job is completed before this one
     runs-on: ubuntu-latest  
     steps:
       - name: Checkout code
