@@ -16,8 +16,56 @@ jobs:
     secrets:
       GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
 
-  npm-test:
+  npm-failure-alert-email:
+    runs-on: ubuntu-latest
     needs: [npm-audit] # Ensure npm-audit job is completed before this one
+    if: failure()
+    steps:
+      - name: Retrieve audit report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: audit-report
+          path: ./audit-report
+
+      - name: Parse audit report for email body
+        id: parse_audit
+        run: |
+          cat ./audit-report/audit-report.json
+
+          critical=$(jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "critical") | .key' ./audit-report/audit-report.json | paste -sd "," -)
+          high=$(jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "high") | .key' ./audit-report/audit-report.json | paste -sd "," -)
+          moderate=$(jq -r '.vulnerabilities | to_entries[] | select(.value.severity == "moderate") | .key' ./audit-report/audit-report.json | paste -sd "," -)
+
+          echo "critical=$critical" >> $GITHUB_ENV
+          echo "high=$high" >> $GITHUB_ENV
+          echo "moderate=$moderate" >> $GITHUB_ENV
+
+      - name: Send vulnerability alerting email
+        uses: dawidd6/action-send-mail@v3
+        with: 
+          server_address: smtp.example.com
+          server_port: 587
+          username: ${{ secrets.EMAILUSER }}   
+          password: ${{ secrets.EMAILAPPPWD }}   
+          subject: "⚠Sale-Check: Severe vulnerability found from 'npm audit'⚠"
+          from: ${{ secrets.EMAILUSER }}   
+          to: ${{ secrets.EMAILUSER }}   
+          body: |
+            Severe vulnerabilities found while running CI job with 'npm audit':
+
+            🚨 Critical packages:
+            ${{ env.critical }}
+
+            ⚠️ High severity packages:
+            ${{ env.high }}
+
+            ⚙️ Moderate severity packages:
+            ${{ env.moderate }}
+
+            Check the full audit report in the GitHub Actions tab and resolve immediately to ensure stable security on the platform.
+
+  npm-test:
+    needs: [npm-audit, npm-failure-alert-email] # Ensure npm-audit and npm-failure-alert-email job is completed before this one
     uses: ./.github/workflows/npm-test-on-pr.yml
     with:
       working-directory: "functions"
@@ -33,7 +81,7 @@ jobs:
       FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
 
   firebase_functions_deploy:
-    needs: [npm-test]  # Ensure npm-test (and npm-audit implicitly) job is completed before this one
+    needs: [npm-test]  # Ensure npm-test (and npm-audit and npm-failure-alert-email implicitly) job is completed before this one
     runs-on: ubuntu-latest  
     steps:
       - name: Checkout code
