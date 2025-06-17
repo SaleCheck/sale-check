@@ -83,6 +83,7 @@ jobs:
 
   firebase_functions_deploy:
     needs: [npm-test]  # Ensure npm-test (and npm-audit and npm-failure-alert-email implicitly) job is successful before this one
+    if: success()
     runs-on: ubuntu-latest  
     steps:
       - name: Checkout code
