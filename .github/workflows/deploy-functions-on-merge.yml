@@ -65,7 +65,7 @@ jobs:
             Check the full audit report in the GitHub Actions tab and resolve immediately to ensure stable security on the platform.
 
   npm-test:
-    needs: [npm-audit, npm-failure-alert-email] # Ensure npm-audit and npm-failure-alert-email job are successful before this one
+    needs: [npm-audit, npm-audit-failure-alert-email] # Ensure npm-audit and npm-audit-failure-alert-email job are successful before this one
     if: always() && needs.npm-audit.result == 'success'
     uses: ./.github/workflows/npm-test-on-pr.yml
     with:
@@ -82,7 +82,7 @@ jobs:
       FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
 
   firebase_functions_deploy:
-    needs: [npm-test]  # Ensure npm-test (and npm-audit and npm-failure-alert-email implicitly) job is successful before this one
+    needs: [npm-test]  # Ensure npm-test (and npm-audit and npm-audit-failure-alert-email implicitly) job is successful before this one
     if: always() && needs.npm-test.result == 'success'
     runs-on: ubuntu-latest  
     steps:
