@@ -16,7 +16,7 @@ jobs:
     secrets:
       GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
 
-  npm-failure-alert-email:
+  npm-audit-failure-alert-email:
     runs-on: ubuntu-latest
     needs: [npm-audit] # Ensure npm-audit job is completed before this one
     if: failure()
