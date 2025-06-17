@@ -54,13 +54,13 @@ jobs:
             Severe vulnerabilities found while running CI job with 'npm audit':
 
             🚨 Critical packages:
-            ${{ env.critical }}
+            - ${{ env.critical }}
 
             ⚠️ High severity packages:
-            ${{ env.high }}
+            - ${{ env.high }}
 
             ⚙️ Moderate severity packages:
-            ${{ env.moderate }}
+            - ${{ env.moderate }}
 
             Check the full audit report in the GitHub Actions tab and resolve immediately to ensure stable security on the platform.
 
