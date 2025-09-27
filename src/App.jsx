@@ -21,9 +21,9 @@ function App() {
       </header>
 
       {/* Two-column section */}
-      <main className="flex flex-1 flex-col md:flex-row items-center justify-between gap-8 py-16 px-[10%]">
+      <main className="flex flex-col md:flex-row gap-8 px-[10%] mt-[5vh]">
         {/* Left Column: Text */}
-        <div className="md:w-1/2">
+        <div className="md:w-1/2 flex flex-col justify-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
             Welcome to SaleCheck
           </h1>
@@ -37,7 +37,7 @@ function App() {
         </div>
 
         {/* Right Column: Image */}
-        <div className="md:w-1/2 flex justify-center">
+        <div className="md:w-1/2 flex justify-center items-center">
           <img src={priceTrackImage} alt="pricetrack-img" className="rounded-lg max-w-full h-auto" />
         </div>
       </main>
