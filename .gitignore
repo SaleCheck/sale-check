@@ -13,6 +13,8 @@ dist
 dist-ssr
 *.local
 
+dist
+
 # Firebase cache
 .firebase/
 

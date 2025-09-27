@@ -1,5 +1,5 @@
 # SaleCheck
-![SaleCheck Icon](https://sale-check-b611b.web.app/assets/favicon.png)
+<img src="https://github.com/user-attachments/assets/895be30b-0b3c-423e-9f04-85dfc5e9c5ab" alt="favicon" width="350" height="350">
 
 ![Build Status](https://img.shields.io/github/workflow/status/MathiasSchindlerCPH/sale-check/CI)
 ![Last commit](https://img.shields.io/github/last-commit/MathiasSchindlerCPH/sale-check)
