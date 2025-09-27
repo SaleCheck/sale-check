@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tree": "tree -C --gitignore --dirsfirst",
+    "emu": "firebase emulators:start"
   },
   "dependencies": {
     "react": "^19.1.1",
