@@ -1,4 +1,3 @@
-import './App.css'
 import favicon from '/favicon.jpg'
 
 function App() {
