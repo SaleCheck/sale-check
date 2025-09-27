@@ -87,6 +87,6 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 
-*puppeteerTest*
 **/firestore_dwnld*/*
 **/firestore_copy*/*
+
