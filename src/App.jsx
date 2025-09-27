@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
+import favicon from '/favicon.png'
 import './App.css'
 
 function App() {
@@ -10,7 +11,10 @@ function App() {
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+          <img src={viteLogo} className="logo vite" alt="Vite logo" />
+        </a>
+        <a href="https://sale-check-b611b.web.app/" target="_blank">
+          <img src={favicon} className="logo" alt="Vite logo" />
         </a>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
