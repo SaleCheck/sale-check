@@ -1,5 +1,5 @@
 import { Routes, Route, Link } from "react-router-dom";
-import priceTrackImage from './assets/pricetrack.jpg';
+import priceTrackSvg from './assets/pricetrack.svg';
 import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -56,7 +56,7 @@ function App() {
                 </div>
                 {/* Right Column */}
                 <div className="md:w-1/2 flex justify-center items-center">
-                  <img src={priceTrackImage} alt="pricetrack-img" className="rounded-lg max-w-full h-auto" />
+                  <img src={priceTrackSvg} alt="pricetrack-img" className="rounded-lg max-w-full h-auto" />
                 </div>
               </div>
             }
