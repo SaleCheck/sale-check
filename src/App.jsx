@@ -1,10 +1,21 @@
 import { Routes, Route, Link } from "react-router-dom";
-import priceTrackSvg from './assets/pricetrack.svg';
+import { useState } from "react";
+import { LoginForm } from "./components/AuthForms/LoginForm";
+import { SignupForm } from "./components/AuthForms/SignupForm";
+import Modal from "./components/Modal/Modal";
 import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import priceTrackSvg from './assets/pricetrack.svg';
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+
+  const openLogin = () => { setIsLogin(true); setIsModalOpen(true); };
+  const openSignup = () => { setIsLogin(false); setIsModalOpen(true); };
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
@@ -24,10 +35,10 @@ function App() {
 
           {/* Auth */}
           <div className="flex gap-4 ml-16">
-            <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
+            <button onClick={openLogin} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
               Login
             </button>
-            <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
+            <button onClick={openSignup} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
               Sign Up
             </button>
           </div>
@@ -71,6 +82,15 @@ function App() {
       <footer className="shadow-md text-gray-700 py-4 text-center mt-auto">
         &copy; {new Date().getFullYear()} SaleCheck. All rights reserved.
       </footer>
+
+      {/* Modal */}
+      <Modal isOpen={isModalOpen} closeModal={closeModal}>
+        {isLogin ? (
+          <LoginForm switchToSignup={() => setIsLogin(false)} />
+        ) : (
+          <SignupForm switchToLogin={() => setIsLogin(true)} />
+        )}
+      </Modal>
     </div>
   )
 }
