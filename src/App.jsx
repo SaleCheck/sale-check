@@ -9,10 +9,10 @@ function App() {
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-4 shadow-md">
-        <div className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <img src="/favicon.jpg" alt="SaleCheck Logo" className="h-10 w-10 object-contain" />
           <span className="text-xl font-bold text-gray-900">SaleCheck</span>
-        </div>
+        </Link>
 
         <div className="flex items-center">
           {/* Nav */}
