@@ -52,6 +52,11 @@ function App() {
           <img src={priceTrackImage} alt="pricetrack-img" className="rounded-lg max-w-full h-auto" />
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="shadow-md text-gray-700 py-4 text-center mt-auto">
+        &copy; {new Date().getFullYear()} SaleCheck. All rights reserved.
+      </footer>
     </div>
   )
 }
