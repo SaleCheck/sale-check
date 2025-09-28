@@ -1,5 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import priceTrackImage from './assets/pricetrack.jpg';
+import HowItWorks from "./pages/HowItWorks";
+import About from "./pages/About";
 import Contact from "./pages/Contact";
 
 function App() {
@@ -59,6 +61,8 @@ function App() {
               </div>
             }
           />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
