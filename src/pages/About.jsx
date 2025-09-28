@@ -1,8 +1,8 @@
 export default function About() {    
     return (
-        <div className="max-w-md mx-auto mt-16 p-6 bg-white rounded shadow">
-            <h1 className="text-2xl font-bold mb-4">About Us</h1>
-            <p>To be added.</p>
+        <div className="max-w-3xl mx-auto mt-24 px-6">
+            <h1 className="text-5xl font-extrabold mb-6 text-gray-900">About Us</h1>
+            <p className="text-lg text-gray-700">To be added.</p>
         </div>
-    )
+    );
 }
