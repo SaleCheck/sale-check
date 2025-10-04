@@ -1,18 +1,76 @@
-export function LoginForm({ switchToSignup }) {
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase";
+
+export function LoginForm({ switchToSignup, closeModal }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (closeModal) closeModal();
+      navigate("/profile");
+    } catch (err) {
+      setError("Invalid email or password", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <form onSubmit={handleLogin} className="flex flex-col gap-4">
       <h2 className="text-xl font-bold">Login</h2>
-      <input type="email" placeholder="Email" className="border rounded px-3 py-2" />
-      <input type="password" placeholder="Password" className="border rounded px-3 py-2" />
-      <button className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-full">
-        Login
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="border rounded px-3 py-2"
+        autoComplete="username"
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        className="border rounded px-3 py-2"
+        autoComplete="current-password"
+      />
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-full disabled:opacity-50"
+      >
+        {loading ? "Logging in..." : "Login"}
       </button>
+
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
       <p className="text-sm text-gray-500">
         Don't have an account?{" "}
-        <button className="text-blue-500 hover:underline" onClick={switchToSignup}>
+        <button
+          type="button"
+          className="text-blue-500 hover:underline"
+          onClick={switchToSignup}
+        >
           Sign Up
         </button>
       </p>
-    </div>
+    </form>
   );
 }
