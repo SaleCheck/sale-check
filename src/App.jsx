@@ -1,16 +1,28 @@
-import { Routes, Route, Link } from "react-router-dom";
-import { useState } from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { LoginForm } from "./components/AuthForms/LoginForm";
 import { SignupForm } from "./components/AuthForms/SignupForm";
+import priceTrackSvg from './assets/pricetrack.svg';
 import Modal from "./components/Modal/Modal";
 import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import priceTrackSvg from './assets/pricetrack.svg';
+import Profile from "./pages/Profile"; 
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return unsubscribe;
+  }, []);
 
   const openLogin = () => { setIsLogin(true); setIsModalOpen(true); };
   const openSignup = () => { setIsLogin(false); setIsModalOpen(true); };
@@ -35,12 +47,41 @@ function App() {
 
           {/* Auth */}
           <div className="flex gap-4 ml-16">
-            <button onClick={openLogin} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
-              Login
-            </button>
-            <button onClick={openSignup} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
-              Sign Up
-            </button>
+            {user ? (
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => navigate("/profile")}
+                  className="focus:outline-none"
+                  style={{ background: "none", border: "none", padding: 0 }}
+                >
+                  <img
+                    src={user.photoURL || "/favicon.jpg"}
+                    alt="User Avatar"
+                    className="h-10 w-10 rounded-full object-cover border border-gray-300"
+                  />
+                </button>
+                <span
+                  onClick={() => {
+                    auth.signOut().then(() => {
+                      setUser(null);
+                      navigate("/");
+                    });
+                  }}
+                  className="text-xs text-gray-400 mt-1 cursor-pointer hover:text-gray-600"
+                >
+                  Signout
+                </span>
+              </div>
+            ) : (
+              <>
+                <button onClick={openLogin} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
+                  Login
+                </button>
+                <button onClick={openSignup} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -75,6 +116,7 @@ function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
 
@@ -86,9 +128,9 @@ function App() {
       {/* Modal */}
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
         {isLogin ? (
-          <LoginForm switchToSignup={() => setIsLogin(false)} />
+          <LoginForm switchToSignup={() => setIsLogin(false)} closeModal={closeModal} />
         ) : (
-          <SignupForm switchToLogin={() => setIsLogin(true)} />
+          <SignupForm switchToLogin={() => setIsLogin(true)} closeModal={closeModal} />
         )}
       </Modal>
     </div>
