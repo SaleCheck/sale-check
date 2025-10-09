@@ -9,9 +9,9 @@
 [![Contributors](https://img.shields.io/github/contributors/MathiasSchindlerCPH/sale-check.svg)](https://github.com/MathiasSchindlerCPH/sale-check/graphs/contributors)
 [![License](https://img.shields.io/github/license/MathiasSchindlerCPH/sale-check.svg)](https://opensource.org/licenses/MIT)
 
-SaleCheck is a smart price tracking tool built with Firebase and Google Cloud Functions. This web application allows users to effortlessly monitor price drops on their desired products, ensuring they never miss a deal.
+SaleCheck is a smart price tracking tool built with Firebase and Google Cloud Functions. The web application allows users to effortlessly monitor price drops on their desired products, ensuring they never miss a deal.
 
-Contributors are expected to act in a collaborative manner to move the project forward. We encourage the constructive exchange of contrary opinions and compromise. The maintainer reserves the right to limit or block contributors who repeatedly act in ways that discourage, exhaust, or otherwise negatively affect other participants.
+Contributors are expected to act in a collaborative manner to move the project forward. Constructive exchange of contrary opinions and compromise is encouraged. The maintainer reserves the right to limit or block contributors who repeatedly act in ways that discourage, exhaust, or otherwise negatively affect other participants.
 
 **This project has a [Code of Conduct](./CODE_OF_CONDUCT.md).**
 
@@ -27,7 +27,7 @@ Contributors are expected to act in a collaborative manner to move the project f
   - [License](#license)
 
 ## About
-SaleCheck provides a service that makes tracking price drops a breeze. Simply enter the product URL and price CSS Selector and set your target price. Our system will constantly check for any price changes and notify you the moment your item is on sale. You can save time and money by letting us handle the monitoring, so you can focus on enjoying your savings!
+SaleCheck provides a service that makes tracking price drops a breeze. Simply enter the product URL and price CSS Selector and set the target price. The system will consistently check for any price changes and notify you the moment your item is on sale. You can save time and money by letting SaleCheck handle the monitoring, so you can focus on enjoying your savings!
 
 
 ## Features
@@ -39,7 +39,7 @@ SaleCheck provides a service that makes tracking price drops a breeze. Simply en
 ## How It Works
 - **Enter the product URL**: On the website, paste the URL of the product you want to track.
 - **Set your target price**: Choose the price you want to be notified at.
-- **Wait for the notification**: Our system will monitor the price and send you an alert when the price drops to or below your target.
+- **Wait for the notification**: The system will monitor the price and send you an alert when the price drops to or below your target.
 
 ## Technologies
 - **Firebase**: Firebase Hosting for the web app, Firebase Functions for backend logic.
