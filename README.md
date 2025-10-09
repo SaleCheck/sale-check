@@ -49,23 +49,24 @@ SaleCheck provides a service that makes tracking price drops a breeze. Simply en
 ## How to Run Locally
 To run this project locally, follow these steps:
 
-1. Clone the repository:
-```bash
-git clone --recursive https://github.com/SaleCheck/sale-check
-cd sale-check
-```
+1. Clone the repository:  
+   ```bash
+   git clone --recursive https://github.com/SaleCheck/sale-check
+   cd sale-check
+   ```
 
-2. Add a `.env` file to the `functions` directory (see `.env.sample` for reference).
+2. Add `.env`-file to the `functions` submodule (see [`.env.sample`](functions/.env.sample) for reference).
 
 3. Install dependencies:
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 4. Start the Firebase Emulator for local development:
-```bash
-firebase emulators:start
-```
+   ```bash
+   npm run emu  
+   ```
+   (command is shorthand for `firebase emulators:start` as specified in [`package.json`](functions/package.json).)
 
 5. Access the app locally by visiting [http://localhost:5000](http://localhost:5000).
 
