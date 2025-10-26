@@ -61,6 +61,16 @@ export function SignupForm({ switchToLogin, closeModal }) {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
+      <div className="flex flex-col gap-2">
+        <label className="text-sm text-gray-600 font-medium">
+          Upload profile picture (optional):
+        </label>
+        <input
+          type="file"
+          className="border rounded px-3 py-2"
+          accept="image/*"
+        />
+      </div>
       <button
         type="submit"
         className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-full"
