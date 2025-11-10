@@ -56,7 +56,7 @@ function App() {
                   style={{ background: "none", border: "none", padding: 0 }}
                 >
                   <img
-                    src={user.photoURL || "/favicon.jpg"}
+                    src={user.photoURL || "./src/assets/avatar-default.svg"}
                     alt="User Avatar"
                     className="h-10 w-10 rounded-full object-cover border border-gray-300"
                   />
