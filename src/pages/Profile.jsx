@@ -13,6 +13,13 @@ export default function Profile() {
         document.title = "SaleCheck | Profile";
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             setUser(currentUser);
+            
+            if (!currentUser) {
+                setUser(null);
+                setUserData(null);
+                return;
+            }
+
             const userDoc = await getDoc(doc(db, "users", currentUser.uid));
             if (userDoc.exists()) setUserData(userDoc.data());
         });
