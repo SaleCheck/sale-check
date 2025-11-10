@@ -47,7 +47,12 @@ export function SignupForm({ switchToLogin, closeModal }) {
         })
 
       } else {
-        await updateProfile(user, { displayName: displayName });
+        await await updateDoc(doc(db, "users", user.uid), {
+          displayName: displayName,
+          firstName: firstName,
+          lastName: lastName,
+          lastUpdated: serverTimestamp(),
+        })
       }
 
       if (closeModal) closeModal();
