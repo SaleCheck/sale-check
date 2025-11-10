@@ -64,7 +64,7 @@ export function SignupForm({ switchToLogin, closeModal }) {
   };
 
   return (
-    <form onSubmit={handleSignup} className="flex flex-col gap-4">
+    <form onSubmit={handleSignup} autoComplete="off" className="flex flex-col gap-4">
       <h2 className="text-xl font-bold">Sign Up</h2>
       <input
         type="text"
