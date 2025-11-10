@@ -18,6 +18,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "SaleCheck | Main";
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });

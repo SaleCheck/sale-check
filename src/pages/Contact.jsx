@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Contact() {
+    useEffect(() => {
+        document.title = "SaleCheck | Contact"
+    }, []);
+
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
     return (

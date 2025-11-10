@@ -8,6 +8,7 @@ export default function Profile() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        document.title = "SaleCheck | Profile";
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
         });
