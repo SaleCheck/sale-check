@@ -10,6 +10,7 @@ export function SignupForm({ switchToLogin, closeModal }) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -20,6 +21,11 @@ export function SignupForm({ switchToLogin, closeModal }) {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    if (!(password.length > 0 && password === confirmPassword)) {
+      setError("Passwords do not match.");
+      return;
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -101,6 +107,14 @@ export function SignupForm({ switchToLogin, closeModal }) {
         className="border rounded px-3 py-2"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        className="border rounded px-3 py-2"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
         required
       />
       <div className="flex flex-col gap-2">
