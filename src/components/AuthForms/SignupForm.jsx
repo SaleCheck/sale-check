@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, db, storage } from "../../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export function SignupForm({ switchToLogin, closeModal }) {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [avatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -19,15 +23,40 @@ export function SignupForm({ switchToLogin, closeModal }) {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User created:", userCredential.user);
-      if (auth.currentUser && name) {
-        await updateProfile(auth.currentUser, { displayName: name });
+      const user = userCredential.user;
+      const displayName = `${firstName} ${lastName}`.trim();
+
+      if (avatarFile) {
+        let photoURL;
+
+        const avatarRef = ref(storage, `users/avatar/${user.uid}/${user.uid}.png`);
+        await uploadBytes(avatarRef, avatarFile);
+        photoURL = await getDownloadURL(avatarRef);
+
+        await updateProfile(user, {
+          displayName: displayName,
+          photoURL: photoURL || null
+        });
+
+        await updateDoc(doc(db, "users", user.uid), {
+          photoURL: photoURL,
+          displayName: displayName,
+          firstName: firstName,
+          lastName: lastName,
+          lastUpdated: serverTimestamp(),
+        })
+
+      } else {
+        await updateProfile(user, { displayName: displayName });
       }
+
       if (closeModal) closeModal();
       navigate("/profile");
+
     } catch (err) {
       console.error("Signup error:", err);
       setError(err.message);
+
     } finally {
       setLoading(false);
       console.log("Signup process finished");
@@ -39,10 +68,18 @@ export function SignupForm({ switchToLogin, closeModal }) {
       <h2 className="text-xl font-bold">Sign Up</h2>
       <input
         type="text"
-        placeholder="Name"
+        placeholder="First Name"
         className="border rounded px-3 py-2"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+        required
+      />
+      <input
+        type="text"
+        placeholder="Last Name"
+        className="border rounded px-3 py-2"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
         required
       />
       <input
@@ -69,6 +106,7 @@ export function SignupForm({ switchToLogin, closeModal }) {
           type="file"
           className="border rounded px-3 py-2"
           accept="image/*"
+          onChange={(e) => setAvatarFile(e.target.files[0])}
         />
       </div>
       <button
