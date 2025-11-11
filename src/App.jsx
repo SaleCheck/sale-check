@@ -1,15 +1,16 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 import { LoginForm } from "./components/AuthForms/LoginForm";
 import { SignupForm } from "./components/AuthForms/SignupForm";
-import priceTrackSvg from './assets/pricetrack.svg';
 import Modal from "./components/Modal/Modal";
 import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Profile from "./pages/Profile"; 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import Profile from "./pages/Profile";
+import priceTrackSvg from './assets/pricetrack.svg';
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,11 +56,15 @@ function App() {
                   className="focus:outline-none"
                   style={{ background: "none", border: "none", padding: 0 }}
                 >
-                  <img
-                    src={user.photoURL || "./src/assets/avatar-default.svg"}
-                    alt="User Avatar"
-                    className="h-10 w-10 rounded-full object-cover border border-gray-300"
-                  />
+                  {user.photoURL ? (
+                    <img
+                      src={user.photoURL}
+                      alt="User Avatar"
+                      className="h-10 w-10 rounded-full object-cover border border-gray-300"
+                    />
+                  ) : (
+                    <UserCircleIcon className="h-10 w-10 text-gray-400" />
+                  )}
                 </button>
                 <span
                   onClick={() => {
