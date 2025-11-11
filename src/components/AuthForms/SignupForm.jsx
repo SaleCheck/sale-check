@@ -53,7 +53,7 @@ export function SignupForm({ switchToLogin, closeModal }) {
         })
 
       } else {
-        await await updateDoc(doc(db, "users", user.uid), {
+        await updateDoc(doc(db, "users", user.uid), {
           displayName: displayName,
           firstName: firstName,
           lastName: lastName,
