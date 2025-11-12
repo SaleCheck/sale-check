@@ -62,7 +62,7 @@ export function SignupForm({ switchToLogin, closeModal }) {
       }
 
       if (closeModal) closeModal();
-      navigate("/profile");
+      navigate(`/profile?id=${user.uid}`);
 
     } catch (err) {
       console.error("Signup error:", err);

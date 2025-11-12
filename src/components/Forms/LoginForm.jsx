@@ -19,7 +19,7 @@ export function LoginForm({ switchToSignup, closeModal }) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (closeModal) closeModal();
-      navigate("/profile");
+      navigate(`/profile?id=${userCredential.user.uid}`);
     } catch (err) {
       setError("Invalid email or password", err.message);
     } finally {

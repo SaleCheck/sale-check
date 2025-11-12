@@ -52,7 +52,7 @@ function App() {
             {user ? (
               <div className="flex flex-col items-center">
                 <button
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate(`/profile?id=${user.uid}`)}
                   className="focus:outline-none"
                   style={{ background: "none", border: "none", padding: 0 }}
                 >
