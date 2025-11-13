@@ -83,7 +83,14 @@ export default function ProductForm({
             </label>
 
             {lastUpdated ? (
-                <p className="text-sm text-gray-700">{`Last updated: ${lastUpdated}`}</p>
+                <p className="text-sm text-gray-700">{`Last updated: ${lastUpdated.toDate().toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true
+                })}`}</p>
             ) : (
                 <p></p>
             )}
