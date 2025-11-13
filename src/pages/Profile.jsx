@@ -6,6 +6,7 @@ import { collection, doc, getDoc, getDocs, query, where } from "firebase/firesto
 import Card from "../components/Card/Card";
 import Spinner from "../components/Spinner/Spinner";
 import Modal from "../components/Modal/Modal";
+import ProductForm from "../components/Forms/ProductForm";
 
 export default function Profile() {
     const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function Profile() {
     const [productsToCheck, setProductsToCheck] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [modalProductData, setModalProductData] = useState({});
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -61,7 +63,7 @@ export default function Profile() {
     if (loading) {
         return (
             <div className="flex flex-col items-center pt-24 space-y-4">
-                <p className="text-gray-600 text-lg">Fetching products...</p>
+                <p className="text-gray-500 text-lg">Fetching products...</p>
                 <Spinner />
             </div>
         )
@@ -90,7 +92,10 @@ export default function Profile() {
                             title={product.productName || "Unnamed Product"}
                             expectedPrice={product.expectedPrice || "Unknown Price"}
                             expectedPriceCurrency={product.expectedPriceCurrency || ""}
-                            onEdit={() => setIsEditModalOpen(true)}
+                            onEdit={() => {
+                                setIsEditModalOpen(true);
+                                setModalProductData(product);
+                            }}
                             onDelete={() => setIsDeleteModalOpen(true)}
                         />
                     ))}
@@ -99,7 +104,32 @@ export default function Profile() {
 
             {/* Edit Modal */}
             <Modal isOpen={isEditModalOpen} closeModal={() => setIsEditModalOpen(false)}>
-                <p>Modal</p>
+                <ProductForm
+                    formTitle="Edit Product"
+                    productName={modalProductData.productName}
+                    imageUrl={modalProductData.imageUrl}
+                    expectedPrice={modalProductData.expectedPrice}
+                    expectedPriceCurrency={modalProductData.expectedPriceCurrency}
+                    productUrl={modalProductData.url}
+                    cssSelector={modalProductData.cssSelector}
+                    lastUpdated={modalProductData.lastUpdated}
+                    closeModal={() => setIsDeleteModalOpen(false)}
+                />
+                <div className="flex justify-center space-x-3 pt-4 w-full">
+                    <button
+                        onClick={() => setIsEditModalOpen(false)}
+                        className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        disabled
+                        className="px-4 py-2 bg-blue-500 text-white rounded-md opacity-50 cursor-not-allowed"
+                    >
+                        Save Changes
+                    </button>
+                </div>
             </Modal>
 
             {/* Delete Modal */}
