@@ -1,5 +1,6 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
+import { Transition } from "@headlessui/react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { LoginForm } from "./components/Forms/LoginForm";
@@ -11,11 +12,13 @@ import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import priceTrackSvg from './assets/pricetrack.svg';
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { Bars3Icon } from "@heroicons/react/24/outline";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [user, setUser] = useState(null);
+  const [openMobileNav, setOpenMobileNav] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +37,7 @@ function App() {
     <div className="min-h-screen flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between px-8 py-4 shadow-md">
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src="/favicon.jpg" alt="SaleCheck Logo" className="h-10 w-10 object-contain" />
           <span className="text-xl font-bold text-gray-900">SaleCheck</span>
@@ -80,19 +84,49 @@ function App() {
               </div>
             ) : (
               <>
-                <button onClick={openLogin} className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
+                <button onClick={openLogin} className="whitespace-nowrap bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-full transition transform hover:scale-105 text-sm md:text-base">
                   Login
                 </button>
-                <button onClick={openSignup} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105">
+                <button onClick={openSignup} className="whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-full transition transform hover:scale-105 text-sm md:text-base">
                   Sign Up
                 </button>
               </>
             )}
           </div>
         </div>
+
+        {/* Mobile hamburger */}
+        {!user && (
+          <button
+            onClick={() => setOpenMobileNav(!openMobileNav)}
+            className="md:hidden p-2"
+          >
+            <Bars3Icon className="h-7 w-7 text-gray-700" />
+          </button>
+        )}
       </header>
 
-      {/* Page content */}
+      {/* Mobile Nav */}
+      <Transition
+        as={Fragment}
+        show={openMobileNav}
+        enter="transition-all duration-200 ease-out"
+        enterFrom="max-h-0 opacity-0"
+        enterTo="max-h-40 opacity-100"
+        leave="transition-all duration-150 ease-in"
+        leaveFrom="max-h-40 opacity-100"
+        leaveTo="max-h-0 opacity-0"
+      >
+        <div className="overflow-hidden">
+          <nav className="md:hidden flex flex-col gap-4 bg-white px-8 py-4 shadow">
+            <Link to="/how-it-works" onClick={() => setOpenMobileNav(false)}>How It Works</Link>
+            <Link to="/about" onClick={() => setOpenMobileNav(false)}>About</Link>
+            <Link to="/contact" onClick={() => setOpenMobileNav(false)}>Contact</Link>
+          </nav>
+        </div>
+      </Transition>
+
+      {/* Main */}
       <main className="flex-1">
         <Routes>
           <Route
