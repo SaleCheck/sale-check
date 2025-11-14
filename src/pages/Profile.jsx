@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth, db } from "../firebase/firebase";
 import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import Card from "../components/Card/Card";
 import Spinner from "../components/Spinner/Spinner";
