@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
 export async function getProductsForUser(userId) {
@@ -10,4 +10,9 @@ export async function getProductsForUser(userId) {
         id: doc.id,
         ...doc.data(),
     }));
+}
+
+export function deleteProductForUser(productId) {
+    const ref = doc(db, "productsToCheck", productId);
+    return deleteDoc(ref);
 }

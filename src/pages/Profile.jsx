@@ -6,16 +6,17 @@ import Modal from "../components/Modal/Modal";
 import ProductForm from "../components/Forms/ProductForm";
 import { subscribeToAuthStateChanges } from "../services/authService";
 import { getUserDoc } from "../services/firestoreUserService";
-import { getProductsForUser } from "../services/firestoreProductService";
+import { getProductsForUser, deleteProductForUser } from "../services/firestoreProductService";
 
 export default function Profile() {
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
     const [userData, setUserData] = useState(null);
     const [productsToCheck, setProductsToCheck] = useState([]);
+    const [modalProductData, setModalProductData] = useState({});
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [modalProductData, setModalProductData] = useState({});
+    const [isDeleting, setIsDeleting] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -55,18 +56,36 @@ export default function Profile() {
         return (
             <div className="flex flex-col items-center pt-24 space-y-4">
                 <p className="text-gray-500 text-lg">Fetching products...</p>
-                <Spinner />
+                <Spinner size="24"/>
             </div>
         )
     }
 
-    if (!user && !loading) {
+    if (!loading && !user) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <p className="text-gray-600">You are not logged in.</p>
             </div>
         );
     }
+
+    const handleDelete = async (productId) => {
+        if (!productId) return;
+
+        try {
+            setIsDeleting(true);
+            await deleteProductForUser(productId);
+
+            setIsDeleteModalOpen(false);
+            navigate(0);    // Reload page
+
+        } catch (err) {
+            console.error("Error deleting product:", err);
+
+        } finally {
+            setIsDeleting(false)
+        }
+    };
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -87,7 +106,10 @@ export default function Profile() {
                                 setIsEditModalOpen(true);
                                 setModalProductData(product);
                             }}
-                            onDelete={() => setIsDeleteModalOpen(true)}
+                            onDelete={() => {
+                                setIsDeleteModalOpen(true);
+                                setModalProductData(product);
+                            }}
                         />
                     ))}
                 </div>
@@ -104,7 +126,7 @@ export default function Profile() {
                     productUrl={modalProductData.url}
                     cssSelector={modalProductData.cssSelector}
                     lastUpdated={modalProductData.lastUpdated}
-                    closeModal={() => setIsDeleteModalOpen(false)}
+                    closeModal={() => setIsEditModalOpen(false)}
                 />
                 <div className="flex justify-center space-x-3 pt-4 w-full">
                     <button
@@ -139,10 +161,11 @@ export default function Profile() {
                         </button>
 
                         <button
-                            disabled
-                            className="px-4 py-2 bg-red-500 text-white rounded-md opacity-50 cursor-not-allowed"
+                            onClick={() => handleDelete(modalProductData.id)}
+                            disabled={isDeleting}
+                            className={`px-4 py-2 rounded-md text-white bg-red-500 transition ${isDeleting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-600"}`}
                         >
-                            Delete
+                            {isDeleting ? "Deleting ..." : "Delete"}
                         </button>
                     </div>
                     <p className="text-sm text-gray-500 text-center">
