@@ -1,8 +1,9 @@
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, Fragment } from "react";
 import { Transition } from "@headlessui/react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { Bars3Icon } from "@heroicons/react/24/outline";
+import priceTrackSvg from './assets/pricetrack.svg';
 import LoginForm from "./components/Forms/LoginForm";
 import SignupForm from "./components/Forms/SignupForm";
 import Modal from "./components/Modal/Modal";
@@ -10,9 +11,7 @@ import HowItWorks from "./pages/HowItWorks";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
-import priceTrackSvg from './assets/pricetrack.svg';
-import { UserCircleIcon } from "@heroicons/react/24/solid";
-import { Bars3Icon } from "@heroicons/react/24/outline";
+import { subscribeToAuthStateChanges, logout } from "./services/authService";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +22,7 @@ function App() {
 
   useEffect(() => {
     document.title = "SaleCheck";
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = subscribeToAuthStateChanges((currentUser) => {
       setUser(currentUser);
     });
     return unsubscribe;
@@ -72,7 +71,7 @@ function App() {
                 </button>
                 <span
                   onClick={() => {
-                    auth.signOut().then(() => {
+                    logout().then(() => {
                       setUser(null);
                       navigate("/");
                     });

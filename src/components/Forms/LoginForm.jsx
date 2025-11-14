@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { loginWithEmailAndPwd } from "../../services/authService";
 
 export default function LoginForm({ switchToSignup, closeModal }) {
   const [email, setEmail] = useState("");
@@ -17,7 +16,7 @@ export default function LoginForm({ switchToSignup, closeModal }) {
     setLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await loginWithEmailAndPwd(email, password);
       if (closeModal) closeModal();
       navigate(`/profile?id=${userCredential.user.uid}`);
     } catch (err) {

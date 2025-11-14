@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db, storage } from "../../firebase/firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { signUpWithEmailAndPwd, updateUserAuthProfile } from "../../services/authService";
+import { updateUserDoc } from "../../services/firestoreUserService";
+import { uploadUserAvatar } from "../../services/storageUserServce";
 
 export default function SignupForm({ switchToLogin, closeModal }) {
   const [firstName, setFirstName] = useState("");
@@ -28,38 +27,28 @@ export default function SignupForm({ switchToLogin, closeModal }) {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await signUpWithEmailAndPwd(email, password);
       const user = userCredential.user;
+
+      let photoURL;
       const displayName = `${firstName} ${lastName}`.trim();
+      let userDoc = {
+        displayName,
+        firstName,
+        lastName,
+      };
 
       if (avatarFile) {
-        let photoURL;
-
-        const avatarRef = ref(storage, `users/avatar/${user.uid}/${user.uid}.png`);
-        await uploadBytes(avatarRef, avatarFile);
-        photoURL = await getDownloadURL(avatarRef);
-
-        await updateProfile(user, {
-          displayName: displayName,
-          photoURL: photoURL || null
-        });
-
-        await updateDoc(doc(db, "users", user.uid), {
-          photoURL: photoURL,
-          displayName: displayName,
-          firstName: firstName,
-          lastName: lastName,
-          lastUpdated: serverTimestamp(),
-        })
-
-      } else {
-        await updateDoc(doc(db, "users", user.uid), {
-          displayName: displayName,
-          firstName: firstName,
-          lastName: lastName,
-          lastUpdated: serverTimestamp(),
-        })
+        photoURL = await uploadUserAvatar(user.uid, avatarFile);
+        userDoc.photoURL = photoURL;
       }
+
+      await updateUserAuthProfile(user, {
+        displayName: displayName,
+        photoURL: photoURL || null
+      });
+
+      await updateUserDoc(user.uid, userDoc);
 
       if (closeModal) closeModal();
       navigate(`/profile?id=${user.uid}`);

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebase/firebase";
-import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import Card from "../components/Card/Card";
 import Spinner from "../components/Spinner/Spinner";
 import Modal from "../components/Modal/Modal";
 import ProductForm from "../components/Forms/ProductForm";
+import { subscribeToAuthStateChanges } from "../services/authService";
+import { getUserDoc } from "../services/firestoreUserService";
+import { getProductsForUser } from "../services/firestoreProductService";
 
 export default function Profile() {
     const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function Profile() {
 
     useEffect(() => {
         document.title = "SaleCheck | Profile";
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        const unsubscribe = subscribeToAuthStateChanges(async (currentUser) => {
             setLoading(true);
 
             if (!currentUser) {
@@ -34,20 +34,11 @@ export default function Profile() {
             setUser(currentUser);
 
             try {
-                // Get user data
-                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                if (userDoc.exists()) setUserData(userDoc.data());
+                const userData = await getUserDoc(currentUser.uid);
+                setUserData(userData);
 
-                // Get productsToCheck
-                const productsToCheckRef = collection(db, "productsToCheck");
-                const productsToCheckQuery = query(productsToCheckRef, where("user", "==", currentUser.uid));
-                const productsToCheckSnap = await getDocs(productsToCheckQuery);
-
-                const productsList = productsToCheckSnap.docs.map((doc) => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
-                setProductsToCheck(productsList);
+                const userProducts = await getProductsForUser(currentUser.uid);
+                setProductsToCheck(userProducts);
 
             } catch (err) {
                 console.error("Error loading data:", err);
