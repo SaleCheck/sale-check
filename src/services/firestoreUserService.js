@@ -6,9 +6,12 @@ export async function getUserDoc(userId) {
     return userSnap.exists() ? userSnap.data() : null;
 }
 
-export function updateUserDoc(userId, data) {
-    return updateDoc(doc(db, "users", userId), {
+export async function updateUserDoc(userId, data) {
+    const ref = doc(db, "users", userId);
+    const payload = {
         ...data,
-        lastUpdated: serverTimestamp()
-    })
+        lastUpdated: serverTimestamp(),
+    }
+
+    return updateDoc(ref, payload);
 }
