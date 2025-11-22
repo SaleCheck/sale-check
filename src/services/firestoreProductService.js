@@ -12,12 +12,13 @@ export async function getProductsForUser(userId) {
     }));
 }
 
-export async function createProductForUser(userId, data) {
+export async function createProductForUser(userId, userEmail, data) {
     const ref = collection(db, "productsToCheck");
     const payload = {
         ...data, 
         user: userId,
-        createdAt: serverTimestamp(),
+        emailNotification: [ userEmail ],
+        createdTimestamp: serverTimestamp(),
         lastUpdated: serverTimestamp(),
     }
     return addDoc(ref, payload);

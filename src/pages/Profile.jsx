@@ -80,7 +80,7 @@ export default function Profile() {
         try {
             setLoading(true);
             const payload = { ...values };
-            await createProductForUser(user.uid, payload);
+            await createProductForUser(user.uid, user.email, payload);
 
             setIsCreateModalOpen(false);
             navigate(0);    // Reload page
@@ -134,7 +134,7 @@ export default function Profile() {
         <div className="flex flex-col min-h-screen">
             <div className="flex flex-col items-center text-center pt-16">
                 <h1 className="text-2xl font-bold mb-2">Welcome, {userData?.firstName || user.displayName || user.email}!</h1>
-                <p className="text-gray-600">You are successfully logged in.</p>
+                <p className="text-gray-600">Price monitoring alerts are sent to the email your account is registered with.</p>
 
                 {/* Button: Add Product */}
                 <button
