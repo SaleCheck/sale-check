@@ -6,6 +6,12 @@ yarn-debug.log*
 yarn-error.log*
 firebase-debug.log*
 firebase-debug.*.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+dist
+dist-ssr
+*.local
 
 dist
 
@@ -81,6 +87,6 @@ node_modules/
 # dataconnect generated files
 .dataconnect
 
-*puppeteerTest*
 **/firestore_dwnld*/*
 **/firestore_copy*/*
+
