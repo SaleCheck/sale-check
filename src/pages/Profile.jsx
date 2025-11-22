@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import Card from "../components/Card/Card";
 import Spinner from "../components/Spinner/Spinner";
 import Modal from "../components/Modal/Modal";
 import ProductForm from "../components/Forms/ProductForm";
 import { subscribeToAuthStateChanges } from "../services/authService";
 import { getUserDoc } from "../services/firestoreUserService";
-import { getProductsForUser, deleteProductForUser } from "../services/firestoreProductService";
+import { getProductsForUser, createProductForUser, updateProductForUser, deleteProductForUser } from "../services/firestoreProductService";
 
 export default function Profile() {
     const [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function Profile() {
     const [userData, setUserData] = useState(null);
     const [productsToCheck, setProductsToCheck] = useState([]);
     const [modalProductData, setModalProductData] = useState({});
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -56,7 +58,7 @@ export default function Profile() {
         return (
             <div className="flex flex-col items-center pt-24 space-y-4">
                 <p className="text-gray-500 text-lg">Fetching products...</p>
-                <Spinner size="24"/>
+                <Spinner size="24" />
             </div>
         )
     }
@@ -67,6 +69,47 @@ export default function Profile() {
                 <p className="text-gray-600">You are not logged in.</p>
             </div>
         );
+    }
+
+    const handleCreate = async ({ values }) => {
+        if (!user?.uid) {
+            console.error("No authenticated user");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const payload = { ...values };
+            await createProductForUser(user.uid, payload);
+
+            setIsCreateModalOpen(false);
+            navigate(0);    // Reload page
+        } catch (err) {
+            console.error("Error updating product:", err);
+
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleEdit = async ({ productId, values }) => {
+        if (!productId) {
+            console.log("No productid")
+        }
+
+        try {
+            setLoading(true);
+            const payload = { ...values };
+            await updateProductForUser(productId, payload);
+
+            setIsEditModalOpen(false);
+            navigate(0);    // Reload page
+        } catch (err) {
+            console.error("Error updating product:", err);
+
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleDelete = async (productId) => {
@@ -93,8 +136,18 @@ export default function Profile() {
                 <h1 className="text-2xl font-bold mb-2">Welcome, {userData?.firstName || user.displayName || user.email}!</h1>
                 <p className="text-gray-600">You are successfully logged in.</p>
 
-                {/* Render cards for each product */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4 mt-8">
+                {/* Button: Add Product */}
+                <button
+                    className="mt-6 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-sm hover:shadow transition flex items-center gap-2"
+                    onClick={() => {
+                        setModalProductData({});
+                        setIsCreateModalOpen(true);
+                    }}>
+                    <PlusIcon className="w-5 h-5" /> Add Product
+                </button>
+
+                {/* Cards: Render for each product */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4 mt-4">
                     {productsToCheck.map((product) => (
                         <Card
                             key={product.id}
@@ -115,10 +168,24 @@ export default function Profile() {
                 </div>
             </div>
 
-            {/* Edit Modal */}
+            {/* Modal: Add Product */}
+            <Modal isOpen={isCreateModalOpen} closeModal={() => setIsCreateModalOpen(false)}>
+                <ProductForm
+                    formTitle="Add Product"
+                    imageUpload={true}
+                    closeModal={() => setIsCreateModalOpen(false)}
+                    submitBtnLabel="Add Product"
+                    submitBtnClassName="bg-green-500 text-white"
+                    onSubmit={handleCreate}
+                />
+            </Modal>
+
+            {/* Modal: Edit Product */}
             <Modal isOpen={isEditModalOpen} closeModal={() => setIsEditModalOpen(false)}>
                 <ProductForm
                     formTitle="Edit Product"
+                    closeModal={() => setIsEditModalOpen(false)}
+                    productId={modalProductData.id}
                     productName={modalProductData.productName}
                     imageUrl={modalProductData.imageUrl}
                     expectedPrice={modalProductData.expectedPrice}
@@ -126,26 +193,13 @@ export default function Profile() {
                     productUrl={modalProductData.url}
                     cssSelector={modalProductData.cssSelector}
                     lastUpdated={modalProductData.lastUpdated}
-                    closeModal={() => setIsEditModalOpen(false)}
+                    submitBtnLabel="Save Changes"
+                    submitBtnClassName="bg-blue-500 text-white"
+                    onSubmit={handleEdit}
                 />
-                <div className="flex justify-center space-x-3 pt-4 w-full">
-                    <button
-                        onClick={() => setIsEditModalOpen(false)}
-                        className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
-                    >
-                        Cancel
-                    </button>
-
-                    <button
-                        disabled
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md opacity-50 cursor-not-allowed"
-                    >
-                        Save Changes
-                    </button>
-                </div>
             </Modal>
 
-            {/* Delete Modal */}
+            {/* Modal: Delete Product */}
             <Modal isOpen={isDeleteModalOpen} closeModal={() => setIsDeleteModalOpen(false)}>
                 <div className="flex flex-col items-center space-y-4">
                     <h2 className="text-xl font-semibold text-gray-800">Delete Product</h2>
