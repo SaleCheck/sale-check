@@ -7,3 +7,11 @@ export async function uploadUserAvatar(userId, file) {
 
     return getDownloadURL(avatarRef);
 }
+
+export async function uploadProductImage(productId, file) {
+    const productImgRef = ref(storage, `/productImages/${productId}/${productId}.png`);
+    await uploadBytes(productImgRef, file);
+
+    return getDownloadURL(productImgRef);
+}
+    

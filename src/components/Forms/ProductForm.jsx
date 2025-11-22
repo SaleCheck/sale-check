@@ -42,7 +42,7 @@ export default function ProductForm({
 
         try {
             if (typeof onSubmit === "function") {
-                await onSubmit({ productId, values });
+                await onSubmit({ productId, productImageFile, values });
             } else {
                 console.warn("No onSubmit handler provided for ProductForm");
             }
@@ -133,7 +133,6 @@ export default function ProductForm({
                     Upload product picture (optional):
                 </label>
                 <input
-                    disabled
                     type="file"
                     className="border rounded px-3 py-2"
                     accept="image/*"

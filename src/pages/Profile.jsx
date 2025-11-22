@@ -8,6 +8,7 @@ import ProductForm from "../components/Forms/ProductForm";
 import { subscribeToAuthStateChanges } from "../services/authService";
 import { getUserDoc } from "../services/firestoreUserService";
 import { getProductsForUser, createProductForUser, updateProductForUser, deleteProductForUser } from "../services/firestoreProductService";
+import { uploadProductImage } from "../services/storageUserServce";
 
 export default function Profile() {
     const [loading, setLoading] = useState(false);
@@ -71,7 +72,7 @@ export default function Profile() {
         );
     }
 
-    const handleCreate = async ({ values }) => {
+    const handleCreate = async ({ values, productImageFile }) => {
         if (!user?.uid) {
             console.error("No authenticated user");
             return;
@@ -79,8 +80,19 @@ export default function Profile() {
 
         try {
             setLoading(true);
-            const payload = { ...values };
-            await createProductForUser(user.uid, user.email, payload);
+            const productRef = await createProductForUser(user.uid, user.email, { ...values });
+            const productId = productRef.id;
+
+            let imageUrl = null;
+            if (productImageFile) {
+                try {
+                    imageUrl = await uploadProductImage(productId, productImageFile);
+                    await updateProductForUser(productId, { imageUrl: imageUrl });
+
+                } catch (err) {
+                    console.error("Image upload failed:", err);
+                }
+            }
 
             setIsCreateModalOpen(false);
             navigate(0);    // Reload page
@@ -92,14 +104,28 @@ export default function Profile() {
         }
     }
 
-    const handleEdit = async ({ productId, values }) => {
+    const handleEdit = async ({ productId, values, productImageFile }) => {
         if (!productId) {
             console.log("No productid")
+            return;
         }
 
         try {
             setLoading(true);
-            const payload = { ...values };
+
+            let imageUrl = null;
+            if (productImageFile) {
+                try {
+                    imageUrl = await uploadProductImage(productId, productImageFile);
+                } catch (err) {
+                    console.error("Image upload failed:", err);
+                }
+            }
+
+            const payload = {
+                ...values,
+                ...(imageUrl ? { imageUrl } : {})
+            };
             await updateProductForUser(productId, payload);
 
             setIsEditModalOpen(false);
