@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Tooltip from "../components/Tooltip/Tooltip";
 
 export default function Contact() {
     useEffect(() => {
@@ -46,12 +47,18 @@ export default function Contact() {
                 </div>
 
                 <div className="flex gap-4 justify-center">
-                    <button
-                        type="submit"
-                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105"
-                    >
-                        Submit
-                    </button>
+                    {/* Submit button with tooltip */}
+                    <Tooltip text="Submit is disabled">
+                        <button
+                            type="button"
+                            disabled
+                            className="bg-green-300 text-white opacity-60 cursor-not-allowed font-semibold py-2 px-4 rounded-full"
+                        >
+                            Submit
+                        </button>
+                    </Tooltip>
+
+                    {/* Cancel button */}
                     <button
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105"

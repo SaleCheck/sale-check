@@ -1,5 +1,6 @@
 import { Transition } from "@headlessui/react";
 import { PhotoIcon, PencilIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline";
+import Tooltip from "../Tooltip/Tooltip";
 
 export default function Card({
   imageSrc,
@@ -43,20 +44,24 @@ export default function Card({
 
         {/* Action Icons */}
         <div className="flex items-center justify-center gap-4 py-3 border-t border-gray-100">
-          <button
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-            title="Edit product"
-            onClick={onEdit}
-          >
-            <PencilIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
-          </button>
-          <button
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-            title="Archive product"
-            onClick={onDelete}
-          >
-            <ArchiveBoxIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
-          </button>
+          <Tooltip text="Edit">
+            <button
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              title="Edit product"
+              onClick={onEdit}
+            >
+              <PencilIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+            </button>
+          </Tooltip>
+          <Tooltip text="Delete">
+            <button
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              title="Archive product"
+              onClick={onDelete}
+            >
+              <ArchiveBoxIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
+            </button>
+          </Tooltip>
         </div>
       </div>
     </Transition>
