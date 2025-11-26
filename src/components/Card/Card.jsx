@@ -33,7 +33,7 @@ export default function Card({
 
         {/* Title */}
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 truncate w-full">{title}</h3>
         </div>
 
         {/* Price */}
