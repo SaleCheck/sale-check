@@ -16,7 +16,7 @@
     "@heroicons/react": "^2.2.0",
     "firebase": "^12.3.0",
     "react": "^19.2.1",
-    "react-dom": "^19.1.1",
+    "react-dom": "^19.2.1",
     "react-router-dom": "^7.9.3"
   },
   "devDependencies": {
