@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",  // Since using Vite as bundler
+        "isolatedModules": true,        // Ensures each file can be transpiled independently. Required for bundlers such as Vite.
+        "skipLibCheck": true,           // Skips checking TypeScript type definitions inside `node_modules`
+        "resolveJsonModule": true,      // Allows importing `.json` files
+        "strict": true,                 // Turns on all TypeScript’s strongest type safety rules
+        "types": ["vite/client"],       // Includes Vite-specific global types like `import.meta.env`
+        "jsx": "react-jsx",
+        "allowJs": true,
+        "checkJs": false,
+        "noEmit": true
+    },
+    "include": [
+        "src",
+        "vite.config.*",
+        "eslint.config.*"
+    ]
+}
