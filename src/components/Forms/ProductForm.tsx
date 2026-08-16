@@ -1,4 +1,31 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import type { Timestamp } from "firebase/firestore";
+
+interface ProductFormProps {
+    formTitle: string;
+    closeModal: () => void;
+    productId?: string | null;
+    productName?: string | null;
+    imageUrl?: string | null;
+    expectedPrice?: string | number | null;
+    expectedPriceCurrency?: string | null;
+    productUrl?: string | null;
+    cssSelector?: string | null;
+    lastUpdated?: Timestamp | null;
+    submitBtnLabel?: string;
+    submitBtnClassName?: string;
+    onSubmit?: ((data: {
+        productId: string | null;
+        productImageFile: File | null;
+        values: {
+            productName: string;
+            expectedPrice: string | number;
+            expectedPriceCurrency: string;
+            url: string;
+            cssSelector: string;
+        };
+    }) => Promise<void> | void) | null;
+}
 
 export default function ProductForm({
     formTitle,
@@ -14,18 +41,21 @@ export default function ProductForm({
     submitBtnLabel = "Save Changes",
     submitBtnClassName = "bg-blue-500 text-white",
     onSubmit = null,
-}) {
-    const [name, setName] = useState(productName || "");
-    const [price, setPrice] = useState(expectedPrice || "");
-    const [currency, setCurrency] = useState(expectedPriceCurrency || "");
-    const [url, setUrl] = useState(productUrl || "");
-    const [selector, setSelector] = useState(cssSelector || "");
-    const [productImageFile, setProductImageFile] = useState(null);
-    const [dbImageUrl, setDbImageUrl] = useState(imageUrl || "");
-    const [submitting, setSubmitting] = useState(false);
+}: ProductFormProps) {
+    const [name, setName] = useState<string>(productName || "");
+    const [price, setPrice] = useState<string | number>(expectedPrice || "");
+    const [currency, setCurrency] = useState<string>(
+        expectedPriceCurrency || ""
+    );
+    const [url, setUrl] = useState<string>(productUrl || "");
+    const [selector, setSelector] = useState<string>(cssSelector || "");
+    const [productImageFile, setProductImageFile] = useState<File | null>(null);
+    const [dbImageUrl, setDbImageUrl] = useState<string>(imageUrl || "");
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         if (submitting) {
             return;
         } else {
@@ -38,18 +68,27 @@ export default function ProductForm({
             expectedPriceCurrency: currency,
             url,
             cssSelector: selector,
-        }
+        };
 
         try {
             if (typeof onSubmit === "function") {
-                await onSubmit({ productId, productImageFile, values });
+                await onSubmit({
+                    productId,
+                    productImageFile,
+                    values,
+                });
             } else {
                 console.warn("No onSubmit handler provided for ProductForm");
             }
         } finally {
             setSubmitting(false);
         }
-    }
+    };
+
+    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null;
+        setProductImageFile(file);
+    };
 
     return (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -132,27 +171,29 @@ export default function ProductForm({
                 <label className="text-sm text-gray-600 font-medium">
                     Upload product picture (optional):
                 </label>
+
                 <input
                     type="file"
                     className="border rounded px-3 py-2"
                     accept="image/*"
-                    onChange={(e) => setProductImageFile(e.target.files[0])}
+                    onChange={handleImageChange}
                 />
             </div>
 
-
             {/* Last updated text */}
-            {lastUpdated ? (
-                <p className="text-sm text-gray-700">{`Last updated: ${lastUpdated.toDate().toLocaleString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: true
-                })}`}</p>
-            ) : (
-                null
+            {lastUpdated && (
+                <p className="text-sm text-gray-700">
+                    {`Last updated: ${lastUpdated
+                        .toDate()
+                        .toLocaleString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                        })}`}
+                </p>
             )}
 
             {/* Action Buttons */}
@@ -168,11 +209,14 @@ export default function ProductForm({
                 <button
                     type="submit"
                     disabled={submitting}
-                    className={`px-4 py-2 rounded-md ${submitBtnClassName} ${submitting ? "opacity-50 cursor-not-allowed" : "hover:brightness-95"}`}
+                    className={`px-4 py-2 rounded-md ${submitBtnClassName} ${submitting
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:brightness-95"
+                        }`}
                 >
                     {submitting ? "Saving..." : submitBtnLabel}
                 </button>
             </div>
         </form>
     );
-};
+}
