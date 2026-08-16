@@ -1,20 +1,16 @@
 import { db } from "../firebase/firebase";
 import { doc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore";
 
-export interface UserData {
-    email: string;
-    uid: string;
+export interface UserUpdateData {
     displayName?: string;
     firstName?: string;
     lastName?: string;
     photoURL?: string | null;
 }
 
-export interface UserUpdateData {
-    displayName?: string;
-    firstName?: string;
-    lastName?: string;
-    photoUrl?: string | null;
+export interface UserData extends UserUpdateData {
+    email: string;
+    uid: string;
 }
 
 export async function getUserDoc(
