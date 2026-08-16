@@ -3,7 +3,8 @@ import { useState, useEffect, Fragment } from "react";
 import { Transition } from "@headlessui/react";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 import { Bars3Icon } from "@heroicons/react/24/outline";
-import priceTrackSvg from './assets/pricetrack.svg';
+import type { User } from "firebase/auth";
+import priceTrackSvg from "./assets/pricetrack.svg";
 import LoginForm from "./components/Forms/LoginForm";
 import SignupForm from "./components/Forms/SignupForm";
 import Modal from "./components/Modal/Modal";
@@ -14,23 +15,33 @@ import Profile from "./pages/Profile";
 import { subscribeToAuthStateChanges, logout } from "./services/authService";
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [user, setUser] = useState(null);
-  const [openMobileNav, setOpenMobileNav] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [user, setUser] = useState<User | null>(null);
+  const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = "SaleCheck";
-    const unsubscribe = subscribeToAuthStateChanges((currentUser) => {
-      setUser(currentUser);
-    });
+    const unsubscribe = subscribeToAuthStateChanges(
+      (currentUser: User | null) => {
+        setUser(currentUser);
+      }
+    );
     return unsubscribe;
   }, []);
 
-  const openLogin = () => { setIsLogin(true); setIsModalOpen(true); };
-  const openSignup = () => { setIsLogin(false); setIsModalOpen(true); };
-  const closeModal = () => setIsModalOpen(false);
+  const openLogin = (): void => { 
+    setIsLogin(true); 
+    setIsModalOpen(true); 
+  };
+  const openSignup = (): void => { 
+    setIsLogin(false); 
+    setIsModalOpen(true); 
+  };
+  const closeModal = (): void => {
+    setIsModalOpen(false)
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
