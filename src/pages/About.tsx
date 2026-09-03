@@ -1,14 +1,16 @@
 import { useEffect } from "react";
 
-export default function About() {    
+export default function About() {
     useEffect(() => {
-        document.title = "SaleCheck | About"
+        document.title = "SaleCheck | About";
     }, []);
-    
+
     return (
         <div className="max-w-3xl mx-auto mt-24 px-6">
             <h1 className="text-5xl font-extrabold mb-6 text-gray-900">About Us</h1>
+
             <h2 className="text-2xl font-bold mb-4 text-gray-800">Inspiration</h2>
+
             <p className="text-lg text-gray-700">
                 A similar product exists on:{" "}
                 <a
@@ -21,6 +23,7 @@ export default function About() {
                 </a>
                 .
             </p>
+
             <ul className="list-disc pl-6">
                 <li className="text-lg text-gray-700">
                     Built by{" "}
@@ -33,6 +36,7 @@ export default function About() {
                         Nikolaj Englmayer Münster
                     </a>
                 </li>
+
                 <li className="text-lg text-gray-700">
                     Article on Danish national Broadcaster:{" "}
                     <a

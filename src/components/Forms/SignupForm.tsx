@@ -1,28 +1,47 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { signUpWithEmailAndPwd, updateUserAuthProfile } from "../../services/authService";
+import {
+  signUpWithEmailAndPwd,
+  updateUserAuthProfile,
+} from "../../services/authService";
 import { updateUserDoc } from "../../services/firestoreUserService";
 import { uploadUserAvatar } from "../../services/storageUserServce";
 
-export default function SignupForm({ switchToLogin, closeModal }) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+interface SignupFormProps {
+  switchToLogin: () => void;
+  closeModal?: () => void;
+}
+
+interface UserDoc {
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  photoURL?: string;
+}
+
+export default function SignupForm({
+  switchToLogin,
+  closeModal,
+}: SignupFormProps) {
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     if (!(password.length > 0 && password === confirmPassword)) {
       setError("Passwords do not match.");
+      setLoading(false);
       return;
     }
 
@@ -30,9 +49,10 @@ export default function SignupForm({ switchToLogin, closeModal }) {
       const userCredential = await signUpWithEmailAndPwd(email, password);
       const user = userCredential.user;
 
-      let photoURL;
+      let photoURL: string | undefined;
       const displayName = `${firstName} ${lastName}`.trim();
-      let userDoc = {
+
+      const userDoc: UserDoc = {
         displayName,
         firstName,
         lastName,
@@ -44,18 +64,24 @@ export default function SignupForm({ switchToLogin, closeModal }) {
       }
 
       await updateUserAuthProfile(user, {
-        displayName: displayName,
-        photoURL: photoURL || null
+        displayName,
+        photoURL: photoURL || null,
       });
 
       await updateUserDoc(user.uid, userDoc);
 
       if (closeModal) closeModal();
+
       navigate(`/profile?id=${user.uid}`);
 
     } catch (err) {
       console.error("Signup error:", err);
-      setError(err.message);
+
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
 
     } finally {
       setLoading(false);
@@ -114,7 +140,7 @@ export default function SignupForm({ switchToLogin, closeModal }) {
           type="file"
           className="border rounded px-3 py-2"
           accept="image/*"
-          onChange={(e) => setAvatarFile(e.target.files[0])}
+          onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
         />
       </div>
       <button
