@@ -14,13 +14,16 @@ import {
 import { db } from "../firebase/firebase";
 
 export interface ProductData {
-    name: string;
+    productName: string;
+    expectedPrice: number;
+    expectedPriceCurrency: string;
     url: string;
-    price?: number;
+    cssSelector: string;
+    imageUrl?: string;
     user: string;
     emailNotification: string[];
-    createdTimestamp?: any; // Firestore timestamp
-    lastUpdated?: any;      // Firestore timestamp
+    createdTimestamp?: any;
+    lastUpdated?: any;
 }
 
 export interface Product extends ProductData {
@@ -41,7 +44,7 @@ export async function getProductsForUser(userId: string): Promise<Product[]> {
 export async function createProductForUser(
     userId: string, 
     userEmail: string, 
-    data: { name: string; url: string; price?: number }
+    data: Omit<ProductData, "user" | "emailNotification" | "createdTimestamp" | "lastUpdated">
 ): Promise<DocumentReference<DocumentData>> {
     const ref = collection(db, "productsToCheck");
     const payload: ProductData = {
@@ -56,7 +59,7 @@ export async function createProductForUser(
 
 export async function updateProductForUser(
     productId: string, 
-    data: ProductData
+    data: Partial<ProductData>
 ): Promise<void> {
     const ref = doc(db, "productsToCheck", productId);
 
