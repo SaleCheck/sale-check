@@ -1,12 +1,22 @@
 import { useState, useEffect } from "react";
 import Tooltip from "../components/Tooltip/Tooltip";
 
+interface FormData {
+    name: string;
+    email: string;
+    message: string;
+}
+
 export default function Contact() {
     useEffect(() => {
-        document.title = "SaleCheck | Contact"
+        document.title = "SaleCheck | Contact";
     }, []);
 
-    const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+    const [formData, setFormData] = useState<FormData>({
+        name: "",
+        email: "",
+        message: "",
+    });
 
     return (
         <div className="max-w-3xl mx-auto mt-24 px-6">
@@ -37,7 +47,6 @@ export default function Contact() {
                 <div>
                     <label className="block text-gray-700 font-medium mb-1" htmlFor="message">Message</label>
                     <textarea
-                        type="text"
                         id="message"
                         placeholder="Your Message"
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"

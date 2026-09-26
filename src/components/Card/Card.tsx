@@ -2,14 +2,23 @@ import { Transition } from "@headlessui/react";
 import { PhotoIcon, PencilIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import Tooltip from "../Tooltip/Tooltip";
 
+interface CardProps {
+  imageSrc?: string;
+  title: string;
+  expectedPrice: number;
+  expectedPriceCurrency: string;
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
 export default function Card({
   imageSrc,
   title,
   expectedPrice,
   expectedPriceCurrency,
   onEdit,
-  onDelete
-}) {
+  onDelete,
+}: CardProps) {
   return (
     <Transition
       appear={true}

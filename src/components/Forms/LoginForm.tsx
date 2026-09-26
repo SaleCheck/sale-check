@@ -2,25 +2,36 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginWithEmailAndPwd } from "../../services/authService";
 
-export default function LoginForm({ switchToSignup, closeModal }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+interface LoginFormProps {
+  switchToSignup: () => void;
+  closeModal: () => void;
+}
+
+export default function LoginForm({
+  switchToSignup,
+  closeModal,
+}: LoginFormProps) {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
       const userCredential = await loginWithEmailAndPwd(email, password);
+
       if (closeModal) closeModal();
       navigate(`/profile?id=${userCredential.user.uid}`);
-    } catch (err) {
-      setError("Invalid email or password", err.message);
+    } catch (err: unknown) {
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,18 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, type ReactNode } from "react";
 import { XCircleIcon } from "@heroicons/react/24/outline";
 
-export default function Modal({ isOpen, closeModal, children }) {
+interface ModalProps {
+  isOpen: boolean;
+  closeModal: () => void;
+  children: ReactNode;  
+}
+
+export default function Modal({ 
+  isOpen, 
+  closeModal, 
+  children 
+}: ModalProps) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
