@@ -1,11 +1,11 @@
-import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   signUpWithEmailAndPwd,
   updateUserAuthProfile,
-} from "../../services/authService";
-import { updateUserDoc } from "../../services/firestoreUserService";
-import { uploadUserAvatar } from "../../services/storageUserServce";
+} from '../../services/authService';
+import { updateUserDoc } from '../../services/firestoreUserService';
+import { uploadUserAvatar } from '../../services/storageUserServce';
 
 interface SignupFormProps {
   switchToLogin: () => void;
@@ -23,24 +23,24 @@ export default function SignupForm({
   switchToLogin,
   closeModal,
 }: SignupFormProps) {
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
 
   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     if (!(password.length > 0 && password === confirmPassword)) {
-      setError("Passwords do not match.");
+      setError('Passwords do not match.');
       setLoading(false);
       return;
     }
@@ -73,24 +73,26 @@ export default function SignupForm({
       if (closeModal) closeModal();
 
       navigate(`/profile?id=${user.uid}`);
-
     } catch (err) {
-      console.error("Signup error:", err);
+      console.error('Signup error:', err);
 
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("An unexpected error occurred.");
+        setError('An unexpected error occurred.');
       }
-
     } finally {
       setLoading(false);
-      console.log("Signup process finished");
+      console.log('Signup process finished');
     }
   };
 
   return (
-    <form onSubmit={handleSignup} autoComplete="off" className="flex flex-col gap-4">
+    <form
+      onSubmit={handleSignup}
+      autoComplete="off"
+      className="flex flex-col gap-4"
+    >
       <h2 className="text-xl font-bold">Sign Up</h2>
       <input
         type="text"
@@ -148,12 +150,16 @@ export default function SignupForm({
         className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-full"
         disabled={loading}
       >
-        {loading ? "Signing up..." : "Sign Up"}
+        {loading ? 'Signing up...' : 'Sign Up'}
       </button>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <p className="text-sm text-gray-500">
-        Already have an account?{" "}
-        <button className="text-green-500 hover:underline" onClick={switchToLogin} type="button">
+        Already have an account?{' '}
+        <button
+          className="text-green-500 hover:underline"
+          onClick={switchToLogin}
+          type="button"
+        >
           Login
         </button>
       </p>
