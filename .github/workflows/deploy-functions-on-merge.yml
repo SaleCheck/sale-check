@@ -109,4 +109,4 @@ jobs:
         run: firebase deploy --only functions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json  # Points to Firebase service account key
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}  # Stored in repo secrets
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}  # Genereated by CLI: `firebase login:ci`. Stored in repo secrets
