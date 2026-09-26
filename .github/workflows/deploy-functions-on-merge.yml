@@ -4,17 +4,12 @@ on:
   push:
     branches:
       - main  
-  # pull_request:
-  #   branches-ignore:
-  #     - main
 
 jobs:
   npm-audit:
     uses: ./.github/workflows/npm-audit-on-pr.yml
     with:
       working-directory: "functions"
-    secrets:
-      GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
 
   npm-audit-failure-alert-email:
     runs-on: ubuntu-latest

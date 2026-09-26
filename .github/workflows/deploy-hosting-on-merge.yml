@@ -12,8 +12,6 @@ jobs:
     uses: ./.github/workflows/npm-audit-on-pr.yml
     with:
       working-directory: "functions"
-    secrets:
-      GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
 
   npm-test:
     needs: [npm-audit] # Ensure npm-audit job is completed before this one
