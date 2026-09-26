@@ -32,8 +32,8 @@ on:
       FIREBASE_MEASUREMENT_ID:
         description: "Firebase Measurement ID"
         required: true
-      FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B:
-        description: "Firebase Service Account for Sale Check B611B"
+      FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3: # Generated from https://console.cloud.google.com/iam-admin/serviceaccounts/details/101200596144041145407/keys?project=salecheck-867e3
+        description: "Firebase Service Account for Sale Check 867e3" 
         required: true
   pull_request:
     branches:
@@ -98,7 +98,7 @@ jobs:
           cd ${{ inputs.working-directory || 'functions' }}
 
           echo "Writing service account credentials to authenticate Firebase CLI..."
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}' > /tmp/firebase-key.json
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3 }}' > /tmp/firebase-key.json
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/firebase-key.json
 
           echo "Starting Firebase Emulators and running tests:"
