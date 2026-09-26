@@ -10,66 +10,69 @@ import {
   where,
   type DocumentData,
   type DocumentReference,
-} from "firebase/firestore";
-import { db } from "../firebase/firebase";
+} from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 export interface ProductData {
-    productName: string;
-    expectedPrice: number;
-    expectedPriceCurrency: string;
-    url: string;
-    cssSelector: string;
-    imageUrl?: string;
-    user: string;
-    emailNotification: string[];
-    createdTimestamp?: any;
-    lastUpdated?: any;
+  productName: string;
+  expectedPrice: number;
+  expectedPriceCurrency: string;
+  url: string;
+  cssSelector: string;
+  imageUrl?: string;
+  user: string;
+  emailNotification: string[];
+  createdTimestamp?: any;
+  lastUpdated?: any;
 }
 
 export interface Product extends ProductData {
-    id: string;
+  id: string;
 }
 
 export async function getProductsForUser(userId: string): Promise<Product[]> {
-    const ref = collection(db, "productsToCheck");
-    const q = query(ref, where("user", "==", userId));
-    const snapshot = await getDocs(q);
+  const ref = collection(db, 'productsToCheck');
+  const q = query(ref, where('user', '==', userId));
+  const snapshot = await getDocs(q);
 
-    return snapshot.docs.map(docSnap => ({
-        id: docSnap.id,
-        ...(docSnap.data() as ProductData),
-    }));
+  return snapshot.docs.map((docSnap) => ({
+    id: docSnap.id,
+    ...(docSnap.data() as ProductData),
+  }));
 }
 
 export async function createProductForUser(
-    userId: string, 
-    userEmail: string, 
-    data: Omit<ProductData, "user" | "emailNotification" | "createdTimestamp" | "lastUpdated">
+  userId: string,
+  userEmail: string,
+  data: Omit<
+    ProductData,
+    'user' | 'emailNotification' | 'createdTimestamp' | 'lastUpdated'
+  >
 ): Promise<DocumentReference<DocumentData>> {
-    const ref = collection(db, "productsToCheck");
-    const payload: ProductData = {
-        ...data,
-        user: userId,
-        emailNotification: [userEmail],
-        createdTimestamp: serverTimestamp(),
-        lastUpdated: serverTimestamp(),
-    }
-    return addDoc(ref, payload);
+  const ref = collection(db, 'productsToCheck');
+  const payload: ProductData = {
+    ...data,
+    user: userId,
+    emailNotification: [userEmail],
+    createdTimestamp: serverTimestamp(),
+    lastUpdated: serverTimestamp(),
+  };
+  return addDoc(ref, payload);
 }
 
 export async function updateProductForUser(
-    productId: string, 
-    data: Partial<ProductData>
+  productId: string,
+  data: Partial<ProductData>
 ): Promise<void> {
-    const ref = doc(db, "productsToCheck", productId);
+  const ref = doc(db, 'productsToCheck', productId);
 
-    await updateDoc(ref, {
-        ...data,
-        lastUpdated: serverTimestamp(),
-    });
+  await updateDoc(ref, {
+    ...data,
+    lastUpdated: serverTimestamp(),
+  });
 }
 
 export async function deleteProductForUser(productId: string): Promise<void> {
-    const ref = doc(db, "productsToCheck", productId);
-    await deleteDoc(ref);
+  const ref = doc(db, 'productsToCheck', productId);
+  await deleteDoc(ref);
 }

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginWithEmailAndPwd } from "../../services/authService";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { loginWithEmailAndPwd } from '../../services/authService';
 
 interface LoginFormProps {
   switchToSignup: () => void;
@@ -11,10 +11,10 @@ export default function LoginForm({
   switchToSignup,
   closeModal,
 }: LoginFormProps) {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ export default function LoginForm({
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
@@ -31,7 +31,7 @@ export default function LoginForm({
       if (closeModal) closeModal();
       navigate(`/profile?id=${userCredential.user.uid}`);
     } catch (err: unknown) {
-      setError("Invalid email or password");
+      setError('Invalid email or password');
     } finally {
       setLoading(false);
     }
@@ -66,13 +66,13 @@ export default function LoginForm({
         disabled={loading}
         className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-full disabled:opacity-50"
       >
-        {loading ? "Logging in..." : "Login"}
+        {loading ? 'Logging in...' : 'Login'}
       </button>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <p className="text-sm text-gray-500">
-        Don't have an account?{" "}
+        Don't have an account?{' '}
         <button
           type="button"
           className="text-blue-500 hover:underline"

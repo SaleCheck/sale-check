@@ -1,6 +1,10 @@
-import { Transition } from "@headlessui/react";
-import { PhotoIcon, PencilIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline";
-import Tooltip from "../Tooltip/Tooltip";
+import { Transition } from '@headlessui/react';
+import {
+  PhotoIcon,
+  PencilIcon,
+  ArchiveBoxIcon,
+} from '@heroicons/react/24/outline';
+import Tooltip from '../Tooltip/Tooltip';
 
 interface CardProps {
   imageSrc?: string;
@@ -43,12 +47,16 @@ export default function Card({
 
         {/* Title */}
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-900 truncate w-full">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 truncate w-full">
+            {title}
+          </h3>
         </div>
 
         {/* Price */}
         <div className="px-4 pb-4 text-center">
-          <p className="text-gray-700">{expectedPrice} {expectedPriceCurrency}</p>
+          <p className="text-gray-700">
+            {expectedPrice} {expectedPriceCurrency}
+          </p>
         </div>
 
         {/* Action Icons */}

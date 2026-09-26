@@ -1,36 +1,34 @@
-import { db } from "../firebase/firebase";
-import { doc, updateDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import { db } from '../firebase/firebase';
+import { doc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 
 export interface UserUpdateData {
-    displayName?: string;
-    firstName?: string;
-    lastName?: string;
-    photoURL?: string | null;
+  displayName?: string;
+  firstName?: string;
+  lastName?: string;
+  photoURL?: string | null;
 }
 
 export interface UserData extends UserUpdateData {
-    email: string;
-    uid: string;
+  email: string;
+  uid: string;
 }
 
-export async function getUserDoc(
-    userId: string
-): Promise<UserData | null> {
-    const userSnap = await getDoc(doc(db, "users", userId));
+export async function getUserDoc(userId: string): Promise<UserData | null> {
+  const userSnap = await getDoc(doc(db, 'users', userId));
 
-    if (!userSnap.exists()) return null;
-    return userSnap.data() as UserData;
+  if (!userSnap.exists()) return null;
+  return userSnap.data() as UserData;
 }
 
 export async function updateUserDoc(
-    userId: string,
-    data: UserUpdateData
+  userId: string,
+  data: UserUpdateData
 ): Promise<void> {
-    const ref = doc(db, "users", userId);
-    const payload = {
-        ...data,
-        lastUpdated: serverTimestamp(),
-    }
+  const ref = doc(db, 'users', userId);
+  const payload = {
+    ...data,
+    lastUpdated: serverTimestamp(),
+  };
 
-    await updateDoc(ref, payload);
+  await updateDoc(ref, payload);
 }

@@ -1,4 +1,4 @@
-import { auth } from "../firebase/firebase";
+import { auth } from '../firebase/firebase';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -8,12 +8,11 @@ import {
   type User,
   type UserCredential,
   type Unsubscribe,
-} from "firebase/auth";
-
+} from 'firebase/auth';
 
 export interface AuthData {
-  displayName?: string | null; 
-  photoURL?: string | null
+  displayName?: string | null;
+  photoURL?: string | null;
 }
 
 export function subscribeToAuthStateChanges(
@@ -42,7 +41,7 @@ export function signUpWithEmailAndPwd(
 
 export function updateUserAuthProfile(
   user: User,
-  data: AuthData,
+  data: AuthData
 ): Promise<void> {
   return updateProfile(user, data);
 }

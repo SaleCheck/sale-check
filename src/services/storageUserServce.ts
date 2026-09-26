@@ -1,22 +1,25 @@
-import { storage } from "../firebase/firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from '../firebase/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export async function uploadUserAvatar(
-    userId: string, 
-    file: File
+  userId: string,
+  file: File
 ): Promise<string> {
-    const avatarRef = ref(storage, `users/avatar/${userId}/${userId}.png`);
-    await uploadBytes(avatarRef, file);
+  const avatarRef = ref(storage, `users/avatar/${userId}/${userId}.png`);
+  await uploadBytes(avatarRef, file);
 
-    return getDownloadURL(avatarRef);
+  return getDownloadURL(avatarRef);
 }
 
 export async function uploadProductImage(
-    productId: string, 
-    file: File
+  productId: string,
+  file: File
 ): Promise<string> {
-    const productImgRef = ref(storage, `/productImages/${productId}/${productId}.png`);
-    await uploadBytes(productImgRef, file);
+  const productImgRef = ref(
+    storage,
+    `/productImages/${productId}/${productId}.png`
+  );
+  await uploadBytes(productImgRef, file);
 
-    return getDownloadURL(productImgRef);
+  return getDownloadURL(productImgRef);
 }
