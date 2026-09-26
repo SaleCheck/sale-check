@@ -1,13 +1,18 @@
+# sale-check/.github/workflows/code-formatting-on-pr.yml
 name: Code Formatting
 
 on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: false
+        type: string
+        default: 'src'
   pull_request:
-    branches: main
 
 jobs:
   prettier:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,6 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check code formatting in `src` dir
-        working-directory: ./src
+      - name: Check code formatting
+        working-directory: ./${{ inputs.working-directory }}
         run: npx prettier --check .
