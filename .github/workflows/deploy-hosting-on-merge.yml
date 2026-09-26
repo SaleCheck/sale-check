@@ -47,10 +47,10 @@ jobs:
       - name: Build project
         run: npx vite build
 
-      - name: Build and deploy Firebase Hosting
+      - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3 }}
           channelId: live
-          projectId: sale-check-867e3
+          projectId: salecheck-867e3
