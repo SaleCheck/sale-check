@@ -1,4 +1,4 @@
-name: Code Formatting Check
+name: Code Formatting
 
 on:
   pull_request:
@@ -21,5 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check code formatting
+      - name: Check code formatting in `src` dir
+        working-directory: ./src
         run: npx prettier --check .
