@@ -22,7 +22,16 @@ jobs:
         run: npm ci
 
       - name: cd to `src`
-        run: cd src
+        run: |
+          echo "Current Working Directory:"
+          pwd
+
+          echo "Switching to ./src:"
+          cd src
+
+          echo "Listing all files in pwd:"
+          ls -al
+        
 
       - name: Check code formatting
         run: npx prettier --check .
