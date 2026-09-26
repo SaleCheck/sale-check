@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import type { User } from "firebase/auth";
 import Card from "../components/Card/Card";
 import Spinner from "../components/Spinner/Spinner";
 import Modal from "../components/Modal/Modal";
@@ -15,6 +14,7 @@ import {
     deleteProductForUser,
 } from "../services/firestoreProductService";
 import { uploadProductImage } from "../services/storageUserServce";
+import type { User } from "firebase/auth";
 import type { UserData } from "../services/firestoreUserService";
 import type { Product } from "../services/firestoreProductService";
 
@@ -99,7 +99,7 @@ export default function Profile() {
 
     const handleCreate = async ({ values, productImageFile }: HandleCreateArgs): Promise<void> => {
         if (!user?.uid || !user.email) {
-            console.error("Authenticated user has no email");
+            console.error("No authenticated user");
             return;
         }
 
