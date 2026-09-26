@@ -29,7 +29,7 @@ jobs:
       FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
       FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
       FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-      FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
+      FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3 }} # Generated from https://console.cloud.google.com/iam-admin/serviceaccounts/details/101200596144041145407/keys?project=salecheck-867e3
 
   firebase_hosting_build_and_deploy:
     needs: [npm-test]  # Ensure npm-test (and npm-audit implicitly) job is completed before this one
@@ -53,6 +53,6 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALE_CHECK_B611B }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3 }}
           channelId: live
-          projectId: sale-check-b611b
+          projectId: sale-check-867e3
