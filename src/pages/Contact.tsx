@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { sendContactMessage } from '../services/contactService';
+import { sendContactMessage } from '../services/contactEmailService';
 
 interface FormData {
   name: string;
