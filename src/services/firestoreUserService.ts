@@ -1,5 +1,5 @@
 import { db } from '../firebase/firebase';
-import { doc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
 
 export interface UserUpdateData {
   displayName?: string;
@@ -30,5 +30,5 @@ export async function updateUserDoc(
     lastUpdated: serverTimestamp(),
   };
 
-  await updateDoc(ref, payload);
+  await setDoc(ref, payload, { merge: true });
 }
