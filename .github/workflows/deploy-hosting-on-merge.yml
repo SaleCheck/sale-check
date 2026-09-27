@@ -23,7 +23,7 @@ jobs:
     needs: [npm-audit, format-and-linting] # Ensure npm-audit and format-and-linting jobs are completed before this one
     uses: ./.github/workflows/npm-test-on-pr.yml
     with:
-      working-directory: "src"
+      working-directory: "functions"
 
     secrets:
       GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
