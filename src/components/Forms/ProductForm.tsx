@@ -50,7 +50,7 @@ export default function ProductForm({
   const [url, setUrl] = useState<string>(productUrl || '');
   const [selector, setSelector] = useState<string>(cssSelector || '');
   const [productImageFile, setProductImageFile] = useState<File | null>(null);
-  const [dbImageUrl, setDbImageUrl] = useState<string>(imageUrl || '');
+  const [dbImageUrl /*, setDbImageUrl*/] = useState<string>(imageUrl || '');
   const [submitting, setSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
