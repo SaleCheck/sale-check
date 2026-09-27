@@ -59,9 +59,16 @@ jobs:
 
             Check the full audit report in the GitHub Actions tab and resolve immediately to ensure stable security on the platform.
 
-  npm-test:
+  format-and-linting:
     needs: [npm-audit, npm-audit-failure-alert-email] # Ensure npm-audit and npm-audit-failure-alert-email job are successful before this one
     if: always() && needs.npm-audit.result == 'success'
+    uses: ./.github/workflows/formatting-linting-on-pr.yml
+    with:
+      working-directory: "functions"
+  
+  npm-test:
+    needs: [npm-audit, npm-audit-failure-alert-email, format-and-linting]
+    if: always() && needs.npm-audit.result == 'success' && needs.format-and-linting.result == 'success'
     uses: ./.github/workflows/npm-test-on-pr.yml
     with:
       working-directory: "functions"
