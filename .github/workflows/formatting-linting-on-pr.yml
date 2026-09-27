@@ -50,4 +50,5 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npx eslint ${{ inputs.working-directory || 'src' }}
+        working-directory: ./${{ inputs.working-directory || 'src' }}
+        run: npx eslint .
