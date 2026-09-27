@@ -8,8 +8,10 @@ import {
   serverTimestamp,
   updateDoc,
   where,
+  Timestamp,
   type DocumentData,
   type DocumentReference,
+  type FieldValue,
 } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 
@@ -22,8 +24,8 @@ export interface ProductData {
   imageUrl?: string;
   user: string;
   emailNotification: string[];
-  createdTimestamp?: any;
-  lastUpdated?: any;
+  createdTimestamp?: FieldValue | Timestamp;
+  lastUpdated?: FieldValue | Timestamp;
 }
 
 export interface Product extends ProductData {
