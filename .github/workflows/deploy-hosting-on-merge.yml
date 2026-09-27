@@ -13,11 +13,18 @@ jobs:
     with:
       working-directory: "functions"
 
-  npm-test:
+  format-and-linting:
     needs: [npm-audit] # Ensure npm-audit job is completed before this one
+    uses: ./.github/workflows/formatting-linting-on-pr.yml
+    with:
+      working-directory: "src"
+
+  npm-test:
+    needs: [npm-audit, format-and-linting] # Ensure npm-audit and format-and-linting jobs are completed before this one
     uses: ./.github/workflows/npm-test-on-pr.yml
     with:
-      working-directory: "functions"
+      working-directory: "src"
+
     secrets:
       GH_HTTPS_TOKEN: ${{ secrets.GH_HTTPS_TOKEN }}
       FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
