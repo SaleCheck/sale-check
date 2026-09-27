@@ -28,3 +28,23 @@ jobs:
       - name: Check code formatting
         working-directory: ./${{ inputs.working-directory || 'src' }}
         run: npx prettier --check .
+
+  lint:
+    needs: prettier
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: ./${{ inputs.working-directory || 'src' }}
+        run: npx eslint .
