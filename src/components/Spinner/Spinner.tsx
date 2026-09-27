@@ -3,7 +3,7 @@ interface SpinnerProps {
   color?: string;
 }
 
-export default function Spinner({ size = '8', color = 'blue' }: SpinnerProps) {
+export default function Spinner({ size = '8' }: SpinnerProps) {
   return (
     <div className="flex items-center justify-center w-full py-8">
       <svg

@@ -30,7 +30,7 @@ export default function LoginForm({
 
       if (closeModal) closeModal();
       navigate(`/profile?id=${userCredential.user.uid}`);
-    } catch (err: unknown) {
+    } catch {
       setError('Invalid email or password');
     } finally {
       setLoading(false);
