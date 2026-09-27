@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Tooltip from '../components/Tooltip/Tooltip';
+import { sendContactMessage } from '../services/contactService';
 
 interface FormData {
   name: string;
@@ -17,11 +17,36 @@ export default function Contact() {
     email: '',
     message: '',
   });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
+    'idle'
+  );
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('sending');
+    try {
+      await sendContactMessage(formData);
+      setStatus('sent');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      console.error('sendContactMessage failed:', err);
+      setStatus('error');
+    }
+  };
 
   return (
     <div className="max-w-3xl mx-auto mt-24 px-6">
       <h1 className="text-5xl font-extrabold mb-6 text-gray-900">Contact Us</h1>
-      <form className="space-y-4 bg-white p-6 rounded shadow">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-white p-6 rounded shadow"
+      >
         <div>
           <label
             className="block text-gray-700 font-medium mb-1"
@@ -33,8 +58,11 @@ export default function Contact() {
             type="text"
             id="name"
             placeholder="Your Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          ></input>
+          />
         </div>
 
         <div>
@@ -45,11 +73,14 @@ export default function Contact() {
             E-Mail
           </label>
           <input
-            type="text"
+            type="email"
             id="email"
             placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
             className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          ></input>
+          />
         </div>
 
         <div>
@@ -62,29 +93,30 @@ export default function Contact() {
           <textarea
             id="message"
             placeholder="Your Message"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={formData.message}
+            onChange={handleChange}
+            required
             rows={4}
-          ></textarea>
+            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
 
-        <div className="flex gap-4 justify-center">
-          {/* Submit button with tooltip */}
-          <Tooltip text="Submit is disabled">
-            <button
-              type="button"
-              disabled
-              className="bg-green-300 text-white opacity-60 cursor-not-allowed font-semibold py-2 px-4 rounded-full"
-            >
-              Submit
-            </button>
-          </Tooltip>
+        {status === 'error' && (
+          <p className="text-red-500 text-sm">
+            Something went wrong. Try again.
+          </p>
+        )}
+        {status === 'sent' && (
+          <p className="text-green-600 text-sm">Message sent — thanks!</p>
+        )}
 
-          {/* Cancel button */}
+        <div className="flex gap-4 justify-center">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105"
+            disabled={status === 'sending'}
+            className="bg-green-500 hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105"
           >
-            Cancel
+            {status === 'sending' ? 'Sending…' : 'Submit'}
           </button>
         </div>
       </form>
