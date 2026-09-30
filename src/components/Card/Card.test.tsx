@@ -10,6 +10,10 @@ describe('Card', () => {
   });
 
   it('renders the product title', () => {
+    // Arrange
+    // (no separate setup needed; props are passed inline below)
+
+    // Act
     render(
       <Card
         title="PlayStation 5"
@@ -20,10 +24,15 @@ describe('Card', () => {
       />
     );
 
+    // Assert
     expect(screen.getByText('PlayStation 5')).toBeInTheDocument();
   });
 
   it('renders the expected price and currency', () => {
+    // Arrange
+    // (no separate setup needed; props are passed inline below)
+
+    // Act
     render(
       <Card
         title="PlayStation 5"
@@ -34,10 +43,15 @@ describe('Card', () => {
       />
     );
 
+    // Assert
     expect(screen.getByText('594 DKK')).toBeInTheDocument();
   });
 
   it('renders the product image when imageSrc is provided', () => {
+    // Arrange
+    // (no separate setup needed; props are passed inline below)
+
+    // Act
     render(
       <Card
         imageSrc="https://example.com/ps5.jpg"
@@ -49,6 +63,7 @@ describe('Card', () => {
       />
     );
 
+    // Assert
     expect(screen.getByRole('img', { name: 'PlayStation 5' })).toHaveAttribute(
       'src',
       'https://example.com/ps5.jpg'
@@ -56,6 +71,10 @@ describe('Card', () => {
   });
 
   it('renders a placeholder when imageSrc is not provided', () => {
+    // Arrange
+    // (no separate setup needed; props are passed inline below)
+
+    // Act
     render(
       <Card
         title="PlayStation 5"
@@ -66,12 +85,13 @@ describe('Card', () => {
       />
     );
 
+    // Assert
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('calls onEdit when the edit button is clicked', async () => {
+    // Arrange
     const onEdit = vi.fn();
-
     render(
       <Card
         title="PlayStation 5"
@@ -81,17 +101,18 @@ describe('Card', () => {
         onDelete={() => {}}
       />
     );
-
     const user = userEvent.setup();
 
+    // Act
     await user.click(screen.getByTitle('Edit product'));
 
+    // Assert
     expect(onEdit).toHaveBeenCalledTimes(1);
   });
 
   it('calls onDelete when the delete button is clicked', async () => {
+    // Arrange
     const onDelete = vi.fn();
-
     render(
       <Card
         title="PlayStation 5"
@@ -101,11 +122,12 @@ describe('Card', () => {
         onDelete={onDelete}
       />
     );
-
     const user = userEvent.setup();
 
+    // Act
     await user.click(screen.getByTitle('Archive product'));
 
+    // Assert
     expect(onDelete).toHaveBeenCalledTimes(1);
   });
 });
