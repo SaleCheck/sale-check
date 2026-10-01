@@ -54,7 +54,13 @@ function App() {
             alt="SaleCheck Logo"
             className="h-10 w-10 object-contain"
           />
-          <span className="text-xl font-bold text-gray-900">SaleCheck</span>
+          <span
+            className={`text-xl font-bold text-gray-900 ${
+              user ? '' : 'hidden md:inline'
+            }`}
+          >
+            SaleCheck
+          </span>
         </Link>
 
         <div className="flex items-center">
