@@ -1,4 +1,4 @@
-name: Security Scan for Vulnerabilities using `npm audit` on PR to `main`
+name: Security Scan for CVEs
 
 on:
   workflow_call: 

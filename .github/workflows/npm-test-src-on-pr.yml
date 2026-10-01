@@ -1,4 +1,4 @@
-name: Run Frontend Tests using `npm test` on PR to `main`
+name: Run Test Suites for `src`
 
 # Frontend tests (Vitest + React Testing Library) mock every Firebase SDK call,
 # so no secrets, emulators or submodules are required.

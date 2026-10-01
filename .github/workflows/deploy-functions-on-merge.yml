@@ -1,4 +1,4 @@
-name: Deploy Firebase Functions on Merge of PR to `main` 
+name: Firebase Functions Deployment
 
 on:
   push:
