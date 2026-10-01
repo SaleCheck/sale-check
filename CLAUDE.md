@@ -59,13 +59,26 @@ npm test                                           # Only works if emulators are
 
 **Environment**: copy `.env.sample` → `.env` in both the root (`VITE_*` vars for the client) and `functions/` (non-prefixed Firebase vars + `EMAILUSER`/`EMAILAPPPWD`).
 
+## Git Workflow
+
+**IMPORTANT**: These rules apply to every session and override any default git behavior.
+
+- **Never commit.** Do not run `git commit`, `git commit --amend`, `git merge`, `git rebase`, `git push`, or `git stash` in this repo or in the `functions/` and `docs/` submodules. Leave all changes uncommitted for me to review.
+- **Never use git worktrees.** Do not run `git worktree`, and do not start work in a worktree or isolated copy of the repo. Work directly in the current checkout.
+- **Branching before the first file change:**
+  - Run `git branch --show-current`.
+  - If it's `main`, create and switch to a new branch: `git switch -c <type>/<short-description>` (e.g. `feat/price-history`, `fix/scraper-timeout`).
+  - If it's any other branch, stay on it.
+- In submodules (`functions/`, `docs/`), apply the same branch check inside the submodule before editing files there.
+- 
 ## Gotchas
 
-- `functions/` and `docs/` are **submodules**. Changes there need their own commit/PR in the submodule repo, followed by a pointer bump ("chore: upd ref") in this repo.
+- `functions/` and `docs/` are **submodules**. Changes there are committed separately in the submodule repo, then the pointer is bumped in this repo ("chore: upd ref"). I handle those commits; just make the file changes.
 - The frontend does **not** call the HTTP CRUD functions. It reads and writes Firestore/Storage directly through `src/services/*` and relies on `firestore.rules`/`storage.rules` for authorization. The HTTP endpoints (except `sendContactMessage`) exist for API/test use.
 - Deleting a product or user cascades through triggers (`functions/triggers/`). Don't duplicate that cleanup client-side.
 - `src/services/storageUserServce.ts` is misspelled on purpose (existing name). Import it as-is.
 - The product field whitelist for the create endpoint lives in `functions/firestore/products/config/productsFirestoreStructureConfig.json`. Keep it in sync with `ProductData` in `src/services/firestoreProductService.ts:18`.
+
 
 ## Additional Documentation
 
@@ -79,6 +92,3 @@ Check these when the task touches the relevant area:
 | `docs/CICD.md` | Workflow sequence, required secrets, adding workflows |
 | `docs/FirebaseEmulator.md` | Running emulators locally, importing production data |
 | `docs/Home.md` | System overview / wiki index |
-
-## Adding New Features or Fixing Bugs
-**IMPORTANT**: When you work on a new feature or bug, create a git branch first. Then work on changes in that branch for the remainder of the session.
