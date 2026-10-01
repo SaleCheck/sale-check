@@ -1,4 +1,4 @@
-name: Deploy Firebase Functions on Merge of PR to `main` 
+name: Firebase Functions Deployment
 
 on:
   push:
@@ -66,10 +66,10 @@ jobs:
     with:
       working-directory: "functions"
   
-  npm-test:
+  npm-test-fb:
     needs: [npm-audit, npm-audit-failure-alert-email, format-and-linting]
     if: always() && needs.npm-audit.result == 'success' && needs.format-and-linting.result == 'success'
-    uses: ./.github/workflows/npm-test-on-pr.yml
+    uses: ./.github/workflows/npm-test-firebase-on-pr.yml
     with:
       working-directory: "functions"
     secrets:
@@ -84,8 +84,8 @@ jobs:
       FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3 }} # Generated from https://console.cloud.google.com/iam-admin/serviceaccounts/details/101200596144041145407/keys?project=salecheck-867e3
 
   firebase_functions_deploy:
-    needs: [npm-test]  # Ensure npm-test (and npm-audit and npm-audit-failure-alert-email implicitly) job is successful before this one
-    if: always() && needs.npm-test.result == 'success'
+    needs: [npm-test-fb]  # Ensure npm-test-fb (and npm-audit and npm-audit-failure-alert-email implicitly) job is successful before this one
+    if: always() && needs.npm-test-fb.result == 'success'
     runs-on: ubuntu-latest  
     steps:
       - name: Checkout code
