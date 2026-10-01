@@ -42,11 +42,33 @@ on:
 jobs:
   npm-test:
     runs-on: ubuntu-latest
+    env:
+      # When called from the `functions` repo, its checkout is placed at `functions/` inside the sale-check host (see below)
+      WORKING_DIRECTORY: ${{ github.repository == 'SaleCheck/sale-check' && (inputs.working-directory || 'functions') || 'functions' }}
     steps:
       - name: Checkout Code
+        if: github.repository == 'SaleCheck/sale-check'
         uses: actions/checkout@v4
         with:
           submodules: recursive
+          token: ${{ secrets.GH_HTTPS_TOKEN }}
+
+      # Called from the `functions` submodule repo: firebase.json, .firebaserc and the rules/indexes files
+      # only exist in sale-check, so check it out as the host project and put the caller's code at `functions/`,
+      # the source path firebase.json expects.
+      - name: Checkout sale-check as Firebase Host Project
+        if: github.repository != 'SaleCheck/sale-check'
+        uses: actions/checkout@v4
+        with:
+          repository: SaleCheck/sale-check
+          ref: main
+          token: ${{ secrets.GH_HTTPS_TOKEN }}
+
+      - name: Checkout Caller Code into `functions/`
+        if: github.repository != 'SaleCheck/sale-check'
+        uses: actions/checkout@v4
+        with:
+          path: functions
           token: ${{ secrets.GH_HTTPS_TOKEN }}
 
       - name: Set Up Node.js
@@ -77,7 +99,7 @@ jobs:
           pwd
 
           echo "Switching to the working directory:"
-          cd ${{ inputs.working-directory || 'functions' }}
+          cd "$WORKING_DIRECTORY"
 
           echo "Listing all files in printed working directory:"
           ls -al
@@ -95,7 +117,7 @@ jobs:
           MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
         run: |
           echo "Switching to the working directory:"
-          cd ${{ inputs.working-directory || 'functions' }}
+          cd "$WORKING_DIRECTORY"
 
           echo "Writing service account credentials to authenticate Firebase CLI..."
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SALECHECK_867E3 }}' > /tmp/firebase-key.json
