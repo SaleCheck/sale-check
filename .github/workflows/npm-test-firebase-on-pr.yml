@@ -1,4 +1,4 @@
-name: Run Tests using `npm test` on PR to `main`
+name: Run Firebase Integration Tests using `npm test` on PR to `main`
 
 on:
   workflow_call: 

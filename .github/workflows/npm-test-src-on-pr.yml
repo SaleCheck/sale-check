@@ -1,0 +1,37 @@
+name: Run Frontend Tests using `npm test` on PR to `main`
+
+# Frontend tests (Vitest + React Testing Library) mock every Firebase SDK call,
+# so no secrets, emulators or submodules are required.
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "The directory to run npm test in (where vitest.config.ts lives)"
+        required: false
+        type: string
+        default: '.'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        working-directory: ./${{ inputs.working-directory || '.' }}
+        run: npm ci
+
+      - name: Run Tests
+        working-directory: ./${{ inputs.working-directory || '.' }}
+        run: npm test
