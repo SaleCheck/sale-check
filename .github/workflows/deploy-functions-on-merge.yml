@@ -69,7 +69,7 @@ jobs:
   npm-test-fb:
     needs: [npm-audit, npm-audit-failure-alert-email, format-and-linting]
     if: always() && needs.npm-audit.result == 'success' && needs.format-and-linting.result == 'success'
-    uses: ./.github/workflows/npm-test-firebase-on-pr.yml
+    uses: ./.github/workflows/npm-test-fb-on-pr.yml
     with:
       working-directory: "functions"
     secrets:

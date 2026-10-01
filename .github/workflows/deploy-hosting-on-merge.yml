@@ -21,7 +21,7 @@ jobs:
 
   npm-test-fb:
     needs: [npm-audit, format-and-linting] # Ensure npm-audit and format-and-linting jobs are completed before this one
-    uses: ./.github/workflows/npm-test-firebase-on-pr.yml
+    uses: ./.github/workflows/npm-test-fb-on-pr.yml
     with:
       working-directory: "functions"
 
