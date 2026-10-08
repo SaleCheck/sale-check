@@ -45,7 +45,7 @@ export default function Contact() {
       <h1 className="text-5xl font-extrabold mb-6 text-gray-900">Contact Us</h1>
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 rounded shadow"
+        className="space-y-4 bg-white p-6 rounded-sm shadow-sm"
       >
         <div>
           <label
@@ -61,7 +61,7 @@ export default function Contact() {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-sm px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
@@ -79,7 +79,7 @@ export default function Contact() {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-sm px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
@@ -97,7 +97,7 @@ export default function Contact() {
             onChange={handleChange}
             required
             rows={4}
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full border border-gray-300 rounded-sm px-3 py-2 focus:outline-hidden focus:ring-2 focus:ring-blue-400"
           />
         </div>
 

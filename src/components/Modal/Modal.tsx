@@ -26,7 +26,7 @@ export default function Modal({ isOpen, closeModal, children }: ModalProps) {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-30" />
+          <div className="fixed inset-0 bg-black/30" />
         </Transition.Child>
 
         {/* Panel scale + fade */}
