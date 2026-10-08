@@ -225,6 +225,20 @@ describe('App', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('redirects a logged-in user from the root route to their profile', async () => {
+    // Arrange
+    // (no separate setup needed)
+
+    // Act
+    renderApp(testUser);
+
+    // Assert
+    expect(
+      screen.queryByRole('heading', { name: 'Welcome to SaleCheck' })
+    ).not.toBeInTheDocument();
+    await vi.waitFor(() => expect(document.title).toBe('SaleCheck | Profile'));
+  });
+
   it('logs out and returns to the home page when Signout is clicked', async () => {
     // Arrange
     renderApp(testUser, '/about');
