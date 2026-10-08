@@ -13,7 +13,7 @@ export default function Modal({ isOpen, closeModal, children }: ModalProps) {
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-50 flex items-center justify-center"
+        className="fixed inset-0 z-50 flex items-center justify-center px-4 py-12"
         onClose={closeModal}
       >
         {/* Backdrop fade */}
@@ -39,10 +39,10 @@ export default function Modal({ isOpen, closeModal, children }: ModalProps) {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          <Dialog.Panel className="relative bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+          <Dialog.Panel className="relative bg-white rounded-lg p-5 sm:p-6 w-full max-w-md max-h-[calc(100dvh-6rem)] overflow-y-auto shadow-lg">
             <button
               onClick={closeModal}
-              className="absolute top-5 right-5 text-gray-500 hover:text-gray-800"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
             >
               <XCircleIcon className="h-6 w-6" />
             </button>
