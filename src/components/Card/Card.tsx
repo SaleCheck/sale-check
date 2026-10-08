@@ -47,14 +47,20 @@ export default function Card({
 
         {/* Title */}
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-900 truncate w-full">
+          <h3
+            className="text-lg font-semibold text-gray-900 truncate w-full"
+            title={title}
+          >
             {title}
           </h3>
         </div>
 
         {/* Price */}
         <div className="px-4 pb-4 text-center">
-          <p className="text-gray-700">
+          <p
+            className="text-gray-700 truncate"
+            title={`${expectedPrice} ${expectedPriceCurrency}`}
+          >
             {expectedPrice} {expectedPriceCurrency}
           </p>
         </div>
