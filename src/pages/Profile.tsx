@@ -15,6 +15,7 @@ import {
 } from '../services/firestoreProductService';
 import { uploadProductImage } from '../services/storageUserServce';
 import type { User } from 'firebase/auth';
+import type { Timestamp } from 'firebase/firestore';
 import type { Product } from '../services/firestoreProductService';
 
 interface ProductFormValues {
@@ -258,7 +259,7 @@ export default function Profile() {
           expectedPriceCurrency={modalProductData.expectedPriceCurrency}
           productUrl={modalProductData.url}
           cssSelector={modalProductData.cssSelector}
-          lastUpdated={modalProductData.lastUpdated}
+          lastUpdated={modalProductData.lastUpdated as Timestamp | undefined}
           submitBtnLabel="Save Changes"
           submitBtnClassName="bg-blue-500 text-white"
           onSubmit={handleEdit}
