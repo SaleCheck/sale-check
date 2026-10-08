@@ -99,7 +99,7 @@ export default function ProductForm({
         <img
           src={dbImageUrl}
           alt="Product"
-          className="w-full h-40 object-cover rounded border"
+          className="w-full h-40 object-cover rounded-sm border"
         />
       )}
 
@@ -107,7 +107,7 @@ export default function ProductForm({
       <label className="flex flex-col gap-1">
         <span className="text-sm font-medium text-gray-700">Product Name:</span>
         <input
-          className="border rounded px-3 py-2"
+          className="border rounded-sm px-3 py-2"
           type="text"
           value={name}
           placeholder="Product Name"
@@ -123,7 +123,7 @@ export default function ProductForm({
             Expected Price:
           </span>
           <input
-            className="border rounded px-3 py-2"
+            className="border rounded-sm px-3 py-2"
             type="text"
             value={price}
             placeholder="Expected Price"
@@ -135,7 +135,7 @@ export default function ProductForm({
         <label className="flex flex-col gap-1 w-32">
           <span className="text-sm font-medium text-gray-700">Currency:</span>
           <input
-            className="border rounded px-3 py-2"
+            className="border rounded-sm px-3 py-2"
             type="text"
             value={currency}
             placeholder="DKK"
@@ -148,7 +148,7 @@ export default function ProductForm({
       <label className="flex flex-col gap-1">
         <span className="text-sm font-medium text-gray-700">Product URL:</span>
         <input
-          className="border rounded px-3 py-2"
+          className="border rounded-sm px-3 py-2"
           type="text"
           value={url}
           placeholder="Product URL"
@@ -160,7 +160,7 @@ export default function ProductForm({
       <label className="flex flex-col gap-1">
         <span className="text-sm font-medium text-gray-700">CSS Selector:</span>
         <input
-          className="border rounded px-3 py-2"
+          className="border rounded-sm px-3 py-2"
           type="text"
           value={selector}
           placeholder="CSS Selector"
@@ -176,7 +176,7 @@ export default function ProductForm({
 
         <input
           type="file"
-          className="border rounded px-3 py-2"
+          className="border rounded-sm px-3 py-2"
           accept="image/*"
           onChange={handleImageChange}
         />

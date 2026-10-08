@@ -199,7 +199,7 @@ export default function Profile() {
 
         {/* Button: Add Product */}
         <button
-          className="mt-6 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-sm hover:shadow transition flex items-center gap-2"
+          className="mt-6 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium shadow-xs hover:shadow-sm transition flex items-center gap-2"
           onClick={() => {
             setModalProductData({});
             setIsCreateModalOpen(true);

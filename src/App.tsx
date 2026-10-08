@@ -83,7 +83,7 @@ function App() {
               <div className="flex flex-col items-center">
                 <button
                   onClick={() => navigate(`/profile?id=${user.uid}`)}
-                  className="focus:outline-none"
+                  className="focus:outline-hidden"
                   style={{ background: 'none', border: 'none', padding: 0 }}
                 >
                   {user.photoURL ? (
@@ -150,7 +150,7 @@ function App() {
         leaveTo="max-h-0 opacity-0"
       >
         <div className="overflow-hidden">
-          <nav className="md:hidden flex flex-col gap-4 bg-white px-8 py-4 shadow">
+          <nav className="md:hidden flex flex-col gap-4 bg-white px-8 py-4 shadow-sm">
             <Link to="/how-it-works" onClick={() => setOpenMobileNav(false)}>
               How It Works
             </Link>
