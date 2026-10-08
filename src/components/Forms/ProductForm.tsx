@@ -116,14 +116,14 @@ export default function ProductForm({
       </label>
 
       {/* Expected Price + Currency */}
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         {/* Expected Price */}
-        <label className="flex flex-col gap-1 flex-1">
+        <label className="flex flex-col gap-1 flex-[3] min-w-40">
           <span className="text-sm font-medium text-gray-700">
             Expected Price:
           </span>
           <input
-            className="border rounded-sm px-3 py-2"
+            className="border rounded-sm px-3 py-2 w-full min-w-0"
             type="text"
             value={price}
             placeholder="Expected Price"
@@ -132,10 +132,10 @@ export default function ProductForm({
         </label>
 
         {/* Currency */}
-        <label className="flex flex-col gap-1 w-32">
+        <label className="flex flex-col gap-1 flex-1 min-w-24">
           <span className="text-sm font-medium text-gray-700">Currency:</span>
           <input
-            className="border rounded-sm px-3 py-2"
+            className="border rounded-sm px-3 py-2 w-full min-w-0"
             type="text"
             value={currency}
             placeholder="DKK"

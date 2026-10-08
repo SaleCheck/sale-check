@@ -46,7 +46,7 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between px-8 py-4 shadow-md">
+      <header className="flex items-center justify-between px-4 md:px-8 py-4 shadow-md">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img
@@ -78,7 +78,7 @@ function App() {
           </nav>
 
           {/* Auth */}
-          <div className="flex gap-4 ml-16">
+          <div className="flex gap-3 md:gap-4 md:ml-16">
             {user ? (
               <div className="flex flex-col items-center">
                 <button
@@ -125,17 +125,17 @@ function App() {
               </>
             )}
           </div>
-        </div>
 
-        {/* Mobile hamburger */}
-        {!user && (
-          <button
-            onClick={() => setOpenMobileNav(!openMobileNav)}
-            className="md:hidden p-2"
-          >
-            <Bars3Icon className="h-7 w-7 text-gray-700" />
-          </button>
-        )}
+          {/* Mobile hamburger */}
+          {!user && (
+            <button
+              onClick={() => setOpenMobileNav(!openMobileNav)}
+              className="md:hidden ml-5 -mr-1"
+            >
+              <Bars3Icon className="h-7 w-7 text-gray-700" />
+            </button>
+          )}
+        </div>
       </header>
 
       {/* Mobile Nav */}
@@ -150,7 +150,7 @@ function App() {
         leaveTo="max-h-0 opacity-0"
       >
         <div className="overflow-hidden">
-          <nav className="md:hidden flex flex-col gap-4 bg-white px-8 py-4 shadow-sm">
+          <nav className="md:hidden flex flex-col gap-4 bg-white px-4 md:px-8 py-4 shadow-sm">
             <Link to="/how-it-works" onClick={() => setOpenMobileNav(false)}>
               How It Works
             </Link>
