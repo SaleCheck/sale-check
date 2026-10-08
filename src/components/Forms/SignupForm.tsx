@@ -97,7 +97,7 @@ export default function SignupForm({
       <input
         type="text"
         placeholder="First Name"
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
         required
@@ -105,7 +105,7 @@ export default function SignupForm({
       <input
         type="text"
         placeholder="Last Name"
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
         required
@@ -113,7 +113,7 @@ export default function SignupForm({
       <input
         type="email"
         placeholder="Email"
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
@@ -121,7 +121,7 @@ export default function SignupForm({
       <input
         type="password"
         placeholder="Password"
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
@@ -129,7 +129,7 @@ export default function SignupForm({
       <input
         type="password"
         placeholder="Confirm Password"
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         required
@@ -140,7 +140,7 @@ export default function SignupForm({
         </label>
         <input
           type="file"
-          className="border rounded px-3 py-2"
+          className="border rounded-sm px-3 py-2"
           accept="image/*"
           onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
         />

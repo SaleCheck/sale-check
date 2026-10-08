@@ -47,7 +47,7 @@ export default function LoginForm({
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         autoComplete="username"
       />
 
@@ -57,7 +57,7 @@ export default function LoginForm({
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
-        className="border rounded px-3 py-2"
+        className="border rounded-sm px-3 py-2"
         autoComplete="current-password"
       />
 
