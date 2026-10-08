@@ -15,6 +15,10 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui"
   },
+    "//": "TODO: Remove overrides once upstream fixes are public",
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.6"
+  },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
