@@ -101,7 +101,6 @@ export default function Profile() {
     }
 
     try {
-      setLoading(true);
       const payload = {
         ...values,
         expectedPrice: Number(values.expectedPrice),
@@ -123,12 +122,12 @@ export default function Profile() {
         }
       }
 
+      await queryClient.invalidateQueries({
+        queryKey: ['products', user?.uid],
+      });
       setIsCreateModalOpen(false);
-      navigate(0); // Reload page
     } catch (err) {
       console.error('Error updating product:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -143,8 +142,6 @@ export default function Profile() {
     }
 
     try {
-      setLoading(true);
-
       let imageUrl: string | null = null;
       if (productImageFile) {
         try {
@@ -161,12 +158,12 @@ export default function Profile() {
       };
       await updateProductForUser(productId, payload);
 
+      await queryClient.invalidateQueries({
+        queryKey: ['products', user?.uid],
+      });
       setIsEditModalOpen(false);
-      navigate(0); // Reload page
     } catch (err) {
       console.error('Error updating product:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -177,8 +174,10 @@ export default function Profile() {
       setIsDeleting(true);
       await deleteProductForUser(productId);
 
+      await queryClient.invalidateQueries({
+        queryKey: ['products', user?.uid],
+      });
       setIsDeleteModalOpen(false);
-      navigate(0); // Reload page
     } catch (err) {
       console.error('Error deleting product:', err);
     } finally {
