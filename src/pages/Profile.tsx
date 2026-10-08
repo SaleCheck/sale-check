@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Card from '../components/Card/Card';
 import Spinner from '../components/Spinner/Spinner';
@@ -15,7 +15,7 @@ import {
 } from '../services/firestoreProductService';
 import { uploadProductImage } from '../services/storageUserServce';
 import type { User } from 'firebase/auth';
-import type { UserData } from '../services/firestoreUserService';
+import type { Timestamp } from 'firebase/firestore';
 import type { Product } from '../services/firestoreProductService';
 
 interface ProductFormValues {
@@ -38,10 +38,10 @@ interface HandleEditArgs {
 }
 
 export default function Profile() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+
+  const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [productsToCheck, setProductsToCheck] = useState<Product[]>([]);
   const [modalProductData, setModalProductData] = useState<Partial<Product>>(
     {}
   );
@@ -49,42 +49,33 @@ export default function Profile() {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const navigate = useNavigate();
+
+  const { data: userData, isLoading: isUserDataLoading } = useQuery({
+    queryKey: ['users', user?.uid],
+    queryFn: () => getUserDoc(user!.uid),
+    enabled: !!user,
+  });
+  const { data: productsToCheck = [], isLoading: isProductsLoading } = useQuery(
+    {
+      queryKey: ['products', user?.uid],
+      queryFn: () => getProductsForUser(user!.uid),
+      enabled: !!user,
+    }
+  );
 
   useEffect(() => {
     document.title = 'SaleCheck | Profile';
     const unsubscribe = subscribeToAuthStateChanges(
-      async (currentUser: User | null) => {
-        setLoading(true);
-
-        if (!currentUser) {
-          setUser(null);
-          setUserData(null);
-          setProductsToCheck([]);
-          setLoading(false);
-          return;
-        }
-
+      (currentUser: User | null) => {
         setUser(currentUser);
-
-        try {
-          const fetchedUserData = await getUserDoc(currentUser.uid);
-          setUserData(fetchedUserData);
-
-          const userProducts = await getProductsForUser(currentUser.uid);
-          setProductsToCheck(userProducts);
-        } catch (err) {
-          console.error('Error loading data:', err);
-        } finally {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     );
 
     return unsubscribe;
   }, []);
 
-  if (loading) {
+  if (loading || isUserDataLoading || isProductsLoading) {
     return (
       <div className="flex flex-col items-center pt-24 space-y-4">
         <p className="text-gray-500 text-lg">Fetching products...</p>
@@ -111,7 +102,6 @@ export default function Profile() {
     }
 
     try {
-      setLoading(true);
       const payload = {
         ...values,
         expectedPrice: Number(values.expectedPrice),
@@ -133,12 +123,12 @@ export default function Profile() {
         }
       }
 
+      await queryClient.invalidateQueries({
+        queryKey: ['products', user?.uid],
+      });
       setIsCreateModalOpen(false);
-      navigate(0); // Reload page
     } catch (err) {
       console.error('Error updating product:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -153,8 +143,6 @@ export default function Profile() {
     }
 
     try {
-      setLoading(true);
-
       let imageUrl: string | null = null;
       if (productImageFile) {
         try {
@@ -171,12 +159,12 @@ export default function Profile() {
       };
       await updateProductForUser(productId, payload);
 
+      await queryClient.invalidateQueries({
+        queryKey: ['products', user?.uid],
+      });
       setIsEditModalOpen(false);
-      navigate(0); // Reload page
     } catch (err) {
       console.error('Error updating product:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -187,8 +175,10 @@ export default function Profile() {
       setIsDeleting(true);
       await deleteProductForUser(productId);
 
+      await queryClient.invalidateQueries({
+        queryKey: ['products', user?.uid],
+      });
       setIsDeleteModalOpen(false);
-      navigate(0); // Reload page
     } catch (err) {
       console.error('Error deleting product:', err);
     } finally {
@@ -269,7 +259,7 @@ export default function Profile() {
           expectedPriceCurrency={modalProductData.expectedPriceCurrency}
           productUrl={modalProductData.url}
           cssSelector={modalProductData.cssSelector}
-          lastUpdated={modalProductData.lastUpdated}
+          lastUpdated={modalProductData.lastUpdated as Timestamp | undefined}
           submitBtnLabel="Save Changes"
           submitBtnClassName="bg-blue-500 text-white"
           onSubmit={handleEdit}
