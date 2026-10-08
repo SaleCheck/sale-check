@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import { useState, useEffect, Fragment } from 'react';
 import { Transition } from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
@@ -170,34 +170,38 @@ function App() {
           <Route
             path="/"
             element={
-              <div className="flex flex-col md:flex-row gap-8 px-[10%] mt-[5vh]">
-                {/* Left Column */}
-                <div className="md:w-1/2 flex flex-col justify-center">
-                  <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
-                    Welcome to SaleCheck
-                  </h1>
-                  <p className="text-gray-700 leading-relaxed mb-6">
-                    We provide you with the service that makes tracking price
-                    drops a breeze. Enter the product URL and your target price,
-                    and our system will keep a close eye on any price changes
-                    for you. We’ll notify you the moment your item is on sale,
-                    so you can seize the deal without having to constantly
-                    check.
-                    <br />
-                    <br />
-                    Let us do the hard work of monitoring prices, so you can
-                    enjoy your savings effortlessly!
-                  </p>
+              user ? (
+                <Navigate to={`/profile?id=${user.uid}`} replace />
+              ) : (
+                <div className="flex flex-col md:flex-row gap-8 px-[10%] mt-[5vh]">
+                  {/* Left Column */}
+                  <div className="md:w-1/2 flex flex-col justify-center">
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+                      Welcome to SaleCheck
+                    </h1>
+                    <p className="text-gray-700 leading-relaxed mb-6">
+                      We provide you with the service that makes tracking price
+                      drops a breeze. Enter the product URL and your target
+                      price, and our system will keep a close eye on any price
+                      changes for you. We’ll notify you the moment your item is
+                      on sale, so you can seize the deal without having to
+                      constantly check.
+                      <br />
+                      <br />
+                      Let us do the hard work of monitoring prices, so you can
+                      enjoy your savings effortlessly!
+                    </p>
+                  </div>
+                  {/* Right Column */}
+                  <div className="md:w-1/2 flex justify-center items-center">
+                    <img
+                      src={priceTrackSvg}
+                      alt="pricetrack-img"
+                      className="rounded-lg max-w-full h-auto"
+                    />
+                  </div>
                 </div>
-                {/* Right Column */}
-                <div className="md:w-1/2 flex justify-center items-center">
-                  <img
-                    src={priceTrackSvg}
-                    alt="pricetrack-img"
-                    className="rounded-lg max-w-full h-auto"
-                  />
-                </div>
-              </div>
+              )
             }
           />
           <Route path="/how-it-works" element={<HowItWorks />} />
