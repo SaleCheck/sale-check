@@ -1,34 +1,57 @@
 import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import { useState, useEffect, Fragment } from 'react';
-import { Transition } from '@headlessui/react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  Fragment,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  MenuSeparator,
+  Transition,
+} from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import type { User } from 'firebase/auth';
 import priceTrackSvg from './assets/pricetrack.svg';
 import LoginForm from './components/Forms/LoginForm';
 import SignupForm from './components/Forms/SignupForm';
+import AvatarForm from './components/Forms/AvatarForm';
+import EditUserForm from './components/Forms/EditUserForm';
 import Modal from './components/Modal/Modal';
 import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Profile from './pages/Profile';
-import { subscribeToAuthStateChanges, logout } from './services/authService';
+import { useAuthUser, useLogout } from './hooks/useAuth';
+import {
+  useUserDoc,
+  useUpdateAvatar,
+  useUpdateUserProfile,
+} from './hooks/useUser';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [user, setUser] = useState<User | null>(null);
   const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState<boolean>(false);
+  const [isEditUserModalOpen, setIsEditUserModalOpen] =
+    useState<boolean>(false);
+  const avatarButtonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
+
+  const { user } = useAuthUser();
+  const { data: userData } = useUserDoc(user?.uid);
+  const avatarURL = userData?.photoURL ?? user?.photoURL;
+  const logoutMutation = useLogout();
+  const updateUserProfile = useUpdateUserProfile(user);
+  const updateAvatar = useUpdateAvatar(user);
 
   useEffect(() => {
     document.title = 'SaleCheck';
-    const unsubscribe = subscribeToAuthStateChanges(
-      (currentUser: User | null) => {
-        setUser(currentUser);
-      }
-    );
-    return unsubscribe;
   }, []);
 
   const openLogin = (): void => {
@@ -41,6 +64,26 @@ function App() {
   };
   const closeModal = (): void => {
     setIsModalOpen(false);
+  };
+
+  // Headless UI's Menu only toggles on press, so open it on mouse hover by
+  // simulating the press it listens for. Touch and keyboard keep the default.
+  const openMenuOnHover = (
+    e: ReactPointerEvent<HTMLDivElement>,
+    open: boolean
+  ): void => {
+    if (e.pointerType !== 'mouse' || open) return;
+    avatarButtonRef.current?.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        pointerType: 'mouse',
+        button: 0,
+      })
+    );
+  };
+
+  const handleSignout = (): void => {
+    logoutMutation.mutate(undefined, { onSuccess: () => navigate('/') });
   };
 
   return (
@@ -80,34 +123,63 @@ function App() {
           {/* Auth */}
           <div className="flex gap-3 md:gap-4 md:ml-16">
             {user ? (
-              <div className="flex flex-col items-center">
-                <button
-                  onClick={() => navigate(`/profile?id=${user.uid}`)}
-                  className="focus:outline-hidden"
-                  style={{ background: 'none', border: 'none', padding: 0 }}
-                >
-                  {user.photoURL ? (
-                    <img
-                      src={user.photoURL}
-                      alt="User Avatar"
-                      className="h-10 w-10 rounded-full object-cover border border-gray-300"
-                    />
-                  ) : (
-                    <UserCircleIcon className="h-10 w-10 text-gray-400" />
-                  )}
-                </button>
-                <span
-                  onClick={() => {
-                    logout().then(() => {
-                      setUser(null);
-                      navigate('/');
-                    });
-                  }}
-                  className="text-xs text-gray-400 mt-1 cursor-pointer hover:text-gray-600"
-                >
-                  Signout
-                </span>
-              </div>
+              <Menu as="div" className="relative">
+                {({ open, close }) => (
+                  <div
+                    onPointerEnter={(e) => openMenuOnHover(e, open)}
+                    onPointerLeave={(e) => {
+                      if (e.pointerType === 'mouse' && open) close();
+                    }}
+                  >
+                    <MenuButton
+                      ref={avatarButtonRef}
+                      className="flex focus:outline-hidden"
+                    >
+                      {avatarURL ? (
+                        <img
+                          src={avatarURL}
+                          alt="User Avatar"
+                          className="h-10 w-10 rounded-full object-cover border border-gray-300"
+                        />
+                      ) : (
+                        <UserCircleIcon className="h-10 w-10 text-gray-400" />
+                      )}
+                    </MenuButton>
+                    <MenuItems
+                      transition
+                      className="absolute right-0 top-full z-40 pt-2 focus:outline-hidden transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
+                    >
+                      <div className="w-40 rounded-lg bg-white py-1 shadow-lg ring-1 ring-black/5">
+                        <MenuItem>
+                          <button
+                            onClick={() => setIsEditUserModalOpen(true)}
+                            className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
+                          >
+                            Edit User
+                          </button>
+                        </MenuItem>
+                        <MenuItem>
+                          <button
+                            onClick={() => setIsAvatarModalOpen(true)}
+                            className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
+                          >
+                            Edit Avatar
+                          </button>
+                        </MenuItem>
+                        <MenuSeparator className="my-1 h-px bg-gray-200" />
+                        <MenuItem>
+                          <button
+                            onClick={handleSignout}
+                            className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
+                          >
+                            Sign out
+                          </button>
+                        </MenuItem>
+                      </div>
+                    </MenuItems>
+                  </div>
+                )}
+              </Menu>
             ) : (
               <>
                 <button
@@ -229,6 +301,31 @@ function App() {
             closeModal={closeModal}
           />
         )}
+      </Modal>
+
+      {/* Edit User Modal */}
+      <Modal
+        isOpen={isEditUserModalOpen}
+        closeModal={() => setIsEditUserModalOpen(false)}
+      >
+        <EditUserForm
+          initialFirstName={userData?.firstName ?? ''}
+          initialLastName={userData?.lastName ?? ''}
+          closeModal={() => setIsEditUserModalOpen(false)}
+          onSubmit={updateUserProfile.mutateAsync}
+        />
+      </Modal>
+
+      {/* Avatar Modal */}
+      <Modal
+        isOpen={isAvatarModalOpen}
+        closeModal={() => setIsAvatarModalOpen(false)}
+      >
+        <AvatarForm
+          currentPhotoURL={avatarURL}
+          closeModal={() => setIsAvatarModalOpen(false)}
+          onSubmit={updateAvatar.mutateAsync}
+        />
       </Modal>
     </div>
   );
