@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { User } from 'firebase/auth';
 import App from './App';
+import { updateUserAuthProfile } from './services/authService';
+import { getUserDoc, updateUserDoc } from './services/firestoreUserService';
+import { uploadUserAvatar } from './services/storageUserServce';
 
 const { mockUnsubscribe, mockSubscribeToAuthStateChanges, mockLogout } =
   vi.hoisted(() => ({
@@ -69,6 +72,7 @@ describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockLogout.mockResolvedValue(undefined);
+    vi.mocked(getUserDoc).mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -147,7 +151,9 @@ describe('App', () => {
     // Assert
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Sign Up' })).toBeInTheDocument();
-    expect(screen.queryByText('Signout')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('img', { name: 'User Avatar' })
+    ).not.toBeInTheDocument();
   });
 
   it('opens the login form in a modal when Login is clicked', async () => {
@@ -213,7 +219,7 @@ describe('App', () => {
     ).toHaveLength(2);
   });
 
-  it('shows the user avatar and Signout when logged in', () => {
+  it('shows the user avatar when logged in', () => {
     // Arrange
     // (no separate setup needed)
 
@@ -225,10 +231,108 @@ describe('App', () => {
       'src',
       'https://example.com/avatar.png'
     );
-    expect(screen.getByText('Signout')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('menuitem', { name: 'Sign out' })
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Login' })
     ).not.toBeInTheDocument();
+  });
+
+  it('prefers the avatar from the user document over the auth profile', async () => {
+    // Arrange
+    vi.mocked(getUserDoc).mockResolvedValue({
+      uid: 'user-123',
+      email: 'jane@example.com',
+      photoURL: 'https://example.com/new-avatar.png',
+    });
+
+    // Act
+    renderApp(testUser, '/about');
+
+    // Assert
+    await vi.waitFor(() =>
+      expect(screen.getByRole('img', { name: 'User Avatar' })).toHaveAttribute(
+        'src',
+        'https://example.com/new-avatar.png'
+      )
+    );
+  });
+
+  it('opens the avatar menu on hover', async () => {
+    // Arrange
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+
+    // Act
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
+
+    // Assert
+    expect(
+      await screen.findByRole('menuitem', { name: 'Edit Avatar' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Sign out' })
+    ).toBeInTheDocument();
+  });
+
+  it('opens the avatar menu on click', async () => {
+    // Arrange
+    renderApp(testUser, '/about');
+    const user = userEvent.setup({ skipHover: true });
+
+    // Act
+    await user.pointer({
+      keys: '[TouchA]',
+      target: screen.getByRole('button', { name: 'User Avatar' }),
+    });
+
+    // Assert
+    expect(
+      await screen.findByRole('menuitem', { name: 'Sign out' })
+    ).toBeInTheDocument();
+  });
+
+  it('uploads a new avatar and saves it to auth and the user document', async () => {
+    // Arrange
+    const newURL = 'https://example.com/new-avatar.png';
+    vi.mocked(uploadUserAvatar).mockResolvedValue(newURL);
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+    const file = new File(['avatar'], 'avatar.png', { type: 'image/png' });
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Edit Avatar' })
+    );
+    const dialog = await screen.findByRole('dialog');
+    await user.upload(
+      within(dialog).getByLabelText('Upload new profile picture:'),
+      file
+    );
+    vi.mocked(getUserDoc).mockResolvedValue({
+      uid: 'user-123',
+      email: 'jane@example.com',
+      photoURL: newURL,
+    });
+
+    // Act
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    // Assert
+    expect(uploadUserAvatar).toHaveBeenCalledWith('user-123', file);
+    expect(updateUserAuthProfile).toHaveBeenCalledWith(testUser, {
+      photoURL: newURL,
+    });
+    expect(updateUserDoc).toHaveBeenCalledWith('user-123', {
+      photoURL: newURL,
+    });
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
+    expect(screen.getByRole('img', { name: 'User Avatar' })).toHaveAttribute(
+      'src',
+      newURL
+    );
   });
 
   it('redirects a logged-in user from the root route to their profile', async () => {
@@ -245,13 +349,14 @@ describe('App', () => {
     await vi.waitFor(() => expect(document.title).toBe('SaleCheck | Profile'));
   });
 
-  it('logs out and returns to the home page when Signout is clicked', async () => {
+  it('logs out and returns to the home page when Sign out is clicked', async () => {
     // Arrange
     renderApp(testUser, '/about');
     const user = userEvent.setup();
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
 
     // Act
-    await user.click(screen.getByText('Signout'));
+    await user.click(await screen.findByRole('menuitem', { name: 'Sign out' }));
 
     // Assert
     expect(mockLogout).toHaveBeenCalledTimes(1);
