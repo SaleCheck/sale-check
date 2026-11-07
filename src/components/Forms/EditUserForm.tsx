@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
 interface EditUserFormValues {
   firstName: string;
@@ -68,6 +69,8 @@ export default function EditUserForm({
         onChange={(e) => setLastName(e.target.value)}
         required
       />
+      <hr className="border-gray-200" />
+      <LanguageSwitcher />
       {/* Action Buttons */}
       <div className="flex justify-center space-x-3 pt-4 w-full">
         <button
