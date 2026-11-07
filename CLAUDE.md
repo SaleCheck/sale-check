@@ -4,7 +4,7 @@ Price-drop tracker. A user registers a product (URL + CSS selector for the price
 
 ## Tech Stack
 
-- **Frontend** (repo root): React 19 + TypeScript (strict), Vite 7, React Router 7, Tailwind CSS 3, Headless UI, Heroicons, react-i18next (English only)
+- **Frontend** (repo root): React 19 + TypeScript (strict), Vite 7, React Router 7, Tailwind CSS 3, Headless UI, Heroicons, react-i18next (English, Danish)
 - **Backend** (`functions/`, git submodule → `SaleCheck/functions`): Node 22, CommonJS JavaScript, Firebase Functions (v1 + v2 APIs), firebase-admin, Puppeteer, Nodemailer (Gmail SMTP)
 - **Platform**: Firebase Auth, Firestore, Cloud Storage, Hosting (SPA rewrite to `index.html`) — see `firebase.json`
 - **Tests**: Mocha + Chai + Supertest + Sinon in `functions/`, run against the Firebase emulators. Frontend: Vitest + Testing Library (jsdom), with `*.test.ts(x)` next to the source.
@@ -18,7 +18,7 @@ Price-drop tracker. A user registers a product (URL + CSS selector for the price
 | `src/pages/` | Route-level components (`Profile` is the only authenticated page) |
 | `src/components/<Name>/<Name>.tsx` | Reusable UI: `Card`, `Modal`, `Spinner`, `Tooltip`, `Forms/*` |
 | `src/services/` | The only modules that touch Firebase SDKs or `fetch` |
-| `src/locales/en.json` | All UI strings (i18next resources) |
+| `src/locales/{en,da}.json` | All UI strings (i18next resources); keys must stay identical across files |
 | `src/i18n.ts`, `src/i18next.d.ts` | i18next init (imported by `main.tsx` and `vitest.setup.ts`) and typed translation keys |
 | `src/firebase/firebase.ts` | Single Firebase app init; exports `auth`, `db`, `storage`, `functions` |
 | `functions/index.js` | Registers and re-exports every Cloud Function |
