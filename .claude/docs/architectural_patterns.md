@@ -134,7 +134,7 @@ Secrets are never hardcoded. CI injects them from GitHub secrets (`.github/workf
 No user-facing text is written literally in components. All of it lives in `src/locales/en.json` and `src/locales/da.json` and is read through `react-i18next`.
 - **Setup:** `src/i18n.ts` initializes i18next once with `supportedLanguages = ['en', 'da']`. English is the default and fallback, and there is no browser detection. It is imported in `src/main.tsx` and in `vitest.setup.ts`, so tests render English text by default and can assert on it.
 - **Switching:**
-  - `LanguageSwitcher` (`src/components/LanguageSwitcher/`) is a `<select>` that calls `i18n.changeLanguage` immediately. It sits in the Edit User modal, below the name fields with a separator above it.
+  - `LanguageSwitcher` (`src/components/LanguageSwitcher/`) is a Headless UI `Listbox` (`Field`/`Label` for the accessible name) that calls `i18n.changeLanguage` immediately. Each option shows a flag from `country-flag-icons` (US for English, DK for Danish) next to the language name. The flags are decorative (`aria-hidden`), and the flag map lives in the component because flags aren't translated. The options render in a portal, so tests find them with `screen.findByRole('option', …)`, not within the footer or dialog. There are two instances: one in the footer (bottom right, `inline` variant, visible when logged out) and one in the Edit User modal, below the name fields with a separator above it. Both read and write the shared i18n language, so they stay in sync without extra state, and each instance gets its own label/button wiring from Headless UI `Field`. `App.test.tsx` covers the sync.
   - The `languageChanged` handler in `src/i18n.ts` stores the choice in `localStorage` (`salecheck.language`), restores it on load, and keeps `<html lang>` in sync. Storage access is wrapped in `try/catch`.
   - Tests that switch language reset it with `i18n.changeLanguage('en')` in `afterEach`.
 - **Locales stay in sync:** `da.json` must mirror `en.json`.
@@ -154,4 +154,4 @@ No user-facing text is written literally in components. All of it lives in `src/
 - **Adding a language:**
   1. Add `src/locales/<lng>.json` with the same keys, and a `typeof en` assignment in `src/i18n.ts`.
   2. Add the language to `resources` and `supportedLanguages`.
-  3. Add a `language.<lng>` key (its own name for itself, for example "Dansk") to every locale file, and add it to `LanguageSwitcher`'s name map.
+  3. Add a `language.<lng>` key (its own name for itself, for example "Dansk") to every locale file, and add it to `LanguageSwitcher`'s name map and its flag map (`country-flag-icons/react/3x2`).
