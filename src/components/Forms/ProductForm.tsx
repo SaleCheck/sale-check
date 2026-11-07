@@ -45,7 +45,7 @@ export default function ProductForm({
   submitBtnClassName = 'bg-blue-500 text-white',
   onSubmit = null,
 }: ProductFormProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [name, setName] = useState<string>(productName || '');
   const [price, setPrice] = useState<string | number>(expectedPrice || '');
   const [currency, setCurrency] = useState<string>(expectedPriceCurrency || '');
@@ -196,7 +196,7 @@ export default function ProductForm({
       {lastUpdated && (
         <p className="text-sm text-gray-700">
           {t('product.lastUpdated', {
-            date: lastUpdated.toDate().toLocaleString(i18n.language, {
+            date: lastUpdated.toDate().toLocaleString('en-US', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
