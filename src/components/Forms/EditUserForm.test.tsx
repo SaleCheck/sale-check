@@ -30,7 +30,9 @@ describe('EditUserForm', () => {
     // Assert
     expect(screen.getByPlaceholderText('First Name')).toHaveValue('Jane');
     expect(screen.getByPlaceholderText('Last Name')).toHaveValue('Doe');
-    expect(screen.getByLabelText('Language')).toHaveValue('en');
+    expect(screen.getByRole('button', { name: /^Language/ })).toHaveTextContent(
+      'English'
+    );
   });
 
   it('submits the trimmed names and closes the modal', async () => {

@@ -11,7 +11,7 @@ describe('LanguageSwitcher', () => {
     localStorage.clear();
   });
 
-  it('offers English and Dansk with English selected', () => {
+  it('shows English with its flag by default', () => {
     // Arrange
     // (no separate setup needed)
 
@@ -19,24 +19,66 @@ describe('LanguageSwitcher', () => {
     render(<LanguageSwitcher />);
 
     // Assert
-    const select = screen.getByLabelText('Language');
-    expect(select).toHaveValue('en');
-    expect(screen.getByRole('option', { name: 'English' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Dansk' })).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: /^Language/ });
+    expect(button).toHaveTextContent('English');
+    expect(button.querySelector('svg')).toBeInTheDocument();
+  });
+
+  it('lists English and Dansk, each with a flag', async () => {
+    // Arrange
+    render(<LanguageSwitcher />);
+    const user = userEvent.setup();
+
+    // Act
+    await user.click(screen.getByRole('button', { name: /^Language/ }));
+
+    // Assert
+    const options = await screen.findAllByRole('option');
+    expect(options.map((option) => option.textContent)).toEqual([
+      'English',
+      'Dansk',
+    ]);
+    options.forEach((option) =>
+      expect(option.querySelector('svg')).toBeInTheDocument()
+    );
   });
 
   it('switches to Danish and remembers the choice', async () => {
     // Arrange
     render(<LanguageSwitcher />);
     const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /^Language/ }));
 
     // Act
-    await user.selectOptions(screen.getByLabelText('Language'), 'da');
+    await user.click(await screen.findByRole('option', { name: 'Dansk' }));
 
     // Assert
     expect(i18n.language).toBe('da');
-    expect(screen.getByLabelText('Sprog')).toHaveValue('da');
+    expect(screen.getByRole('button', { name: /^Sprog/ })).toHaveTextContent(
+      'Dansk'
+    );
     expect(document.documentElement.lang).toBe('da');
     expect(localStorage.getItem('salecheck.language')).toBe('da');
+  });
+
+  it('hides the label visually only in the inline (footer) variant', () => {
+    // Arrange
+    // (no separate setup needed)
+
+    // Act
+    render(
+      <>
+        <LanguageSwitcher />
+        <LanguageSwitcher inline />
+      </>
+    );
+
+    // Assert
+    const [stackedLabel, inlineLabel] = screen.getAllByText('Language');
+    expect(stackedLabel).not.toHaveClass('sr-only');
+    expect(inlineLabel).toHaveClass('sr-only');
+    expect(screen.getAllByRole('button', { name: /^Language/ })).toHaveLength(
+      2
+    );
   });
 });
