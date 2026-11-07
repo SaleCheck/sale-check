@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 import Card from '../components/Card/Card';
 import Spinner from '../components/Spinner/Spinner';
 import Modal from '../components/Modal/Modal';
@@ -39,6 +40,7 @@ interface HandleEditArgs {
 
 export default function Profile() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
@@ -64,7 +66,10 @@ export default function Profile() {
   );
 
   useEffect(() => {
-    document.title = 'SaleCheck | Profile';
+    document.title = t('pageTitle.profile');
+  }, [t]);
+
+  useEffect(() => {
     const unsubscribe = subscribeToAuthStateChanges(
       (currentUser: User | null) => {
         setUser(currentUser);
@@ -78,7 +83,7 @@ export default function Profile() {
   if (loading || isUserDataLoading || isProductsLoading) {
     return (
       <div className="flex flex-col items-center pt-24 space-y-4">
-        <p className="text-gray-500 text-lg">Fetching products...</p>
+        <p className="text-gray-500 text-lg">{t('profile.fetching')}</p>
         <Spinner size="24" />
       </div>
     );
@@ -87,7 +92,7 @@ export default function Profile() {
   if (!loading && !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-600">You are not logged in.</p>
+        <p className="text-gray-600">{t('profile.notLoggedIn')}</p>
       </div>
     );
   }
@@ -190,12 +195,11 @@ export default function Profile() {
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-col items-center text-center pt-16">
         <h1 className="text-2xl font-bold mb-2">
-          Welcome, {userData?.firstName || user?.displayName || user?.email}!
+          {t('profile.welcome', {
+            name: userData?.firstName || user?.displayName || user?.email,
+          })}
         </h1>
-        <p className="text-gray-600">
-          Price monitoring alerts are sent to the email your account is
-          registered with.
-        </p>
+        <p className="text-gray-600">{t('profile.alertsInfo')}</p>
 
         {/* Button: Add Product */}
         <button
@@ -205,7 +209,7 @@ export default function Profile() {
             setIsCreateModalOpen(true);
           }}
         >
-          <PlusIcon className="w-5 h-5" /> Add Product
+          <PlusIcon className="w-5 h-5" /> {t('profile.addProduct')}
         </button>
 
         {/* Cards: Render for each product */}
@@ -214,7 +218,7 @@ export default function Profile() {
             <Card
               key={product.id}
               imageSrc={product.imageUrl}
-              title={product.productName || 'Unnamed Product'}
+              title={product.productName || t('card.unnamed')}
               expectedPrice={product.expectedPrice}
               expectedPriceCurrency={product.expectedPriceCurrency || ''}
               onEdit={() => {
@@ -236,9 +240,9 @@ export default function Profile() {
         closeModal={() => setIsCreateModalOpen(false)}
       >
         <ProductForm
-          formTitle="Add Product"
+          formTitle={t('profile.addProduct')}
           closeModal={() => setIsCreateModalOpen(false)}
-          submitBtnLabel="Add Product"
+          submitBtnLabel={t('profile.addProduct')}
           submitBtnClassName="bg-green-500 text-white"
           onSubmit={handleCreate}
         />
@@ -250,7 +254,7 @@ export default function Profile() {
         closeModal={() => setIsEditModalOpen(false)}
       >
         <ProductForm
-          formTitle="Edit Product"
+          formTitle={t('profile.editProduct')}
           closeModal={() => setIsEditModalOpen(false)}
           productId={modalProductData.id}
           productName={modalProductData.productName}
@@ -260,7 +264,7 @@ export default function Profile() {
           productUrl={modalProductData.url}
           cssSelector={modalProductData.cssSelector}
           lastUpdated={modalProductData.lastUpdated as Timestamp | undefined}
-          submitBtnLabel="Save Changes"
+          submitBtnLabel={t('common.saveChanges')}
           submitBtnClassName="bg-blue-500 text-white"
           onSubmit={handleEdit}
         />
@@ -273,17 +277,17 @@ export default function Profile() {
       >
         <div className="flex flex-col items-center space-y-4">
           <h2 className="text-xl font-semibold text-gray-800">
-            Delete Product
+            {t('profile.delete.title')}
           </h2>
           <p className="text-gray-600 text-center">
-            Are you sure you want to delete this product?
+            {t('profile.delete.confirm')}
           </p>
           <div className="flex justify-center space-x-3 pt-4 w-full">
             <button
               onClick={() => setIsDeleteModalOpen(false)}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
 
             <button
@@ -295,11 +299,13 @@ export default function Profile() {
                   : 'hover:bg-red-600'
               }`}
             >
-              {isDeleting ? 'Deleting ...' : 'Delete'}
+              {isDeleting
+                ? t('profile.delete.submitting')
+                : t('profile.delete.submit')}
             </button>
           </div>
           <p className="text-sm text-gray-500 text-center">
-            This action cannot be undone.
+            {t('profile.delete.irreversible')}
           </p>
         </div>
       </Modal>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { loginWithEmailAndPwd } from '../../services/authService';
 
 interface LoginFormProps {
@@ -17,6 +18,7 @@ export default function LoginForm({
   const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogin = async (
     e: React.FormEvent<HTMLFormElement>
@@ -31,7 +33,7 @@ export default function LoginForm({
       if (closeModal) closeModal();
       navigate(`/profile?id=${userCredential.user.uid}`);
     } catch {
-      setError('Invalid email or password');
+      setError(t('auth.login.invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -39,11 +41,11 @@ export default function LoginForm({
 
   return (
     <form onSubmit={handleLogin} className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold">Login</h2>
+      <h2 className="text-xl font-bold">{t('auth.login.title')}</h2>
 
       <input
         type="email"
-        placeholder="Email"
+        placeholder={t('common.email')}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
@@ -53,7 +55,7 @@ export default function LoginForm({
 
       <input
         type="password"
-        placeholder="Password"
+        placeholder={t('common.password')}
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
@@ -66,19 +68,19 @@ export default function LoginForm({
         disabled={loading}
         className="bg-green-500 hover:bg-green-600 text-white py-2 rounded-full disabled:opacity-50"
       >
-        {loading ? 'Logging in...' : 'Login'}
+        {loading ? t('auth.login.submitting') : t('auth.login.submit')}
       </button>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
       <p className="text-sm text-gray-500">
-        Don't have an account?{' '}
+        {t('auth.login.noAccount')}{' '}
         <button
           type="button"
           className="text-blue-500 hover:underline"
           onClick={switchToSignup}
         >
-          Sign Up
+          {t('auth.login.switchToSignup')}
         </button>
       </p>
     </form>

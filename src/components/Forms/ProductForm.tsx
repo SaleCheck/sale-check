@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Timestamp } from 'firebase/firestore';
 
 interface ProductFormProps {
@@ -40,10 +41,11 @@ export default function ProductForm({
   productUrl = null,
   cssSelector = null,
   lastUpdated = null,
-  submitBtnLabel = 'Save Changes',
+  submitBtnLabel,
   submitBtnClassName = 'bg-blue-500 text-white',
   onSubmit = null,
 }: ProductFormProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState<string>(productName || '');
   const [price, setPrice] = useState<string | number>(expectedPrice || '');
   const [currency, setCurrency] = useState<string>(expectedPriceCurrency || '');
@@ -98,19 +100,21 @@ export default function ProductForm({
       {dbImageUrl && (
         <img
           src={dbImageUrl}
-          alt="Product"
+          alt={t('product.imageAlt')}
           className="w-full h-40 object-cover rounded-sm border"
         />
       )}
 
       {/* Product Name */}
       <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-gray-700">Product Name:</span>
+        <span className="text-sm font-medium text-gray-700">
+          {t('product.nameLabel')}
+        </span>
         <input
           className="border rounded-sm px-3 py-2"
           type="text"
           value={name}
-          placeholder="Product Name"
+          placeholder={t('product.name')}
           onChange={(e) => setName(e.target.value)}
         />
       </label>
@@ -120,25 +124,27 @@ export default function ProductForm({
         {/* Expected Price */}
         <label className="flex flex-col gap-1 flex-[3] min-w-40">
           <span className="text-sm font-medium text-gray-700">
-            Expected Price:
+            {t('product.expectedPriceLabel')}
           </span>
           <input
             className="border rounded-sm px-3 py-2 w-full min-w-0"
             type="text"
             value={price}
-            placeholder="Expected Price"
+            placeholder={t('product.expectedPrice')}
             onChange={(e) => setPrice(e.target.value)}
           />
         </label>
 
         {/* Currency */}
         <label className="flex flex-col gap-1 flex-1 min-w-24">
-          <span className="text-sm font-medium text-gray-700">Currency:</span>
+          <span className="text-sm font-medium text-gray-700">
+            {t('product.currencyLabel')}
+          </span>
           <input
             className="border rounded-sm px-3 py-2 w-full min-w-0"
             type="text"
             value={currency}
-            placeholder="DKK"
+            placeholder={t('product.currencyPlaceholder')}
             onChange={(e) => setCurrency(e.target.value)}
           />
         </label>
@@ -146,24 +152,28 @@ export default function ProductForm({
 
       {/* Product URL */}
       <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-gray-700">Product URL:</span>
+        <span className="text-sm font-medium text-gray-700">
+          {t('product.urlLabel')}
+        </span>
         <input
           className="border rounded-sm px-3 py-2"
           type="text"
           value={url}
-          placeholder="Product URL"
+          placeholder={t('product.url')}
           onChange={(e) => setUrl(e.target.value)}
         />
       </label>
 
       {/* CSS Selector */}
       <label className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-gray-700">CSS Selector:</span>
+        <span className="text-sm font-medium text-gray-700">
+          {t('product.cssSelectorLabel')}
+        </span>
         <input
           className="border rounded-sm px-3 py-2"
           type="text"
           value={selector}
-          placeholder="CSS Selector"
+          placeholder={t('product.cssSelector')}
           onChange={(e) => setSelector(e.target.value)}
         />
       </label>
@@ -171,7 +181,7 @@ export default function ProductForm({
       {/* Image Upload */}
       <div className="flex flex-col gap-2">
         <label className="text-sm text-gray-600 font-medium">
-          Upload product picture (optional):
+          {t('product.imageLabel')}
         </label>
 
         <input
@@ -185,14 +195,16 @@ export default function ProductForm({
       {/* Last updated text */}
       {lastUpdated && (
         <p className="text-sm text-gray-700">
-          {`Last updated: ${lastUpdated.toDate().toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true,
-          })}`}
+          {t('product.lastUpdated', {
+            date: lastUpdated.toDate().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true,
+            }),
+          })}
         </p>
       )}
 
@@ -203,7 +215,7 @@ export default function ProductForm({
           onClick={closeModal}
           className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
         >
-          Cancel
+          {t('common.cancel')}
         </button>
 
         <button
@@ -213,7 +225,9 @@ export default function ProductForm({
             submitting ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'
           }`}
         >
-          {submitting ? 'Saving...' : submitBtnLabel}
+          {submitting
+            ? t('common.saving')
+            : (submitBtnLabel ?? t('common.saveChanges'))}
         </button>
       </div>
     </form>

@@ -1,10 +1,14 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, cleanup, render, screen, within } from '@testing-library/react';
+import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { User } from 'firebase/auth';
 import App from './App';
+import i18n from './i18n';
+import { updateUserAuthProfile } from './services/authService';
+import { getUserDoc, updateUserDoc } from './services/firestoreUserService';
+import { uploadUserAvatar } from './services/storageUserServce';
 
 const { mockUnsubscribe, mockSubscribeToAuthStateChanges, mockLogout } =
   vi.hoisted(() => ({
@@ -65,14 +69,28 @@ function renderApp(currentUser: User | null, initialPath = '/') {
   );
 }
 
+// The language switcher is a Headless UI Listbox; its options render in a portal
+async function chooseLanguage(
+  user: UserEvent,
+  scope: HTMLElement,
+  label: RegExp,
+  option: string
+) {
+  await user.click(within(scope).getByRole('button', { name: label }));
+  await user.click(await screen.findByRole('option', { name: option }));
+}
+
 describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockLogout.mockResolvedValue(undefined);
+    vi.mocked(getUserDoc).mockResolvedValue(null);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     cleanup();
+    await act(() => i18n.changeLanguage('en'));
+    localStorage.clear();
   });
 
   it('sets the document title', () => {
@@ -147,7 +165,9 @@ describe('App', () => {
     // Assert
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Sign Up' })).toBeInTheDocument();
-    expect(screen.queryByText('Signout')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('img', { name: 'User Avatar' })
+    ).not.toBeInTheDocument();
   });
 
   it('opens the login form in a modal when Login is clicked', async () => {
@@ -213,7 +233,7 @@ describe('App', () => {
     ).toHaveLength(2);
   });
 
-  it('shows the user avatar and Signout when logged in', () => {
+  it('shows the user avatar when logged in', () => {
     // Arrange
     // (no separate setup needed)
 
@@ -225,10 +245,147 @@ describe('App', () => {
       'src',
       'https://example.com/avatar.png'
     );
-    expect(screen.getByText('Signout')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('menuitem', { name: 'Sign out' })
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Login' })
     ).not.toBeInTheDocument();
+  });
+
+  it('prefers the avatar from the user document over the auth profile', async () => {
+    // Arrange
+    vi.mocked(getUserDoc).mockResolvedValue({
+      uid: 'user-123',
+      email: 'jane@example.com',
+      photoURL: 'https://example.com/new-avatar.png',
+    });
+
+    // Act
+    renderApp(testUser, '/about');
+
+    // Assert
+    await vi.waitFor(() =>
+      expect(screen.getByRole('img', { name: 'User Avatar' })).toHaveAttribute(
+        'src',
+        'https://example.com/new-avatar.png'
+      )
+    );
+  });
+
+  it('opens the avatar menu on hover', async () => {
+    // Arrange
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+
+    // Act
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
+
+    // Assert
+    expect(
+      await screen.findByRole('menuitem', { name: 'Edit User' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Edit Avatar' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Sign out' })
+    ).toBeInTheDocument();
+  });
+
+  it('opens the avatar menu on click', async () => {
+    // Arrange
+    renderApp(testUser, '/about');
+    const user = userEvent.setup({ skipHover: true });
+
+    // Act
+    await user.pointer({
+      keys: '[TouchA]',
+      target: screen.getByRole('button', { name: 'User Avatar' }),
+    });
+
+    // Assert
+    expect(
+      await screen.findByRole('menuitem', { name: 'Sign out' })
+    ).toBeInTheDocument();
+  });
+
+  it('uploads a new avatar and saves it to auth and the user document', async () => {
+    // Arrange
+    const newURL = 'https://example.com/new-avatar.png';
+    vi.mocked(uploadUserAvatar).mockResolvedValue(newURL);
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+    const file = new File(['avatar'], 'avatar.png', { type: 'image/png' });
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Edit Avatar' })
+    );
+    const dialog = await screen.findByRole('dialog');
+    await user.upload(
+      within(dialog).getByLabelText('Upload new profile picture:'),
+      file
+    );
+    vi.mocked(getUserDoc).mockResolvedValue({
+      uid: 'user-123',
+      email: 'jane@example.com',
+      photoURL: newURL,
+    });
+
+    // Act
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    // Assert
+    expect(uploadUserAvatar).toHaveBeenCalledWith('user-123', file);
+    expect(updateUserAuthProfile).toHaveBeenCalledWith(testUser, {
+      photoURL: newURL,
+    });
+    expect(updateUserDoc).toHaveBeenCalledWith('user-123', {
+      photoURL: newURL,
+    });
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
+    expect(screen.getByRole('img', { name: 'User Avatar' })).toHaveAttribute(
+      'src',
+      newURL
+    );
+  });
+
+  it('saves the edited name to auth and the user document', async () => {
+    // Arrange
+    vi.mocked(getUserDoc).mockResolvedValue({
+      uid: 'user-123',
+      email: 'jane@example.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
+    });
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Edit User' })
+    );
+    const dialog = await screen.findByRole('dialog');
+    const lastNameInput = within(dialog).getByPlaceholderText('Last Name');
+    await user.clear(lastNameInput);
+    await user.type(lastNameInput, 'Smith');
+
+    // Act
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    // Assert
+    expect(updateUserAuthProfile).toHaveBeenCalledWith(testUser, {
+      displayName: 'Jane Smith',
+    });
+    expect(updateUserDoc).toHaveBeenCalledWith('user-123', {
+      displayName: 'Jane Smith',
+      firstName: 'Jane',
+      lastName: 'Smith',
+    });
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
   });
 
   it('redirects a logged-in user from the root route to their profile', async () => {
@@ -245,13 +402,14 @@ describe('App', () => {
     await vi.waitFor(() => expect(document.title).toBe('SaleCheck | Profile'));
   });
 
-  it('logs out and returns to the home page when Signout is clicked', async () => {
+  it('logs out and returns to the home page when Sign out is clicked', async () => {
     // Arrange
     renderApp(testUser, '/about');
     const user = userEvent.setup();
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
 
     // Act
-    await user.click(screen.getByText('Signout'));
+    await user.click(await screen.findByRole('menuitem', { name: 'Sign out' }));
 
     // Assert
     expect(mockLogout).toHaveBeenCalledTimes(1);
@@ -259,5 +417,70 @@ describe('App', () => {
       await screen.findByRole('heading', { name: 'Welcome to SaleCheck' })
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+  });
+
+  it('shows the language switcher in the footer when logged out', () => {
+    // Arrange
+    // (no separate setup needed)
+
+    // Act
+    renderApp(null);
+
+    // Assert
+    const footer = screen.getByRole('contentinfo');
+    expect(
+      within(footer).getByRole('button', { name: /^Language/ })
+    ).toHaveTextContent('English');
+  });
+
+  it('switches the whole UI to Danish from the footer', async () => {
+    // Arrange
+    renderApp(null, '/about');
+    const user = userEvent.setup();
+    const footer = screen.getByRole('contentinfo');
+
+    // Act
+    await chooseLanguage(user, footer, /^Language/, 'Dansk');
+
+    // Assert
+    expect(
+      within(footer).getByRole('button', { name: /^Sprog/ })
+    ).toHaveTextContent('Dansk');
+    expect(screen.getByRole('button', { name: 'Log ind' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Om os' })
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the footer and Edit User language switchers in sync', async () => {
+    // Arrange
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+    const footer = screen.getByRole('contentinfo');
+
+    // Act: switch to Danish in the footer, then open Edit User
+    await chooseLanguage(user, footer, /^Language/, 'Dansk');
+    await user.hover(screen.getByRole('img', { name: 'Profilbillede' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Brugerindstillinger' })
+    );
+    const dialog = await screen.findByRole('dialog');
+
+    // Assert: the modal switcher shows Danish too
+    expect(
+      within(dialog).getByRole('button', { name: /^Sprog/ })
+    ).toHaveTextContent('Dansk');
+
+    // Act: switch back to English in the modal, then close it
+    await chooseLanguage(user, dialog, /^Sprog/, 'English');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
+
+    // Assert: the footer switcher followed
+    expect(
+      within(footer).getByRole('button', { name: /^Language/ })
+    ).toHaveTextContent('English');
   });
 });
