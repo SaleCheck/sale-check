@@ -150,5 +150,10 @@
       "title": "5. Get Email Alerts",
       "body": "After each monitoring run, you'll receive a confirmation email.<br/>If a price drop or change is detected, SaleCheck immediately notifies you so you never miss a deal."
     }
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "da": "Dansk"
   }
 }
