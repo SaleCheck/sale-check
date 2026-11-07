@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { sendContactMessage } from '../services/contactEmailService';
 
 interface FormData {
@@ -17,9 +18,11 @@ export default function Contact() {
     email: '',
     message: '',
   });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>(
-    'idle'
-  );
+  const { mutate: sendMessage, status } = useMutation({
+    mutationFn: sendContactMessage,
+    onSuccess: () => setFormData({ name: '', email: '', message: '' }),
+    onError: (err) => console.error('sendContactMessage failed:', err),
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -27,17 +30,9 @@ export default function Contact() {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('sending');
-    try {
-      await sendContactMessage(formData);
-      setStatus('sent');
-      setFormData({ name: '', email: '', message: '' });
-    } catch (err) {
-      console.error('sendContactMessage failed:', err);
-      setStatus('error');
-    }
+    sendMessage(formData);
   };
 
   return (
@@ -106,17 +101,17 @@ export default function Contact() {
             Something went wrong. Try again.
           </p>
         )}
-        {status === 'sent' && (
+        {status === 'success' && (
           <p className="text-green-600 text-sm">Message sent — thanks!</p>
         )}
 
         <div className="flex gap-4 justify-center">
           <button
             type="submit"
-            disabled={status === 'sending'}
+            disabled={status === 'pending'}
             className="bg-green-500 hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105"
           >
-            {status === 'sending' ? 'Sending…' : 'Submit'}
+            {status === 'pending' ? 'Sending…' : 'Submit'}
           </button>
         </div>
       </form>

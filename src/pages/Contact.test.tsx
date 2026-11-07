@@ -1,6 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Contact from './Contact';
 
 const { mockSendContactMessage } = vi.hoisted(() => ({
@@ -10,6 +11,17 @@ const { mockSendContactMessage } = vi.hoisted(() => ({
 vi.mock('../services/contactEmailService', () => ({
   sendContactMessage: mockSendContactMessage,
 }));
+
+function renderContact() {
+  const queryClient = new QueryClient({
+    defaultOptions: { mutations: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <Contact />
+    </QueryClientProvider>
+  );
+}
 
 async function fillForm(user: UserEvent) {
   await user.type(screen.getByLabelText('Name'), 'Jane Doe');
@@ -33,7 +45,7 @@ describe('Contact', () => {
     document.title = '';
 
     // Act
-    render(<Contact />);
+    renderContact();
 
     // Assert
     expect(document.title).toBe('SaleCheck | Contact');
@@ -44,7 +56,7 @@ describe('Contact', () => {
     // (no separate setup needed)
 
     // Act
-    render(<Contact />);
+    renderContact();
 
     // Assert
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
@@ -55,7 +67,7 @@ describe('Contact', () => {
   it('sends the entered message, shows a confirmation and clears the form', async () => {
     // Arrange
     mockSendContactMessage.mockResolvedValue(undefined);
-    render(<Contact />);
+    renderContact();
     const user = userEvent.setup();
     await fillForm(user);
 
@@ -63,11 +75,14 @@ describe('Contact', () => {
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     // Assert
-    expect(mockSendContactMessage).toHaveBeenCalledWith({
-      name: 'Jane Doe',
-      email: 'jane@example.com',
-      message: 'Hello there',
-    });
+    expect(mockSendContactMessage).toHaveBeenCalledWith(
+      {
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        message: 'Hello there',
+      },
+      expect.anything()
+    );
     expect(
       await screen.findByText('Message sent — thanks!')
     ).toBeInTheDocument();
@@ -79,7 +94,7 @@ describe('Contact', () => {
   it('shows an error message and keeps the input when sending fails', async () => {
     // Arrange
     mockSendContactMessage.mockRejectedValue(new Error('Network error'));
-    render(<Contact />);
+    renderContact();
     const user = userEvent.setup();
     await fillForm(user);
 
@@ -96,7 +111,7 @@ describe('Contact', () => {
   it('disables the submit button while sending', async () => {
     // Arrange
     mockSendContactMessage.mockReturnValue(new Promise(() => {}));
-    render(<Contact />);
+    renderContact();
     const user = userEvent.setup();
     await fillForm(user);
 

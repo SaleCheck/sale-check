@@ -1,12 +1,19 @@
-import { act, cleanup, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { User } from 'firebase/auth';
 import type { Product } from '../services/firestoreProductService';
 import Profile from './Profile';
 
 const {
-  mockNavigate,
   mockUnsubscribe,
   mockSubscribeToAuthStateChanges,
   mockGetUserDoc,
@@ -16,7 +23,6 @@ const {
   mockDeleteProductForUser,
   mockUploadProductImage,
 } = vi.hoisted(() => ({
-  mockNavigate: vi.fn(),
   mockUnsubscribe: vi.fn(),
   mockSubscribeToAuthStateChanges: vi.fn(),
   mockGetUserDoc: vi.fn(),
@@ -25,11 +31,6 @@ const {
   mockUpdateProductForUser: vi.fn(),
   mockDeleteProductForUser: vi.fn(),
   mockUploadProductImage: vi.fn(),
-}));
-
-vi.mock('react-router-dom', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('react-router-dom')>()),
-  useNavigate: () => mockNavigate,
 }));
 
 vi.mock('../services/authService', () => ({
@@ -70,11 +71,25 @@ const testProduct: Product = {
 
 let authCallback: (user: User | null) => Promise<void>;
 
+function renderWithQueryClient() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <Profile />
+    </QueryClientProvider>
+  );
+}
+
 async function renderProfile(user: User | null) {
-  const result = render(<Profile />);
+  const result = renderWithQueryClient();
   await act(async () => {
     await authCallback(user);
   });
+  if (user) {
+    await screen.findByRole('heading', { name: /^Welcome/ });
+  }
   return result;
 }
 
@@ -107,7 +122,7 @@ describe('Profile', () => {
     document.title = '';
 
     // Act
-    render(<Profile />);
+    renderWithQueryClient();
 
     // Assert
     expect(document.title).toBe('SaleCheck | Profile');
@@ -115,7 +130,7 @@ describe('Profile', () => {
 
   it('unsubscribes from auth state changes on unmount', () => {
     // Arrange
-    const { unmount } = render(<Profile />);
+    const { unmount } = renderWithQueryClient();
 
     // Act
     unmount();
@@ -139,7 +154,7 @@ describe('Profile', () => {
   it('shows a loading message while fetching user data', async () => {
     // Arrange
     mockGetUserDoc.mockReturnValue(new Promise(() => {}));
-    render(<Profile />);
+    renderWithQueryClient();
 
     // Act
     act(() => {
@@ -183,7 +198,7 @@ describe('Profile', () => {
     ).toBeInTheDocument();
   });
 
-  it('creates a product with a numeric price and reloads the page', async () => {
+  it('creates a product with a numeric price and refreshes the product list', async () => {
     // Arrange
     mockGetProductsForUser.mockResolvedValue([]);
     await renderProfile(testUser);
@@ -217,7 +232,12 @@ describe('Profile', () => {
       }
     );
     expect(mockUploadProductImage).not.toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith(0);
+    await waitFor(() =>
+      expect(mockGetProductsForUser).toHaveBeenCalledTimes(2)
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
   });
 
   it('uploads the product image after creating a product', async () => {
@@ -244,7 +264,12 @@ describe('Profile', () => {
     expect(mockUpdateProductForUser).toHaveBeenCalledWith('new-product', {
       imageUrl: 'https://example.com/img.png',
     });
-    expect(mockNavigate).toHaveBeenCalledWith(0);
+    await waitFor(() =>
+      expect(mockGetProductsForUser).toHaveBeenCalledTimes(2)
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
   });
 
   it('opens the edit form prefilled and saves the changes', async () => {
@@ -273,7 +298,12 @@ describe('Profile', () => {
       url: 'https://example.com/ps5',
       cssSelector: '.price',
     });
-    expect(mockNavigate).toHaveBeenCalledWith(0);
+    await waitFor(() =>
+      expect(mockGetProductsForUser).toHaveBeenCalledTimes(2)
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
   });
 
   it('asks for confirmation and deletes the product', async () => {
@@ -291,7 +321,12 @@ describe('Profile', () => {
 
     // Assert
     expect(mockDeleteProductForUser).toHaveBeenCalledWith('product-1');
-    expect(mockNavigate).toHaveBeenCalledWith(0);
+    await waitFor(() =>
+      expect(mockGetProductsForUser).toHaveBeenCalledTimes(2)
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
   });
 
   it('does not delete the product when the deletion is cancelled', async () => {
@@ -306,6 +341,6 @@ describe('Profile', () => {
 
     // Assert
     expect(mockDeleteProductForUser).not.toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(mockGetProductsForUser).toHaveBeenCalledTimes(1);
   });
 });
