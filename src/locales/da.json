@@ -1,0 +1,159 @@
+{
+  "common": {
+    "appName": "SaleCheck",
+    "cancel": "Annuller",
+    "save": "Gem",
+    "saveChanges": "Gem ændringer",
+    "saving": "Gemmer...",
+    "unexpectedError": "Der opstod en uventet fejl.",
+    "firstName": "Fornavn",
+    "lastName": "Efternavn",
+    "email": "E-mail",
+    "password": "Adgangskode"
+  },
+  "pageTitle": {
+    "home": "SaleCheck",
+    "profile": "SaleCheck | Profil",
+    "about": "SaleCheck | Om os",
+    "contact": "SaleCheck | Kontakt",
+    "howItWorks": "SaleCheck | Sådan virker det"
+  },
+  "nav": {
+    "howItWorks": "Sådan virker det",
+    "about": "Om os",
+    "contact": "Kontakt"
+  },
+  "header": {
+    "logoAlt": "SaleCheck-logo",
+    "login": "Log ind",
+    "signUp": "Opret konto",
+    "userAvatar": "Profilbillede",
+    "editUser": "Rediger bruger",
+    "editAvatar": "Skift billede",
+    "signOut": "Log ud"
+  },
+  "home": {
+    "title": "Velkommen til SaleCheck",
+    "intro": "Vi gør det let at holde øje med prisfald. Indtast produktets URL og din målpris, så holder vores system nøje øje med prisændringer for dig. Vi giver dig besked, så snart din vare er på tilbud, så du kan gribe chancen uden hele tiden at tjekke selv.",
+    "outro": "Lad os klare det hårde arbejde med at overvåge priser, så du ubesværet kan nyde dine besparelser!",
+    "imageAlt": "pristracker-billede"
+  },
+  "footer": {
+    "copyright": "© {{year}} SaleCheck. Alle rettigheder forbeholdes."
+  },
+  "auth": {
+    "login": {
+      "title": "Log ind",
+      "submit": "Log ind",
+      "submitting": "Logger ind...",
+      "invalidCredentials": "Forkert e-mail eller adgangskode",
+      "noAccount": "Har du ikke en konto?",
+      "switchToSignup": "Opret konto"
+    },
+    "signup": {
+      "title": "Opret konto",
+      "confirmPassword": "Bekræft adgangskode",
+      "avatarLabel": "Upload profilbillede (valgfrit):",
+      "submit": "Opret konto",
+      "submitting": "Opretter konto...",
+      "passwordsDoNotMatch": "Adgangskoderne er ikke ens.",
+      "haveAccount": "Har du allerede en konto?",
+      "switchToLogin": "Log ind"
+    }
+  },
+  "profile": {
+    "fetching": "Henter produkter...",
+    "notLoggedIn": "Du er ikke logget ind.",
+    "welcome": "Velkommen, {{name}}!",
+    "alertsInfo": "Prisadvarsler sendes til den e-mail, din konto er registreret med.",
+    "addProduct": "Tilføj produkt",
+    "editProduct": "Rediger produkt",
+    "delete": {
+      "title": "Slet produkt",
+      "confirm": "Er du sikker på, at du vil slette dette produkt?",
+      "submit": "Slet",
+      "submitting": "Sletter ...",
+      "irreversible": "Denne handling kan ikke fortrydes."
+    }
+  },
+  "product": {
+    "imageAlt": "Produkt",
+    "name": "Produktnavn",
+    "nameLabel": "Produktnavn:",
+    "expectedPrice": "Forventet pris",
+    "expectedPriceLabel": "Forventet pris:",
+    "currencyLabel": "Valuta:",
+    "currencyPlaceholder": "DKK",
+    "url": "Produkt-URL",
+    "urlLabel": "Produkt-URL:",
+    "cssSelector": "CSS-selektor",
+    "cssSelectorLabel": "CSS-selektor:",
+    "imageLabel": "Upload produktbillede (valgfrit):",
+    "lastUpdated": "Sidst opdateret: {{date}}"
+  },
+  "card": {
+    "unnamed": "Unavngivet produkt",
+    "edit": "Rediger",
+    "editTitle": "Rediger produkt",
+    "delete": "Slet",
+    "archiveTitle": "Arkivér produkt"
+  },
+  "avatar": {
+    "title": "Skift profilbillede",
+    "previewAlt": "Forhåndsvisning af profilbillede",
+    "uploadLabel": "Upload nyt profilbillede:"
+  },
+  "editUser": {
+    "title": "Rediger bruger"
+  },
+  "contact": {
+    "title": "Kontakt os",
+    "name": "Navn",
+    "namePlaceholder": "Dit navn",
+    "email": "E-mail",
+    "emailPlaceholder": "Din e-mail",
+    "message": "Besked",
+    "messagePlaceholder": "Din besked",
+    "error": "Noget gik galt. Prøv igen.",
+    "success": "Besked sendt – tak!",
+    "submit": "Send",
+    "submitting": "Sender…"
+  },
+  "about": {
+    "title": "Om os",
+    "inspiration": "Inspiration",
+    "similarProduct": "Et lignende produkt findes på: <a>goma.gg</a>.",
+    "builtBy": "Bygget af <a>Nikolaj Englmayer Münster</a>",
+    "article": "Artikel hos DR: <a>DR | Jagten på billige fødevarer</a>."
+  },
+  "howItWorks": {
+    "title": "Sådan virker det",
+    "intro": "SaleCheck gør det nemt at følge prisændringer på de produkter, du holder af.",
+    "step1": {
+      "title": "1. Opret din konto",
+      "body": "Opret dig med din e-mail for at komme i gang.<br/>Din e-mail bruges til at logge ind og til at modtage prisadvarsler."
+    },
+    "step2": {
+      "title": "2. Tilføj et produkt",
+      "body": "Indsæt produktets URL i SaleCheck og giv det et navn.<br/>Det fortæller systemet, hvilken vare du vil følge."
+    },
+    "step3": {
+      "title": "3. Angiv prisselektoren",
+      "body": "Alle butikker viser priser forskelligt, så SaleCheck skal vide præcis, hvor prisen står på siden.<br/><br/>Åbn produktsiden i Chrome, højreklik på prisen, vælg <strong>Inspicer</strong>, højreklik derefter på det markerede element og vælg <strong>Kopiér → Kopiér selektor</strong>.",
+      "videoTitle": "Sådan finder du CSS-selektorer"
+    },
+    "step4": {
+      "title": "4. Automatisk overvågning",
+      "body": "Når produktet er tilføjet, tjekker SaleCheck løbende siden for prisændringer.<br/>Du behøver ikke længere at besøge webshoppene – SaleCheck gør arbejdet for dig."
+    },
+    "step5": {
+      "title": "5. Få besked på e-mail",
+      "body": "Efter hver overvågningskørsel modtager du en bekræftelse på e-mail.<br/>Hvis der registreres et prisfald eller en prisændring, giver SaleCheck dig straks besked, så du aldrig går glip af et tilbud."
+    }
+  },
+  "language": {
+    "label": "Sprog",
+    "en": "English",
+    "da": "Dansk"
+  }
+}
