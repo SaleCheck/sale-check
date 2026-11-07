@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { useTranslation } from 'react-i18next';
 
 interface AvatarFormProps {
   currentPhotoURL?: string | null;
@@ -16,6 +17,7 @@ export default function AvatarForm({
   const [previewURL, setPreviewURL] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!avatarFile) {
@@ -45,7 +47,7 @@ export default function AvatarForm({
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unexpected error occurred.');
+        setError(t('common.unexpectedError'));
       }
     } finally {
       setLoading(false);
@@ -56,12 +58,12 @@ export default function AvatarForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold">Edit Avatar</h2>
+      <h2 className="text-xl font-bold">{t('avatar.title')}</h2>
       <div className="flex justify-center">
         {displayedURL ? (
           <img
             src={displayedURL}
-            alt="Avatar Preview"
+            alt={t('avatar.previewAlt')}
             className="h-24 w-24 rounded-full object-cover border border-gray-300"
           />
         ) : (
@@ -73,7 +75,7 @@ export default function AvatarForm({
           htmlFor="avatar-file"
           className="text-sm text-gray-600 font-medium"
         >
-          Upload new profile picture:
+          {t('avatar.uploadLabel')}
         </label>
         <input
           id="avatar-file"
@@ -90,7 +92,7 @@ export default function AvatarForm({
           onClick={closeModal}
           className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
         >
-          Cancel
+          {t('common.cancel')}
         </button>
 
         <button
@@ -102,7 +104,7 @@ export default function AvatarForm({
               : 'hover:brightness-95'
           }`}
         >
-          {loading ? 'Saving...' : 'Save'}
+          {loading ? t('common.saving') : t('common.save')}
         </button>
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
