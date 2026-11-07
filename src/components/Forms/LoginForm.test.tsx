@@ -19,6 +19,14 @@ vi.mock('../../services/authService', () => ({
   loginWithEmailAndPwd: mockLoginWithEmailAndPwd,
 }));
 
+vi.mock('../../services/firestoreUserService', () => ({
+  updateUserDoc: vi.fn(),
+}));
+
+vi.mock('../../services/storageUserServce', () => ({
+  uploadUserAvatar: vi.fn(),
+}));
+
 function renderWithQueryClient(ui: ReactElement) {
   const queryClient = new QueryClient();
   return render(
