@@ -269,7 +269,10 @@ describe('App', () => {
 
     // Assert
     expect(
-      await screen.findByRole('menuitem', { name: 'Edit Avatar' })
+      await screen.findByRole('menuitem', { name: 'Edit User' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Edit Avatar' })
     ).toBeInTheDocument();
     expect(
       screen.getByRole('menuitem', { name: 'Sign out' })
@@ -332,6 +335,42 @@ describe('App', () => {
     expect(screen.getByRole('img', { name: 'User Avatar' })).toHaveAttribute(
       'src',
       newURL
+    );
+  });
+
+  it('saves the edited name to auth and the user document', async () => {
+    // Arrange
+    vi.mocked(getUserDoc).mockResolvedValue({
+      uid: 'user-123',
+      email: 'jane@example.com',
+      firstName: 'Jane',
+      lastName: 'Doe',
+    });
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+    await user.hover(screen.getByRole('img', { name: 'User Avatar' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Edit User' })
+    );
+    const dialog = await screen.findByRole('dialog');
+    const lastNameInput = within(dialog).getByPlaceholderText('Last Name');
+    await user.clear(lastNameInput);
+    await user.type(lastNameInput, 'Smith');
+
+    // Act
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    // Assert
+    expect(updateUserAuthProfile).toHaveBeenCalledWith(testUser, {
+      displayName: 'Jane Smith',
+    });
+    expect(updateUserDoc).toHaveBeenCalledWith('user-123', {
+      displayName: 'Jane Smith',
+      firstName: 'Jane',
+      lastName: 'Smith',
+    });
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     );
   });
 

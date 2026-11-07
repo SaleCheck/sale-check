@@ -22,6 +22,7 @@ import priceTrackSvg from './assets/pricetrack.svg';
 import LoginForm from './components/Forms/LoginForm';
 import SignupForm from './components/Forms/SignupForm';
 import AvatarForm from './components/Forms/AvatarForm';
+import EditUserForm from './components/Forms/EditUserForm';
 import Modal from './components/Modal/Modal';
 import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
@@ -41,6 +42,8 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState<boolean>(false);
+  const [isEditUserModalOpen, setIsEditUserModalOpen] =
+    useState<boolean>(false);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -103,6 +106,22 @@ function App() {
     const photoURL = await uploadUserAvatar(user.uid, file);
     await updateUserAuthProfile(user, { photoURL });
     await updateUserDoc(user.uid, { photoURL });
+
+    await queryClient.invalidateQueries({ queryKey: ['users', user.uid] });
+  };
+
+  const handleUserUpdate = async ({
+    firstName,
+    lastName,
+  }: {
+    firstName: string;
+    lastName: string;
+  }): Promise<void> => {
+    if (!user) throw new Error('No authenticated user');
+
+    const displayName = `${firstName} ${lastName}`.trim();
+    await updateUserAuthProfile(user, { displayName });
+    await updateUserDoc(user.uid, { displayName, firstName, lastName });
 
     await queryClient.invalidateQueries({ queryKey: ['users', user.uid] });
   };
@@ -171,6 +190,14 @@ function App() {
                       className="absolute right-0 top-full z-40 pt-2 focus:outline-hidden transition duration-100 ease-out data-closed:scale-95 data-closed:opacity-0"
                     >
                       <div className="w-40 rounded-lg bg-white py-1 shadow-lg ring-1 ring-black/5">
+                        <MenuItem>
+                          <button
+                            onClick={() => setIsEditUserModalOpen(true)}
+                            className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
+                          >
+                            Edit User
+                          </button>
+                        </MenuItem>
                         <MenuItem>
                           <button
                             onClick={() => setIsAvatarModalOpen(true)}
@@ -314,6 +341,19 @@ function App() {
             closeModal={closeModal}
           />
         )}
+      </Modal>
+
+      {/* Edit User Modal */}
+      <Modal
+        isOpen={isEditUserModalOpen}
+        closeModal={() => setIsEditUserModalOpen(false)}
+      >
+        <EditUserForm
+          initialFirstName={userData?.firstName ?? ''}
+          initialLastName={userData?.lastName ?? ''}
+          closeModal={() => setIsEditUserModalOpen(false)}
+          onSubmit={handleUserUpdate}
+        />
       </Modal>
 
       {/* Avatar Modal */}
