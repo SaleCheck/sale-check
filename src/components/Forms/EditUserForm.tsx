@@ -66,18 +66,22 @@ export default function EditUserForm({
         onChange={(e) => setLastName(e.target.value)}
         required
       />
-      <div className="flex gap-3">
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-3 pt-4 w-full">
         <button
           type="button"
-          className="flex-1 border border-gray-300 hover:bg-gray-100 text-gray-700 py-2 rounded-full"
           onClick={closeModal}
+          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
         >
           Cancel
         </button>
+
         <button
           type="submit"
-          className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white py-2 rounded-full"
           disabled={loading}
+          className={`px-4 py-2 rounded-md bg-blue-500 text-white ${
+            loading ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'
+          }`}
         >
           {loading ? 'Saving...' : 'Save'}
         </button>

@@ -83,13 +83,28 @@ export default function AvatarForm({
           onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
         />
       </div>
-      <button
-        type="submit"
-        className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white py-2 rounded-full"
-        disabled={!avatarFile || loading}
-      >
-        {loading ? 'Uploading...' : 'Save'}
-      </button>
+      {/* Action Buttons */}
+      <div className="flex justify-center space-x-3 pt-4 w-full">
+        <button
+          type="button"
+          onClick={closeModal}
+          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          disabled={!avatarFile || loading}
+          className={`px-4 py-2 rounded-md bg-blue-500 text-white ${
+            !avatarFile || loading
+              ? 'opacity-50 cursor-not-allowed'
+              : 'hover:brightness-95'
+          }`}
+        >
+          {loading ? 'Saving...' : 'Save'}
+        </button>
+      </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </form>
   );

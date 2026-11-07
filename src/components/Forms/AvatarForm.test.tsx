@@ -76,6 +76,21 @@ describe('AvatarForm', () => {
     expect(closeModal).toHaveBeenCalledTimes(1);
   });
 
+  it('closes without submitting when Cancel is clicked', async () => {
+    // Arrange
+    const onSubmit = vi.fn();
+    const closeModal = vi.fn();
+    render(<AvatarForm onSubmit={onSubmit} closeModal={closeModal} />);
+    const user = userEvent.setup();
+
+    // Act
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    // Assert
+    expect(closeModal).toHaveBeenCalledTimes(1);
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
   it('shows the error and keeps the modal open when the upload fails', async () => {
     // Arrange
     const onSubmit = vi.fn().mockRejectedValue(new Error('Upload failed'));
