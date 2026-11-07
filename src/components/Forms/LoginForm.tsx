@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginWithEmailAndPwd } from '../../services/authService';
+import { useLogin } from '../../hooks/useAuth';
 
 interface LoginFormProps {
   switchToSignup: () => void;
@@ -17,6 +17,7 @@ export default function LoginForm({
   const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
+  const login = useLogin();
 
   const handleLogin = async (
     e: React.FormEvent<HTMLFormElement>
@@ -26,7 +27,7 @@ export default function LoginForm({
     setLoading(true);
 
     try {
-      const userCredential = await loginWithEmailAndPwd(email, password);
+      const userCredential = await login.mutateAsync({ email, password });
 
       if (closeModal) closeModal();
       navigate(`/profile?id=${userCredential.user.uid}`);

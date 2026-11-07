@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { sendContactMessage } from '../services/contactEmailService';
+import { useSendContactMessage } from '../hooks/useContact';
 
 interface FormData {
   name: string;
@@ -18,8 +17,7 @@ export default function Contact() {
     email: '',
     message: '',
   });
-  const { mutate: sendMessage, status } = useMutation({
-    mutationFn: sendContactMessage,
+  const { mutate: sendMessage, status } = useSendContactMessage({
     onSuccess: () => setFormData({ name: '', email: '', message: '' }),
     onError: (err) => console.error('sendContactMessage failed:', err),
   });

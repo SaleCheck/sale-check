@@ -14,10 +14,8 @@ import {
   MenuSeparator,
   Transition,
 } from '@headlessui/react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
-import type { User } from 'firebase/auth';
 import priceTrackSvg from './assets/pricetrack.svg';
 import LoginForm from './components/Forms/LoginForm';
 import SignupForm from './components/Forms/SignupForm';
@@ -28,41 +26,32 @@ import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Profile from './pages/Profile';
+import { useAuthUser, useLogout } from './hooks/useAuth';
 import {
-  subscribeToAuthStateChanges,
-  logout,
-  updateUserAuthProfile,
-} from './services/authService';
-import { getUserDoc, updateUserDoc } from './services/firestoreUserService';
-import { uploadUserAvatar } from './services/storageUserServce';
+  useUserDoc,
+  useUpdateAvatar,
+  useUpdateUserProfile,
+} from './hooks/useUser';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [user, setUser] = useState<User | null>(null);
   const [openMobileNav, setOpenMobileNav] = useState<boolean>(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState<boolean>(false);
   const [isEditUserModalOpen, setIsEditUserModalOpen] =
     useState<boolean>(false);
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const { data: userData } = useQuery({
-    queryKey: ['users', user?.uid],
-    queryFn: () => getUserDoc(user!.uid),
-    enabled: !!user,
-  });
+  const { user } = useAuthUser();
+  const { data: userData } = useUserDoc(user?.uid);
   const avatarURL = userData?.photoURL ?? user?.photoURL;
+  const logoutMutation = useLogout();
+  const updateUserProfile = useUpdateUserProfile(user);
+  const updateAvatar = useUpdateAvatar(user);
 
   useEffect(() => {
     document.title = 'SaleCheck';
-    const unsubscribe = subscribeToAuthStateChanges(
-      (currentUser: User | null) => {
-        setUser(currentUser);
-      }
-    );
-    return unsubscribe;
   }, []);
 
   const openLogin = (): void => {
@@ -94,36 +83,7 @@ function App() {
   };
 
   const handleSignout = (): void => {
-    logout().then(() => {
-      setUser(null);
-      navigate('/');
-    });
-  };
-
-  const handleAvatarUpdate = async (file: File): Promise<void> => {
-    if (!user) throw new Error('No authenticated user');
-
-    const photoURL = await uploadUserAvatar(user.uid, file);
-    await updateUserAuthProfile(user, { photoURL });
-    await updateUserDoc(user.uid, { photoURL });
-
-    await queryClient.invalidateQueries({ queryKey: ['users', user.uid] });
-  };
-
-  const handleUserUpdate = async ({
-    firstName,
-    lastName,
-  }: {
-    firstName: string;
-    lastName: string;
-  }): Promise<void> => {
-    if (!user) throw new Error('No authenticated user');
-
-    const displayName = `${firstName} ${lastName}`.trim();
-    await updateUserAuthProfile(user, { displayName });
-    await updateUserDoc(user.uid, { displayName, firstName, lastName });
-
-    await queryClient.invalidateQueries({ queryKey: ['users', user.uid] });
+    logoutMutation.mutate(undefined, { onSuccess: () => navigate('/') });
   };
 
   return (
@@ -352,7 +312,7 @@ function App() {
           initialFirstName={userData?.firstName ?? ''}
           initialLastName={userData?.lastName ?? ''}
           closeModal={() => setIsEditUserModalOpen(false)}
-          onSubmit={handleUserUpdate}
+          onSubmit={updateUserProfile.mutateAsync}
         />
       </Modal>
 
@@ -364,7 +324,7 @@ function App() {
         <AvatarForm
           currentPhotoURL={avatarURL}
           closeModal={() => setIsAvatarModalOpen(false)}
-          onSubmit={handleAvatarUpdate}
+          onSubmit={updateAvatar.mutateAsync}
         />
       </Modal>
     </div>
