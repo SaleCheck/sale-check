@@ -1,10 +1,11 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, cleanup, render, screen, within } from '@testing-library/react';
+import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { User } from 'firebase/auth';
 import App from './App';
+import i18n from './i18n';
 import { updateUserAuthProfile } from './services/authService';
 import { getUserDoc, updateUserDoc } from './services/firestoreUserService';
 import { uploadUserAvatar } from './services/storageUserServce';
@@ -68,6 +69,17 @@ function renderApp(currentUser: User | null, initialPath = '/') {
   );
 }
 
+// The language switcher is a Headless UI Listbox; its options render in a portal
+async function chooseLanguage(
+  user: UserEvent,
+  scope: HTMLElement,
+  label: RegExp,
+  option: string
+) {
+  await user.click(within(scope).getByRole('button', { name: label }));
+  await user.click(await screen.findByRole('option', { name: option }));
+}
+
 describe('App', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -75,8 +87,10 @@ describe('App', () => {
     vi.mocked(getUserDoc).mockResolvedValue(null);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     cleanup();
+    await act(() => i18n.changeLanguage('en'));
+    localStorage.clear();
   });
 
   it('sets the document title', () => {
@@ -403,5 +417,70 @@ describe('App', () => {
       await screen.findByRole('heading', { name: 'Welcome to SaleCheck' })
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+  });
+
+  it('shows the language switcher in the footer when logged out', () => {
+    // Arrange
+    // (no separate setup needed)
+
+    // Act
+    renderApp(null);
+
+    // Assert
+    const footer = screen.getByRole('contentinfo');
+    expect(
+      within(footer).getByRole('button', { name: /^Language/ })
+    ).toHaveTextContent('English');
+  });
+
+  it('switches the whole UI to Danish from the footer', async () => {
+    // Arrange
+    renderApp(null, '/about');
+    const user = userEvent.setup();
+    const footer = screen.getByRole('contentinfo');
+
+    // Act
+    await chooseLanguage(user, footer, /^Language/, 'Dansk');
+
+    // Assert
+    expect(
+      within(footer).getByRole('button', { name: /^Sprog/ })
+    ).toHaveTextContent('Dansk');
+    expect(screen.getByRole('button', { name: 'Log ind' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Om os' })
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the footer and Edit User language switchers in sync', async () => {
+    // Arrange
+    renderApp(testUser, '/about');
+    const user = userEvent.setup();
+    const footer = screen.getByRole('contentinfo');
+
+    // Act: switch to Danish in the footer, then open Edit User
+    await chooseLanguage(user, footer, /^Language/, 'Dansk');
+    await user.hover(screen.getByRole('img', { name: 'Profilbillede' }));
+    await user.click(
+      await screen.findByRole('menuitem', { name: 'Brugerindstillinger' })
+    );
+    const dialog = await screen.findByRole('dialog');
+
+    // Assert: the modal switcher shows Danish too
+    expect(
+      within(dialog).getByRole('button', { name: /^Sprog/ })
+    ).toHaveTextContent('Dansk');
+
+    // Act: switch back to English in the modal, then close it
+    await chooseLanguage(user, dialog, /^Sprog/, 'English');
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }));
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
+
+    // Assert: the footer switcher followed
+    expect(
+      within(footer).getByRole('button', { name: /^Language/ })
+    ).toHaveTextContent('English');
   });
 });

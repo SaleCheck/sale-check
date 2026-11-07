@@ -24,6 +24,7 @@ import LoginForm from './components/Forms/LoginForm';
 import SignupForm from './components/Forms/SignupForm';
 import AvatarForm from './components/Forms/AvatarForm';
 import EditUserForm from './components/Forms/EditUserForm';
+import LanguageSwitcher from './components/LanguageSwitcher/LanguageSwitcher';
 import Modal from './components/Modal/Modal';
 import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
@@ -323,8 +324,11 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="shadow-md text-gray-700 py-4 text-center mt-auto">
-        {t('footer.copyright', { year: new Date().getFullYear() })}
+      <footer className="relative shadow-md text-gray-700 py-4 px-4 md:px-8 mt-auto flex flex-col items-center gap-3 sm:block sm:text-center">
+        <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+        <div className="sm:absolute sm:right-8 sm:top-1/2 sm:-translate-y-1/2">
+          <LanguageSwitcher inline />
+        </div>
       </footer>
 
       {/* Modal */}
