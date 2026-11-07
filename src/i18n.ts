@@ -2,17 +2,20 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import daJson from './locales/da.json';
+import deJson from './locales/de.json';
 
-// Fails `tsc` if da.json is missing a key or differs in shape from en.json
+// Fails `tsc` if a locale is missing a key or differs in shape from en.json
 const da: typeof en = daJson;
+const de: typeof en = deJson;
 
 export const defaultNS = 'translation';
-export const supportedLanguages = ['en', 'da'] as const;
+export const supportedLanguages = ['en', 'de', 'da'] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
 
 export const resources = {
   en: { translation: en },
   da: { translation: da },
+  de: { translation: de },
 } as const;
 
 const LANGUAGE_STORAGE_KEY = 'salecheck.language';

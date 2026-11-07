@@ -24,7 +24,7 @@ describe('LanguageSwitcher', () => {
     expect(button.querySelector('svg')).toBeInTheDocument();
   });
 
-  it('lists English and Dansk, each with a flag', async () => {
+  it('lists English, Deutsch and Dansk, each with a flag', async () => {
     // Arrange
     render(<LanguageSwitcher />);
     const user = userEvent.setup();
@@ -36,6 +36,7 @@ describe('LanguageSwitcher', () => {
     const options = await screen.findAllByRole('option');
     expect(options.map((option) => option.textContent)).toEqual([
       'English',
+      'Deutsch',
       'Dansk',
     ]);
     options.forEach((option) =>
@@ -59,6 +60,23 @@ describe('LanguageSwitcher', () => {
     );
     expect(document.documentElement.lang).toBe('da');
     expect(localStorage.getItem('salecheck.language')).toBe('da');
+  });
+
+  it('switches to German', async () => {
+    // Arrange
+    render(<LanguageSwitcher />);
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /^Language/ }));
+
+    // Act
+    await user.click(await screen.findByRole('option', { name: 'Deutsch' }));
+
+    // Assert
+    expect(i18n.language).toBe('de');
+    expect(screen.getByRole('button', { name: /^Sprache/ })).toHaveTextContent(
+      'Deutsch'
+    );
+    expect(document.documentElement.lang).toBe('de');
   });
 
   it('hides the label visually only in the inline (footer) variant', () => {

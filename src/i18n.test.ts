@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import i18n from './i18n';
 import en from './locales/en.json';
 import da from './locales/da.json';
+import de from './locales/de.json';
 
 function collectValues(node: unknown, path = ''): [string, unknown][] {
   if (node && typeof node === 'object') {
@@ -16,6 +17,7 @@ describe('i18n', () => {
   it.each([
     ['en', en],
     ['da', da],
+    ['de', de],
   ])('has a non-empty string for every key in %s.json', (_, locale) => {
     // Arrange
     const entries = collectValues(locale);
@@ -30,19 +32,22 @@ describe('i18n', () => {
     expect(invalid).toEqual([]);
   });
 
-  it('has exactly the same keys in da.json as in en.json', () => {
+  it.each([
+    ['da', da],
+    ['de', de],
+  ])('has exactly the same keys in %s.json as in en.json', (_, locale) => {
     // Arrange
-    const keysOf = (locale: unknown) =>
-      collectValues(locale)
+    const keysOf = (node: unknown) =>
+      collectValues(node)
         .map(([key]) => key)
         .sort();
 
     // Act
     const enKeys = keysOf(en);
-    const daKeys = keysOf(da);
+    const localeKeys = keysOf(locale);
 
     // Assert
-    expect(daKeys).toEqual(enKeys);
+    expect(localeKeys).toEqual(enKeys);
   });
 
   it('resolves nested keys with interpolation', () => {

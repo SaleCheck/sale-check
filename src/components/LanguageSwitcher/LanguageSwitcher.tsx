@@ -7,7 +7,7 @@ import {
   ListboxOptions,
 } from '@headlessui/react';
 import { ChevronUpDownIcon } from '@heroicons/react/20/solid';
-import { DK, US } from 'country-flag-icons/react/3x2';
+import { DE, DK, US } from 'country-flag-icons/react/3x2';
 import { useTranslation } from 'react-i18next';
 import { supportedLanguages, type SupportedLanguage } from '../../i18n';
 
@@ -15,7 +15,10 @@ interface LanguageSwitcherProps {
   inline?: boolean;
 }
 
-const flags = { en: US, da: DK } satisfies Record<SupportedLanguage, typeof US>;
+const flags = { en: US, de: DE, da: DK } satisfies Record<
+  SupportedLanguage,
+  typeof US
+>;
 
 export default function LanguageSwitcher({
   inline = false,
@@ -25,6 +28,7 @@ export default function LanguageSwitcher({
   const languageNames: Record<SupportedLanguage, string> = {
     en: t('language.en'),
     da: t('language.da'),
+    de: t('language.de'),
   };
   const current = (i18n.resolvedLanguage ?? 'en') as SupportedLanguage;
   const CurrentFlag = flags[current];
