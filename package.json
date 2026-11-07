@@ -24,6 +24,7 @@
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.104.1",
+    "country-flag-icons": "^1.6.20",
     "firebase": "^12.3.0",
     "i18next": "^26.7.2",
     "react": "^19.2.1",
