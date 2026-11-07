@@ -135,7 +135,7 @@
     },
     "step2": {
       "title": "2. Add a Product",
-      "body": "Paste the product’s URL into SaleCheck and give it a name.<br/>This tells the system which item you want to track."
+      "body": "Paste the product’s URL into SaleCheck and give it a name."
     },
     "step3": {
       "title": "3. Provide the Price Selector",

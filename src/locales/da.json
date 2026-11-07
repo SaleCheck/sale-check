@@ -28,7 +28,7 @@
     "login": "Log ind",
     "signUp": "Opret konto",
     "userAvatar": "Profilbillede",
-    "editUser": "Rediger bruger",
+    "editUser": "Brugerindstillinger",
     "editAvatar": "Skift billede",
     "signOut": "Log ud"
   },
@@ -65,7 +65,7 @@
     "fetching": "Henter produkter...",
     "notLoggedIn": "Du er ikke logget ind.",
     "welcome": "Velkommen, {{name}}!",
-    "alertsInfo": "Prisadvarsler sendes til den e-mail, din konto er registreret med.",
+    "alertsInfo": "Notifikationer om prisnedgang sendes til den e-mail, din konto er registreret med.",
     "addProduct": "Tilføj produkt",
     "editProduct": "Rediger produkt",
     "delete": {
@@ -104,7 +104,7 @@
     "uploadLabel": "Upload nyt profilbillede:"
   },
   "editUser": {
-    "title": "Rediger bruger"
+    "title": "Brugerindstillinger"
   },
   "contact": {
     "title": "Kontakt os",
@@ -131,11 +131,11 @@
     "intro": "SaleCheck gør det nemt at følge prisændringer på de produkter, du holder af.",
     "step1": {
       "title": "1. Opret din konto",
-      "body": "Opret dig med din e-mail for at komme i gang.<br/>Din e-mail bruges til at logge ind og til at modtage prisadvarsler."
+      "body": "Opret dig med din e-mail for at komme i gang.<br/>Din e-mail bruges til at logge ind og til at modtage notifikationer om prisnedgang."
     },
     "step2": {
       "title": "2. Tilføj et produkt",
-      "body": "Indsæt produktets URL i SaleCheck og giv det et navn.<br/>Det fortæller systemet, hvilken vare du vil følge."
+      "body": "Indsæt produktets URL i SaleCheck og giv det et navn."
     },
     "step3": {
       "title": "3. Angiv prisselektoren",
