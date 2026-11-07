@@ -52,9 +52,18 @@ const testUser = {
 } as User;
 
 function renderApp(currentUser: User | null, initialPath = '/') {
+  const authCallbacks = new Set<(user: User | null) => void>();
   mockSubscribeToAuthStateChanges.mockImplementation((callback) => {
+    authCallbacks.add(callback);
     callback(currentUser);
-    return mockUnsubscribe;
+    return () => {
+      authCallbacks.delete(callback);
+      mockUnsubscribe();
+    };
+  });
+  // Like Firebase, signing out notifies every auth subscriber with null.
+  mockLogout.mockImplementation(async () => {
+    authCallbacks.forEach((callback) => callback(null));
   });
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },

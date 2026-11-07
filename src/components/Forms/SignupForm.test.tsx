@@ -1,4 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactElement } from 'react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SignupForm from './SignupForm';
@@ -35,6 +37,12 @@ vi.mock('../../services/storageUserServce', () => ({
   uploadUserAvatar: mockUploadUserAvatar,
 }));
 
+function renderWithQueryClient(ui: ReactElement) {
+  const queryClient = new QueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
 async function fillForm(
   user: UserEvent,
   { confirmPassword = 'secret123' }: { confirmPassword?: string } = {}
@@ -69,7 +77,7 @@ describe('SignupForm', () => {
     // (no separate setup needed; props are passed inline below)
 
     // Act
-    render(<SignupForm switchToLogin={() => {}} />);
+    renderWithQueryClient(<SignupForm switchToLogin={() => {}} />);
 
     // Assert
     expect(screen.getByPlaceholderText('First Name')).toBeInTheDocument();
@@ -81,7 +89,7 @@ describe('SignupForm', () => {
 
   it('shows an error and does not sign up when passwords do not match', async () => {
     // Arrange
-    render(<SignupForm switchToLogin={() => {}} />);
+    renderWithQueryClient(<SignupForm switchToLogin={() => {}} />);
     const user = userEvent.setup();
     await fillForm(user, { confirmPassword: 'different' });
 
@@ -98,7 +106,9 @@ describe('SignupForm', () => {
   it('signs up, saves the profile, closes the modal and navigates to the profile', async () => {
     // Arrange
     const closeModal = vi.fn();
-    render(<SignupForm switchToLogin={() => {}} closeModal={closeModal} />);
+    renderWithQueryClient(
+      <SignupForm switchToLogin={() => {}} closeModal={closeModal} />
+    );
     const user = userEvent.setup();
     await fillForm(user);
 
@@ -127,7 +137,9 @@ describe('SignupForm', () => {
   it('uploads the avatar and stores its URL when a file is selected', async () => {
     // Arrange
     mockUploadUserAvatar.mockResolvedValue('https://example.com/avatar.png');
-    const { container } = render(<SignupForm switchToLogin={() => {}} />);
+    const { container } = renderWithQueryClient(
+      <SignupForm switchToLogin={() => {}} />
+    );
     const user = userEvent.setup();
     const avatar = new File(['avatar'], 'avatar.png', { type: 'image/png' });
     await fillForm(user);
@@ -158,7 +170,7 @@ describe('SignupForm', () => {
     mockSignUpWithEmailAndPwd.mockRejectedValue(
       new Error('Email already in use')
     );
-    render(<SignupForm switchToLogin={() => {}} />);
+    renderWithQueryClient(<SignupForm switchToLogin={() => {}} />);
     const user = userEvent.setup();
     await fillForm(user);
 
@@ -173,7 +185,7 @@ describe('SignupForm', () => {
   it('shows a generic error message when signup fails with a non-Error value', async () => {
     // Arrange
     mockSignUpWithEmailAndPwd.mockRejectedValue('boom');
-    render(<SignupForm switchToLogin={() => {}} />);
+    renderWithQueryClient(<SignupForm switchToLogin={() => {}} />);
     const user = userEvent.setup();
     await fillForm(user);
 
@@ -189,7 +201,7 @@ describe('SignupForm', () => {
   it('disables the submit button while signing up', async () => {
     // Arrange
     mockSignUpWithEmailAndPwd.mockReturnValue(new Promise(() => {}));
-    render(<SignupForm switchToLogin={() => {}} />);
+    renderWithQueryClient(<SignupForm switchToLogin={() => {}} />);
     const user = userEvent.setup();
     await fillForm(user);
 
@@ -205,7 +217,7 @@ describe('SignupForm', () => {
   it('calls switchToLogin when the Login button is clicked', async () => {
     // Arrange
     const switchToLogin = vi.fn();
-    render(<SignupForm switchToLogin={switchToLogin} />);
+    renderWithQueryClient(<SignupForm switchToLogin={switchToLogin} />);
     const user = userEvent.setup();
 
     // Act

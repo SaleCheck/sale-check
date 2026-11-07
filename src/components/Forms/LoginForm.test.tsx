@@ -1,4 +1,6 @@
 import { cleanup, render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import LoginForm from './LoginForm';
@@ -17,6 +19,12 @@ vi.mock('../../services/authService', () => ({
   loginWithEmailAndPwd: mockLoginWithEmailAndPwd,
 }));
 
+function renderWithQueryClient(ui: ReactElement) {
+  const queryClient = new QueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
 describe('LoginForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -31,7 +39,9 @@ describe('LoginForm', () => {
     // (no separate setup needed; props are passed inline below)
 
     // Act
-    render(<LoginForm switchToSignup={() => {}} closeModal={() => {}} />);
+    renderWithQueryClient(
+      <LoginForm switchToSignup={() => {}} closeModal={() => {}} />
+    );
 
     // Assert
     expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
@@ -42,7 +52,9 @@ describe('LoginForm', () => {
     // Arrange
     const closeModal = vi.fn();
     mockLoginWithEmailAndPwd.mockResolvedValue({ user: { uid: 'user-123' } });
-    render(<LoginForm switchToSignup={() => {}} closeModal={closeModal} />);
+    renderWithQueryClient(
+      <LoginForm switchToSignup={() => {}} closeModal={closeModal} />
+    );
     const user = userEvent.setup();
     await user.type(screen.getByPlaceholderText('Email'), 'test@example.com');
     await user.type(screen.getByPlaceholderText('Password'), 'secret123');
@@ -62,7 +74,9 @@ describe('LoginForm', () => {
   it('shows an error message when login fails', async () => {
     // Arrange
     mockLoginWithEmailAndPwd.mockRejectedValue(new Error('auth/invalid'));
-    render(<LoginForm switchToSignup={() => {}} closeModal={() => {}} />);
+    renderWithQueryClient(
+      <LoginForm switchToSignup={() => {}} closeModal={() => {}} />
+    );
     const user = userEvent.setup();
     await user.type(screen.getByPlaceholderText('Email'), 'test@example.com');
     await user.type(screen.getByPlaceholderText('Password'), 'wrong');
@@ -80,7 +94,9 @@ describe('LoginForm', () => {
   it('disables the submit button while logging in', async () => {
     // Arrange
     mockLoginWithEmailAndPwd.mockReturnValue(new Promise(() => {}));
-    render(<LoginForm switchToSignup={() => {}} closeModal={() => {}} />);
+    renderWithQueryClient(
+      <LoginForm switchToSignup={() => {}} closeModal={() => {}} />
+    );
     const user = userEvent.setup();
     await user.type(screen.getByPlaceholderText('Email'), 'test@example.com');
     await user.type(screen.getByPlaceholderText('Password'), 'secret123');
@@ -97,7 +113,9 @@ describe('LoginForm', () => {
   it('calls switchToSignup when the Sign Up button is clicked', async () => {
     // Arrange
     const switchToSignup = vi.fn();
-    render(<LoginForm switchToSignup={switchToSignup} closeModal={() => {}} />);
+    renderWithQueryClient(
+      <LoginForm switchToSignup={switchToSignup} closeModal={() => {}} />
+    );
     const user = userEvent.setup();
 
     // Act
