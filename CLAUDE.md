@@ -4,10 +4,10 @@ Price-drop tracker. A user registers a product (URL + CSS selector for the price
 
 ## Tech Stack
 
-- **Frontend** (repo root): React 19 + TypeScript (strict), Vite 7, React Router 7, Tailwind CSS 3, Headless UI, Heroicons
+- **Frontend** (repo root): React 19 + TypeScript (strict), Vite 7, React Router 7, Tailwind CSS 3, Headless UI, Heroicons, react-i18next (English only)
 - **Backend** (`functions/`, git submodule → `SaleCheck/functions`): Node 22, CommonJS JavaScript, Firebase Functions (v1 + v2 APIs), firebase-admin, Puppeteer, Nodemailer (Gmail SMTP)
 - **Platform**: Firebase Auth, Firestore, Cloud Storage, Hosting (SPA rewrite to `index.html`) — see `firebase.json`
-- **Tests**: Mocha + Chai + Supertest + Sinon in `functions/`, run against the Firebase emulators. The frontend has no tests yet.
+- **Tests**: Mocha + Chai + Supertest + Sinon in `functions/`, run against the Firebase emulators. Frontend: Vitest + Testing Library (jsdom), with `*.test.ts(x)` next to the source.
 
 ## Repository Layout
 
@@ -18,6 +18,8 @@ Price-drop tracker. A user registers a product (URL + CSS selector for the price
 | `src/pages/` | Route-level components (`Profile` is the only authenticated page) |
 | `src/components/<Name>/<Name>.tsx` | Reusable UI: `Card`, `Modal`, `Spinner`, `Tooltip`, `Forms/*` |
 | `src/services/` | The only modules that touch Firebase SDKs or `fetch` |
+| `src/locales/en.json` | All UI strings (i18next resources) |
+| `src/i18n.ts`, `src/i18next.d.ts` | i18next init (imported by `main.tsx` and `vitest.setup.ts`) and typed translation keys |
 | `src/firebase/firebase.ts` | Single Firebase app init; exports `auth`, `db`, `storage`, `functions` |
 | `functions/index.js` | Registers and re-exports every Cloud Function |
 | `functions/auth/`, `functions/firestore/products/` | HTTP CRUD endpoints (users, products) |
@@ -77,6 +79,7 @@ npm test                                           # Only works if emulators are
 - The frontend does **not** call the HTTP CRUD functions. It reads and writes Firestore/Storage directly through `src/services/*` and relies on `firestore.rules`/`storage.rules` for authorization. The HTTP endpoints (except `sendContactMessage`) exist for API/test use.
 - Deleting a product or user cascades through triggers (`functions/triggers/`). Don't duplicate that cleanup client-side.
 - `src/services/storageUserServce.ts` is misspelled on purpose (existing name). Import it as-is.
+- Put new UI text in `src/locales/en.json` and render it with `t('…')` or `<Trans>`, never as literals in JSX. `npm run lint` enforces this (`i18next/no-literal-string`). See `.claude/docs/architectural_patterns.md` §21.
 - The product field whitelist for the create endpoint lives in `functions/firestore/products/config/productsFirestoreStructureConfig.json`. Keep it in sync with `ProductData` in `src/services/firestoreProductService.ts:18`.
 
 

@@ -129,3 +129,22 @@ Secrets are never hardcoded. CI injects them from GitHub secrets (`.github/workf
 
 ### 20. CI as reusable workflow chain
 `npm-audit-on-pr.yml` → `formatting-linting-on-pr.yml` → `npm-test-on-pr.yml` are reusable workflows (parameterized by `working-directory`). The deploy workflows compose them (`deploy-functions-on-merge.yml`, `deploy-hosting-on-merge.yml`). Tests run under `firebase emulators:exec 'npm test'` (`npm-test-on-pr.yml:105`).
+
+### 21. UI strings via i18next
+No user-facing text is written literally in components. All of it lives in `src/locales/en.json` and is read through `react-i18next`.
+- **Setup:** `src/i18n.ts` initializes i18next once, with English only, no language detection and no switcher. It is imported in `src/main.tsx` and in `vitest.setup.ts`, so tests render the real English text and can assert on it.
+- **Typed keys:** `src/i18next.d.ts` types the keys from `en.json`. A misspelled or missing key fails `tsc`.
+- **Key grouping:**
+  - by area: `pageTitle`, `nav`, `header`, `home`, `footer`, `auth.login`/`auth.signup`, `profile`, `product`, `card`, `avatar`, `editUser`, `contact`, `about`, `howItWorks`
+  - shared strings in `common`: `cancel`, `save`, `saveChanges`, `saving`, `unexpectedError`, field placeholders
+- **Usage:**
+  - `const { t } = useTranslation();` then `t('profile.welcome', { name })`
+  - `document.title = t('pageTitle.<page>')` in its own `useEffect(..., [t])`
+  - For sentences with inline markup, use `<Trans i18nKey="…" components={{ a: <a href=… />, br: <br />, strong: <strong /> }} />` so each sentence stays one translatable string. Don't name a placeholder tag after a void HTML element such as `link`: the parser closes it immediately and drops its children.
+  - Dates are formatted with `i18n.language` (`ProductForm.tsx`, `product.lastUpdated`).
+- **Not translated:** `console.*` and thrown developer errors, data values (currency codes, product names), raw Firebase `err.message`, and the backend emails.
+- **Enforced:** `i18next/no-literal-string` in `eslint.config.js` (`src/**/*.tsx`, tests excluded) flags JSX text and the `placeholder`, `alt`, `title`, `aria-label` and `text` attributes.
+- **Adding a language:**
+  1. Add `src/locales/<lng>.json` with the same keys.
+  2. Register it in `resources` in `src/i18n.ts`.
+  3. Decide how `lng` is chosen. That is not implemented yet.
