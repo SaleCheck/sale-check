@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { sendContactMessage } from '../services/contactEmailService';
 
 interface FormData {
@@ -9,9 +10,11 @@ interface FormData {
 }
 
 export default function Contact() {
+  const { t } = useTranslation();
+
   useEffect(() => {
-    document.title = 'SaleCheck | Contact';
-  }, []);
+    document.title = t('pageTitle.contact');
+  }, [t]);
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -37,7 +40,9 @@ export default function Contact() {
 
   return (
     <div className="max-w-3xl mx-auto mt-24 px-6">
-      <h1 className="text-5xl font-extrabold mb-6 text-gray-900">Contact Us</h1>
+      <h1 className="text-5xl font-extrabold mb-6 text-gray-900">
+        {t('contact.title')}
+      </h1>
       <form
         onSubmit={handleSubmit}
         className="space-y-4 bg-white p-6 rounded-sm shadow-sm"
@@ -47,12 +52,12 @@ export default function Contact() {
             className="block text-gray-700 font-medium mb-1"
             htmlFor="name"
           >
-            Name
+            {t('contact.name')}
           </label>
           <input
             type="text"
             id="name"
-            placeholder="Your Name"
+            placeholder={t('contact.namePlaceholder')}
             value={formData.name}
             onChange={handleChange}
             required
@@ -65,12 +70,12 @@ export default function Contact() {
             className="block text-gray-700 font-medium mb-1"
             htmlFor="email"
           >
-            E-Mail
+            {t('contact.email')}
           </label>
           <input
             type="email"
             id="email"
-            placeholder="Your Email"
+            placeholder={t('contact.emailPlaceholder')}
             value={formData.email}
             onChange={handleChange}
             required
@@ -83,11 +88,11 @@ export default function Contact() {
             className="block text-gray-700 font-medium mb-1"
             htmlFor="message"
           >
-            Message
+            {t('contact.message')}
           </label>
           <textarea
             id="message"
-            placeholder="Your Message"
+            placeholder={t('contact.messagePlaceholder')}
             value={formData.message}
             onChange={handleChange}
             required
@@ -97,12 +102,10 @@ export default function Contact() {
         </div>
 
         {status === 'error' && (
-          <p className="text-red-500 text-sm">
-            Something went wrong. Try again.
-          </p>
+          <p className="text-red-500 text-sm">{t('contact.error')}</p>
         )}
         {status === 'success' && (
-          <p className="text-green-600 text-sm">Message sent — thanks!</p>
+          <p className="text-green-600 text-sm">{t('contact.success')}</p>
         )}
 
         <div className="flex gap-4 justify-center">
@@ -111,7 +114,9 @@ export default function Contact() {
             disabled={status === 'pending'}
             className="bg-green-500 hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-full transition transform hover:scale-105"
           >
-            {status === 'pending' ? 'Sending…' : 'Submit'}
+            {status === 'pending'
+              ? t('contact.submitting')
+              : t('contact.submit')}
           </button>
         </div>
       </form>

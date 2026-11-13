@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   signUpWithEmailAndPwd,
   updateUserAuthProfile,
@@ -33,6 +34,7 @@ export default function SignupForm({
   const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ export default function SignupForm({
     setLoading(true);
 
     if (!(password.length > 0 && password === confirmPassword)) {
-      setError('Passwords do not match.');
+      setError(t('auth.signup.passwordsDoNotMatch'));
       setLoading(false);
       return;
     }
@@ -79,7 +81,7 @@ export default function SignupForm({
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unexpected error occurred.');
+        setError(t('common.unexpectedError'));
       }
     } finally {
       setLoading(false);
@@ -93,10 +95,10 @@ export default function SignupForm({
       autoComplete="off"
       className="flex flex-col gap-4"
     >
-      <h2 className="text-xl font-bold">Sign Up</h2>
+      <h2 className="text-xl font-bold">{t('auth.signup.title')}</h2>
       <input
         type="text"
-        placeholder="First Name"
+        placeholder={t('common.firstName')}
         className="border rounded-sm px-3 py-2"
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
@@ -104,7 +106,7 @@ export default function SignupForm({
       />
       <input
         type="text"
-        placeholder="Last Name"
+        placeholder={t('common.lastName')}
         className="border rounded-sm px-3 py-2"
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
@@ -112,7 +114,7 @@ export default function SignupForm({
       />
       <input
         type="email"
-        placeholder="Email"
+        placeholder={t('common.email')}
         className="border rounded-sm px-3 py-2"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -120,7 +122,7 @@ export default function SignupForm({
       />
       <input
         type="password"
-        placeholder="Password"
+        placeholder={t('common.password')}
         className="border rounded-sm px-3 py-2"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -128,7 +130,7 @@ export default function SignupForm({
       />
       <input
         type="password"
-        placeholder="Confirm Password"
+        placeholder={t('auth.signup.confirmPassword')}
         className="border rounded-sm px-3 py-2"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -136,7 +138,7 @@ export default function SignupForm({
       />
       <div className="flex flex-col gap-2">
         <label className="text-sm text-gray-600 font-medium">
-          Upload profile picture (optional):
+          {t('auth.signup.avatarLabel')}
         </label>
         <input
           type="file"
@@ -150,17 +152,17 @@ export default function SignupForm({
         className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-full"
         disabled={loading}
       >
-        {loading ? 'Signing up...' : 'Sign Up'}
+        {loading ? t('auth.signup.submitting') : t('auth.signup.submit')}
       </button>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <p className="text-sm text-gray-500">
-        Already have an account?{' '}
+        {t('auth.signup.haveAccount')}{' '}
         <button
           className="text-green-500 hover:underline"
           onClick={switchToLogin}
           type="button"
         >
-          Login
+          {t('auth.signup.switchToLogin')}
         </button>
       </p>
     </form>

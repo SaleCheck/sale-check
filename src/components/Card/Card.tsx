@@ -4,6 +4,7 @@ import {
   PencilIcon,
   ArchiveBoxIcon,
 } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 import Tooltip from '../Tooltip/Tooltip';
 
 interface CardProps {
@@ -23,6 +24,8 @@ export default function Card({
   onEdit,
   onDelete,
 }: CardProps) {
+  const { t } = useTranslation();
+
   return (
     <Transition
       appear={true}
@@ -67,19 +70,19 @@ export default function Card({
 
         {/* Action Icons */}
         <div className="flex items-center justify-center gap-4 py-3 border-t border-gray-100">
-          <Tooltip text="Edit">
+          <Tooltip text={t('card.edit')}>
             <button
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              title="Edit product"
+              title={t('card.editTitle')}
               onClick={onEdit}
             >
               <PencilIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
             </button>
           </Tooltip>
-          <Tooltip text="Delete">
+          <Tooltip text={t('card.delete')}>
             <button
               className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-              title="Archive product"
+              title={t('card.archiveTitle')}
               onClick={onDelete}
             >
               <ArchiveBoxIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />
