@@ -1,30 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Card from '../components/Card/Card';
 import Spinner from '../components/Spinner/Spinner';
 import Modal from '../components/Modal/Modal';
 import ProductForm from '../components/Forms/ProductForm';
-import { subscribeToAuthStateChanges } from '../services/authService';
-import { getUserDoc } from '../services/firestoreUserService';
+import { useAuthUser } from '../hooks/useAuth';
+import { useUserDoc } from '../hooks/useUser';
 import {
-  getProductsForUser,
-  createProductForUser,
-  updateProductForUser,
-  deleteProductForUser,
-} from '../services/firestoreProductService';
-import { uploadProductImage } from '../services/storageUserServce';
-import type { User } from 'firebase/auth';
+  useProducts,
+  useCreateProduct,
+  useUpdateProduct,
+  useDeleteProduct,
+  type ProductFormValues,
+} from '../hooks/useProducts';
 import type { Timestamp } from 'firebase/firestore';
 import type { Product } from '../services/firestoreProductService';
-
-interface ProductFormValues {
-  productName: string;
-  expectedPrice: string | number;
-  expectedPriceCurrency: string;
-  url: string;
-  cssSelector: string;
-}
 
 interface HandleCreateArgs {
   productImageFile: File | null;
@@ -38,41 +28,25 @@ interface HandleEditArgs {
 }
 
 export default function Profile() {
-  const queryClient = useQueryClient();
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading } = useAuthUser();
   const [modalProductData, setModalProductData] = useState<Partial<Product>>(
     {}
   );
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
-  const { data: userData, isLoading: isUserDataLoading } = useQuery({
-    queryKey: ['users', user?.uid],
-    queryFn: () => getUserDoc(user!.uid),
-    enabled: !!user,
-  });
-  const { data: productsToCheck = [], isLoading: isProductsLoading } = useQuery(
-    {
-      queryKey: ['products', user?.uid],
-      queryFn: () => getProductsForUser(user!.uid),
-      enabled: !!user,
-    }
+  const { data: userData, isLoading: isUserDataLoading } = useUserDoc(
+    user?.uid
   );
+  const { data: productsToCheck = [], isLoading: isProductsLoading } =
+    useProducts(user?.uid);
+  const createProduct = useCreateProduct(user);
+  const updateProduct = useUpdateProduct(user?.uid);
+  const deleteProduct = useDeleteProduct(user?.uid);
 
   useEffect(() => {
     document.title = 'SaleCheck | Profile';
-    const unsubscribe = subscribeToAuthStateChanges(
-      (currentUser: User | null) => {
-        setUser(currentUser);
-        setLoading(false);
-      }
-    );
-
-    return unsubscribe;
   }, []);
 
   if (loading || isUserDataLoading || isProductsLoading) {
@@ -92,40 +66,9 @@ export default function Profile() {
     );
   }
 
-  const handleCreate = async ({
-    values,
-    productImageFile,
-  }: HandleCreateArgs): Promise<void> => {
-    if (!user?.uid || !user.email) {
-      console.error('No authenticated user');
-      return;
-    }
-
+  const handleCreate = async (args: HandleCreateArgs): Promise<void> => {
     try {
-      const payload = {
-        ...values,
-        expectedPrice: Number(values.expectedPrice),
-      };
-      const productRef = await createProductForUser(
-        user.uid,
-        user.email,
-        payload
-      );
-      const productId = productRef.id;
-
-      let imageUrl: string | null = null;
-      if (productImageFile) {
-        try {
-          imageUrl = await uploadProductImage(productId, productImageFile);
-          await updateProductForUser(productId, { imageUrl: imageUrl });
-        } catch (err) {
-          console.error('Image upload failed:', err);
-        }
-      }
-
-      await queryClient.invalidateQueries({
-        queryKey: ['products', user?.uid],
-      });
+      await createProduct.mutateAsync(args);
       setIsCreateModalOpen(false);
     } catch (err) {
       console.error('Error updating product:', err);
@@ -134,8 +77,7 @@ export default function Profile() {
 
   const handleEdit = async ({
     productId,
-    values,
-    productImageFile,
+    ...rest
   }: HandleEditArgs): Promise<void> => {
     if (!productId) {
       console.log('No productid');
@@ -143,25 +85,7 @@ export default function Profile() {
     }
 
     try {
-      let imageUrl: string | null = null;
-      if (productImageFile) {
-        try {
-          imageUrl = await uploadProductImage(productId, productImageFile);
-        } catch (err) {
-          console.error('Image upload failed:', err);
-        }
-      }
-
-      const payload = {
-        ...values,
-        expectedPrice: Number(values.expectedPrice),
-        ...(imageUrl ? { imageUrl } : {}),
-      };
-      await updateProductForUser(productId, payload);
-
-      await queryClient.invalidateQueries({
-        queryKey: ['products', user?.uid],
-      });
+      await updateProduct.mutateAsync({ productId, ...rest });
       setIsEditModalOpen(false);
     } catch (err) {
       console.error('Error updating product:', err);
@@ -172,17 +96,10 @@ export default function Profile() {
     if (!productId) return;
 
     try {
-      setIsDeleting(true);
-      await deleteProductForUser(productId);
-
-      await queryClient.invalidateQueries({
-        queryKey: ['products', user?.uid],
-      });
+      await deleteProduct.mutateAsync(productId);
       setIsDeleteModalOpen(false);
     } catch (err) {
       console.error('Error deleting product:', err);
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -288,14 +205,14 @@ export default function Profile() {
 
             <button
               onClick={() => handleDelete(modalProductData.id)}
-              disabled={isDeleting}
+              disabled={deleteProduct.isPending}
               className={`px-4 py-2 rounded-md text-white bg-red-500 transition ${
-                isDeleting
+                deleteProduct.isPending
                   ? 'opacity-50 cursor-not-allowed'
                   : 'hover:bg-red-600'
               }`}
             >
-              {isDeleting ? 'Deleting ...' : 'Delete'}
+              {deleteProduct.isPending ? 'Deleting ...' : 'Delete'}
             </button>
           </div>
           <p className="text-sm text-gray-500 text-center">

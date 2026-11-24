@@ -1,22 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  signUpWithEmailAndPwd,
-  updateUserAuthProfile,
-} from '../../services/authService';
-import { updateUserDoc } from '../../services/firestoreUserService';
-import { uploadUserAvatar } from '../../services/storageUserServce';
+import { useSignup } from '../../hooks/useAuth';
 
 interface SignupFormProps {
   switchToLogin: () => void;
   closeModal?: () => void;
-}
-
-interface UserDoc {
-  displayName: string;
-  firstName: string;
-  lastName: string;
-  photoURL?: string;
 }
 
 export default function SignupForm({
@@ -33,6 +21,7 @@ export default function SignupForm({
   const [error, setError] = useState<string>('');
 
   const navigate = useNavigate();
+  const signup = useSignup();
 
   const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,29 +35,13 @@ export default function SignupForm({
     }
 
     try {
-      const userCredential = await signUpWithEmailAndPwd(email, password);
-      const user = userCredential.user;
-
-      let photoURL: string | undefined;
-      const displayName = `${firstName} ${lastName}`.trim();
-
-      const userDoc: UserDoc = {
-        displayName,
+      const user = await signup.mutateAsync({
         firstName,
         lastName,
-      };
-
-      if (avatarFile) {
-        photoURL = await uploadUserAvatar(user.uid, avatarFile);
-        userDoc.photoURL = photoURL;
-      }
-
-      await updateUserAuthProfile(user, {
-        displayName,
-        photoURL: photoURL || null,
+        email,
+        password,
+        avatarFile,
       });
-
-      await updateUserDoc(user.uid, userDoc);
 
       if (closeModal) closeModal();
 

@@ -7,7 +7,7 @@ Price-drop tracker. A user registers a product (URL + CSS selector for the price
 - **Frontend** (repo root): React 19 + TypeScript (strict), Vite 7, React Router 7, Tailwind CSS 3, Headless UI, Heroicons
 - **Backend** (`functions/`, git submodule → `SaleCheck/functions`): Node 22, CommonJS JavaScript, Firebase Functions (v1 + v2 APIs), firebase-admin, Puppeteer, Nodemailer (Gmail SMTP)
 - **Platform**: Firebase Auth, Firestore, Cloud Storage, Hosting (SPA rewrite to `index.html`) — see `firebase.json`
-- **Tests**: Mocha + Chai + Supertest + Sinon in `functions/`, run against the Firebase emulators. The frontend has no tests yet.
+- **Tests**: Mocha + Chai + Supertest + Sinon in `functions/`, run against the Firebase emulators. Frontend: Vitest + Testing Library (jsdom), with `*.test.ts(x)` next to the source.
 
 ## Repository Layout
 
@@ -18,6 +18,7 @@ Price-drop tracker. A user registers a product (URL + CSS selector for the price
 | `src/pages/` | Route-level components (`Profile` is the only authenticated page) |
 | `src/components/<Name>/<Name>.tsx` | Reusable UI: `Card`, `Modal`, `Spinner`, `Tooltip`, `Forms/*` |
 | `src/services/` | The only modules that touch Firebase SDKs or `fetch` |
+| `src/hooks/` | TanStack Query hooks per domain (`useAuth`, `useUser`, `useProducts`, `useContact`); the only callers of `src/services/` |
 | `src/firebase/firebase.ts` | Single Firebase app init; exports `auth`, `db`, `storage`, `functions` |
 | `functions/index.js` | Registers and re-exports every Cloud Function |
 | `functions/auth/`, `functions/firestore/products/` | HTTP CRUD endpoints (users, products) |
@@ -45,6 +46,7 @@ Both packages are separate npm projects. Run `npm install` in the root and in `f
 npm run dev        # Vite dev server
 npm run build      # Production build → dist/ (served by Firebase Hosting)
 npm run lint       # ESLint (flat config, typescript-eslint, react-hooks)
+npm test           # Vitest (frontend unit/component tests)
 npm run prettier   # Format src/
 npm run emu        # firebase emulators:start (auth 9099, functions 5002, firestore 8080, storage 9199)
 ```
@@ -74,7 +76,7 @@ npm test                                           # Only works if emulators are
 ## Gotchas
 
 - `functions/` and `docs/` are **submodules**. Changes there are committed separately in the submodule repo, then the pointer is bumped in this repo ("chore: upd ref"). I handle those commits; just make the file changes.
-- The frontend does **not** call the HTTP CRUD functions. It reads and writes Firestore/Storage directly through `src/services/*` and relies on `firestore.rules`/`storage.rules` for authorization. The HTTP endpoints (except `sendContactMessage`) exist for API/test use.
+- The frontend does **not** call the HTTP CRUD functions. It reads and writes Firestore/Storage directly through `src/hooks/*` → `src/services/*` and relies on `firestore.rules`/`storage.rules` for authorization. The HTTP endpoints (except `sendContactMessage`) exist for API/test use.
 - Deleting a product or user cascades through triggers (`functions/triggers/`). Don't duplicate that cleanup client-side.
 - `src/services/storageUserServce.ts` is misspelled on purpose (existing name). Import it as-is.
 - The product field whitelist for the create endpoint lives in `functions/firestore/products/config/productsFirestoreStructureConfig.json`. Keep it in sync with `ProductData` in `src/services/firestoreProductService.ts:18`.
