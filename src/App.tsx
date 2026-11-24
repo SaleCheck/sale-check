@@ -15,6 +15,7 @@ import {
   Transition,
 } from '@headlessui/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import type { User } from 'firebase/auth';
@@ -23,6 +24,7 @@ import LoginForm from './components/Forms/LoginForm';
 import SignupForm from './components/Forms/SignupForm';
 import AvatarForm from './components/Forms/AvatarForm';
 import EditUserForm from './components/Forms/EditUserForm';
+import LanguageSwitcher from './components/LanguageSwitcher/LanguageSwitcher';
 import Modal from './components/Modal/Modal';
 import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
@@ -47,6 +49,7 @@ function App() {
   const avatarButtonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { data: userData } = useQuery({
     queryKey: ['users', user?.uid],
@@ -56,7 +59,10 @@ function App() {
   const avatarURL = userData?.photoURL ?? user?.photoURL;
 
   useEffect(() => {
-    document.title = 'SaleCheck';
+    document.title = t('pageTitle.home');
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = subscribeToAuthStateChanges(
       (currentUser: User | null) => {
         setUser(currentUser);
@@ -134,7 +140,7 @@ function App() {
         <Link to="/" className="flex items-center gap-2">
           <img
             src="/favicon.jpg"
-            alt="SaleCheck Logo"
+            alt={t('header.logoAlt')}
             className="h-10 w-10 object-contain"
           />
           <span
@@ -142,7 +148,7 @@ function App() {
               user ? '' : 'hidden md:inline'
             }`}
           >
-            SaleCheck
+            {t('common.appName')}
           </span>
         </Link>
 
@@ -150,13 +156,13 @@ function App() {
           {/* Nav */}
           <nav className="hidden md:flex items-center gap-12 text-gray-700 font-medium">
             <Link to="/how-it-works" className="hover:text-green-600">
-              How It Works
+              {t('nav.howItWorks')}
             </Link>
             <Link to="/about" className="hover:text-green-600">
-              About
+              {t('nav.about')}
             </Link>
             <Link to="/contact" className="hover:text-green-600">
-              Contact
+              {t('nav.contact')}
             </Link>
           </nav>
 
@@ -178,7 +184,7 @@ function App() {
                       {avatarURL ? (
                         <img
                           src={avatarURL}
-                          alt="User Avatar"
+                          alt={t('header.userAvatar')}
                           className="h-10 w-10 rounded-full object-cover border border-gray-300"
                         />
                       ) : (
@@ -195,7 +201,7 @@ function App() {
                             onClick={() => setIsEditUserModalOpen(true)}
                             className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
                           >
-                            Edit User
+                            {t('header.editUser')}
                           </button>
                         </MenuItem>
                         <MenuItem>
@@ -203,7 +209,7 @@ function App() {
                             onClick={() => setIsAvatarModalOpen(true)}
                             className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
                           >
-                            Edit Avatar
+                            {t('header.editAvatar')}
                           </button>
                         </MenuItem>
                         <MenuSeparator className="my-1 h-px bg-gray-200" />
@@ -212,7 +218,7 @@ function App() {
                             onClick={handleSignout}
                             className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100"
                           >
-                            Sign out
+                            {t('header.signOut')}
                           </button>
                         </MenuItem>
                       </div>
@@ -226,13 +232,13 @@ function App() {
                   onClick={openLogin}
                   className="whitespace-nowrap bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-full transition transform hover:scale-105 text-sm md:text-base"
                 >
-                  Login
+                  {t('header.login')}
                 </button>
                 <button
                   onClick={openSignup}
                   className="whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-3 md:py-2 md:px-4 rounded-full transition transform hover:scale-105 text-sm md:text-base"
                 >
-                  Sign Up
+                  {t('header.signUp')}
                 </button>
               </>
             )}
@@ -264,13 +270,13 @@ function App() {
         <div className="overflow-hidden">
           <nav className="md:hidden flex flex-col gap-4 bg-white px-4 md:px-8 py-4 shadow-sm">
             <Link to="/how-it-works" onClick={() => setOpenMobileNav(false)}>
-              How It Works
+              {t('nav.howItWorks')}
             </Link>
             <Link to="/about" onClick={() => setOpenMobileNav(false)}>
-              About
+              {t('nav.about')}
             </Link>
             <Link to="/contact" onClick={() => setOpenMobileNav(false)}>
-              Contact
+              {t('nav.contact')}
             </Link>
           </nav>
         </div>
@@ -289,26 +295,20 @@ function App() {
                   {/* Left Column */}
                   <div className="md:w-1/2 flex flex-col justify-center">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
-                      Welcome to SaleCheck
+                      {t('home.title')}
                     </h1>
                     <p className="text-gray-700 leading-relaxed mb-6">
-                      We provide you with the service that makes tracking price
-                      drops a breeze. Enter the product URL and your target
-                      price, and our system will keep a close eye on any price
-                      changes for you. We’ll notify you the moment your item is
-                      on sale, so you can seize the deal without having to
-                      constantly check.
+                      {t('home.intro')}
                       <br />
                       <br />
-                      Let us do the hard work of monitoring prices, so you can
-                      enjoy your savings effortlessly!
+                      {t('home.outro')}
                     </p>
                   </div>
                   {/* Right Column */}
                   <div className="md:w-1/2 flex justify-center items-center">
                     <img
                       src={priceTrackSvg}
-                      alt="pricetrack-img"
+                      alt={t('home.imageAlt')}
                       className="rounded-lg max-w-full h-auto"
                     />
                   </div>
@@ -324,8 +324,11 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="shadow-md text-gray-700 py-4 text-center mt-auto">
-        &copy; {new Date().getFullYear()} SaleCheck. All rights reserved.
+      <footer className="relative shadow-md text-gray-700 py-4 px-4 md:px-8 mt-auto flex flex-col items-center gap-3 sm:block sm:text-center">
+        <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+        <div className="sm:absolute sm:right-8 sm:top-1/2 sm:-translate-y-1/2">
+          <LanguageSwitcher inline />
+        </div>
       </footer>
 
       {/* Modal */}

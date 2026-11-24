@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
 interface EditUserFormValues {
   firstName: string;
@@ -22,6 +24,7 @@ export default function EditUserForm({
   const [lastName, setLastName] = useState<string>(initialLastName);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const { t } = useTranslation();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,7 +43,7 @@ export default function EditUserForm({
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError('An unexpected error occurred.');
+        setError(t('common.unexpectedError'));
       }
     } finally {
       setLoading(false);
@@ -49,10 +52,10 @@ export default function EditUserForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold">Edit User</h2>
+      <h2 className="text-xl font-bold">{t('editUser.title')}</h2>
       <input
         type="text"
-        placeholder="First Name"
+        placeholder={t('common.firstName')}
         className="border rounded-sm px-3 py-2"
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
@@ -60,12 +63,14 @@ export default function EditUserForm({
       />
       <input
         type="text"
-        placeholder="Last Name"
+        placeholder={t('common.lastName')}
         className="border rounded-sm px-3 py-2"
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
         required
       />
+      <hr className="border-gray-200" />
+      <LanguageSwitcher />
       {/* Action Buttons */}
       <div className="flex justify-center space-x-3 pt-4 w-full">
         <button
@@ -73,7 +78,7 @@ export default function EditUserForm({
           onClick={closeModal}
           className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
         >
-          Cancel
+          {t('common.cancel')}
         </button>
 
         <button
@@ -83,7 +88,7 @@ export default function EditUserForm({
             loading ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-95'
           }`}
         >
-          {loading ? 'Saving...' : 'Save'}
+          {loading ? t('common.saving') : t('common.save')}
         </button>
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}

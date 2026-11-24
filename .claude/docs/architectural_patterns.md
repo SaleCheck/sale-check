@@ -129,3 +129,29 @@ Secrets are never hardcoded. CI injects them from GitHub secrets (`.github/workf
 
 ### 20. CI as reusable workflow chain
 `npm-audit-on-pr.yml` → `formatting-linting-on-pr.yml` → `npm-test-on-pr.yml` are reusable workflows (parameterized by `working-directory`). The deploy workflows compose them (`deploy-functions-on-merge.yml`, `deploy-hosting-on-merge.yml`). Tests run under `firebase emulators:exec 'npm test'` (`npm-test-on-pr.yml:105`).
+
+### 21. UI strings via i18next
+No user-facing text is written literally in components. All of it lives in `src/locales/{en,da,de}.json` and is read through `react-i18next`.
+- **Setup:** `src/i18n.ts` initializes i18next once with `supportedLanguages = ['en', 'de', 'da']` (this order is also the dropdown order). English is the default and fallback, and there is no browser detection. It is imported in `src/main.tsx` and in `vitest.setup.ts`, so tests render English text by default and can assert on it.
+- **Switching:**
+  - `LanguageSwitcher` (`src/components/LanguageSwitcher/`) is a Headless UI `Listbox` (`Field`/`Label` for the accessible name) that calls `i18n.changeLanguage` immediately. Each option shows a flag from `country-flag-icons` (US for English, DK for Danish, DE for German) next to the language name. The flags are decorative (`aria-hidden`), and the flag map lives in the component because flags aren't translated. The options render in a portal, so tests find them with `screen.findByRole('option', …)`, not within the footer or dialog. There are two instances: one in the footer (bottom right, `inline` variant, visible when logged out) and one in the Edit User modal, below the name fields with a separator above it. Both read and write the shared i18n language, so they stay in sync without extra state, and each instance gets its own label/button wiring from Headless UI `Field`. `App.test.tsx` covers the sync.
+  - The `languageChanged` handler in `src/i18n.ts` stores the choice in `localStorage` (`salecheck.language`), restores it on load, and keeps `<html lang>` in sync. Storage access is wrapped in `try/catch`.
+  - Tests that switch language reset it with `i18n.changeLanguage('en')` in `afterEach`.
+- **Locales stay in sync:** every locale file must mirror `en.json`.
+  - `src/i18n.ts` assigns each locale to `typeof en` (`const da: typeof en = daJson`, `const de: typeof en = deJson`), so a missing key fails `tsc`.
+  - `src/i18n.test.ts` fails on extra keys, mismatched keys or empty values.
+- **Typed keys:** `src/i18next.d.ts` types the keys from `en.json`. A misspelled or missing key fails `tsc`.
+- **Key grouping:**
+  - by area: `pageTitle`, `nav`, `header`, `home`, `footer`, `auth.login`/`auth.signup`, `profile`, `product`, `card`, `avatar`, `editUser`, `contact`, `about`, `howItWorks`
+  - shared strings in `common`: `cancel`, `save`, `saveChanges`, `saving`, `unexpectedError`, field placeholders
+- **Usage:**
+  - `const { t } = useTranslation();` then `t('profile.welcome', { name })`
+  - `document.title = t('pageTitle.<page>')` in its own `useEffect(..., [t])`
+  - For sentences with inline markup, use `<Trans i18nKey="…" components={{ a: <a href=… />, br: <br />, strong: <strong /> }} />` so each sentence stays one translatable string. Don't name a placeholder tag after a void HTML element such as `link`: the parser closes it immediately and drops its children.
+  - Dates are not localized yet. `ProductForm` always formats them with `'en-US'`, and only the surrounding `product.lastUpdated` label is translated.
+- **Not translated:** `console.*` and thrown developer errors, data values (currency codes, product names), raw Firebase `err.message`, and the backend emails.
+- **Enforced:** `i18next/no-literal-string` in `eslint.config.js` (`src/**/*.tsx`, tests excluded) flags JSX text and the `placeholder`, `alt`, `title`, `aria-label` and `text` attributes.
+- **Adding a language:**
+  1. Add `src/locales/<lng>.json` with the same keys, and a `typeof en` assignment in `src/i18n.ts`.
+  2. Add the language to `resources` and `supportedLanguages`.
+  3. Add a `language.<lng>` key (its own name for itself, for example "Dansk") to every locale file, and add it to `LanguageSwitcher`'s name map and its flag map (`country-flag-icons/react/3x2`).

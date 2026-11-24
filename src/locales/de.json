@@ -1,0 +1,160 @@
+{
+  "common": {
+    "appName": "SaleCheck",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "saveChanges": "Änderungen speichern",
+    "saving": "Wird gespeichert...",
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "password": "Passwort"
+  },
+  "pageTitle": {
+    "home": "SaleCheck",
+    "profile": "SaleCheck | Profil",
+    "about": "SaleCheck | Über uns",
+    "contact": "SaleCheck | Kontakt",
+    "howItWorks": "SaleCheck | So funktioniert's"
+  },
+  "nav": {
+    "howItWorks": "So funktioniert's",
+    "about": "Über uns",
+    "contact": "Kontakt"
+  },
+  "header": {
+    "logoAlt": "SaleCheck-Logo",
+    "login": "Anmelden",
+    "signUp": "Registrieren",
+    "userAvatar": "Profilbild",
+    "editUser": "Benutzereinstellungen",
+    "editAvatar": "Profilbild ändern",
+    "signOut": "Abmelden"
+  },
+  "home": {
+    "title": "Willkommen bei SaleCheck",
+    "intro": "Mit SaleCheck behalten Sie Preissenkungen ganz einfach im Blick. Geben Sie lediglich die Produkt-URL und den aktuellen Preis ein, und unser System beobachtet alle Preisänderungen für Sie. Sobald Ihr Artikel im Angebot ist, benachrichtigen wir Sie. So können Sie zuschlagen, ohne ständig selbst nachsehen zu müssen.",
+    "outro": "Überlassen Sie uns die mühsame Preisüberwachung und genießen Sie Ihre Ersparnisse ganz entspannt!",
+    "imageAlt": "Preis-Tracking-Grafik"
+  },
+  "footer": {
+    "copyright": "© {{year}} SaleCheck. Alle Rechte vorbehalten."
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "submit": "Anmelden",
+      "submitting": "Anmeldung läuft...",
+      "invalidCredentials": "E-Mail oder Passwort ist falsch",
+      "noAccount": "Noch kein Konto?",
+      "switchToSignup": "Registrieren"
+    },
+    "signup": {
+      "title": "Registrieren",
+      "confirmPassword": "Passwort bestätigen",
+      "avatarLabel": "Profilbild hochladen (optional):",
+      "submit": "Registrieren",
+      "submitting": "Registrierung läuft...",
+      "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+      "haveAccount": "Du hast bereits ein Konto?",
+      "switchToLogin": "Anmelden"
+    }
+  },
+  "profile": {
+    "fetching": "Produkte werden geladen...",
+    "notLoggedIn": "Du bist nicht angemeldet.",
+    "welcome": "Willkommen, {{name}}!",
+    "alertsInfo": "Preisbenachrichtigungen werden an die E-Mail-Adresse gesendet, mit der Ihr Konto registriert ist.",
+    "addProduct": "Produkt hinzufügen",
+    "editProduct": "Produkt bearbeiten",
+    "delete": {
+      "title": "Produkt löschen",
+      "confirm": "Möchtest du dieses Produkt wirklich löschen?",
+      "submit": "Löschen",
+      "submitting": "Wird gelöscht ...",
+      "irreversible": "Diese Aktion kann nicht rückgängig gemacht werden."
+    }
+  },
+  "product": {
+    "imageAlt": "Produkt",
+    "name": "Produktname",
+    "nameLabel": "Produktname:",
+    "expectedPrice": "Erwarteter Preis",
+    "expectedPriceLabel": "Erwarteter Preis:",
+    "currencyLabel": "Währung:",
+    "currencyPlaceholder": "DKK",
+    "url": "Produkt-URL",
+    "urlLabel": "Produkt-URL:",
+    "cssSelector": "CSS-Selektor",
+    "cssSelectorLabel": "CSS-Selektor:",
+    "imageLabel": "Produktbild hochladen (optional):",
+    "lastUpdated": "Zuletzt aktualisiert: {{date}}"
+  },
+  "card": {
+    "unnamed": "Unbenanntes Produkt",
+    "edit": "Bearbeiten",
+    "editTitle": "Produkt bearbeiten",
+    "delete": "Löschen",
+    "archiveTitle": "Produkt archivieren"
+  },
+  "avatar": {
+    "title": "Profilbild ändern",
+    "previewAlt": "Vorschau des Profilbilds",
+    "uploadLabel": "Neues Profilbild hochladen:"
+  },
+  "editUser": {
+    "title": "Benutzereinstellungen"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "name": "Name",
+    "namePlaceholder": "Ihr Name",
+    "email": "E-Mail",
+    "emailPlaceholder": "Ihre E-Mail",
+    "message": "Nachricht",
+    "messagePlaceholder": "Ihre Nachricht",
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "success": "Nachricht gesendet – danke!",
+    "submit": "Senden",
+    "submitting": "Wird gesendet…"
+  },
+  "about": {
+    "title": "Über uns",
+    "inspiration": "Inspiration",
+    "similarProduct": "Ein ähnliches Produkt gibt es auf: <a>goma.gg</a>.",
+    "builtBy": "Entwickelt von <a>Nikolaj Englmayer Münster</a>",
+    "article": "Artikel beim dänischen Rundfunk: <a>DR | Jagten på billige fødevarer</a>."
+  },
+  "howItWorks": {
+    "title": "So funktioniert's",
+    "intro": "Mit SaleCheck verfolgen Sie mühelos Preisänderungen bei den Produkten, die Ihnen wichtig sind.",
+    "step1": {
+      "title": "1. Konto erstellen",
+      "body": "Registrieren Sie sich mit Ihrer E-Mail-Adresse, um loszulegen.<br/>Ihre E-Mail wird für die Anmeldung und für Preisbenachrichtigungen verwendet."
+    },
+    "step2": {
+      "title": "2. Produkt hinzufügen",
+      "body": "Fügen Sie die URL des Produkts in SaleCheck ein und geben Sie dem Produkt einen Namen."
+    },
+    "step3": {
+      "title": "3. Preis-Selektor angeben",
+      "body": "Jeder Shop zeigt Preise anders an, deshalb muss SaleCheck genau wissen, wo der Preis auf der Seite steht.<br/><br/>Öffnen Sie die Produktseite in Chrome, klicken Sie mit der rechten Maustaste auf den Preis, wählen Sie <strong>Untersuchen</strong>, klicken Sie dann mit der rechten Maustaste auf das markierte Element und wählen Sie <strong>Kopieren → Selektor kopieren</strong>.",
+      "videoTitle": "So finden Sie den CSS-Selektoren"
+    },
+    "step4": {
+      "title": "4. Automatische Überwachung",
+      "body": "Sobald das Produkt hinzugefügt ist, prüft SaleCheck die Seite laufend auf Preisänderungen.<br/>Sie müssen die Onlineshops nun nicht mehr selbst besuchen – SaleCheck erledigt das für Sie ganz einfach."
+    },
+    "step5": {
+      "title": "5. E-Mail-Benachrichtigungen erhalten",
+      "body": "Nach jedem Überwachungslauf erhalten Sie eine Bestätigung per E-Mail.<br/>Wird eine Preisänderung erkannt, benachrichtigt Sie SaleCheck sofort, damit Sie kein Angebot mehr verpassen."
+    }
+  },
+  "language": {
+    "label": "Sprache",
+    "en": "English",
+    "da": "Dansk",
+    "de": "Deutsch"
+  }
+}
