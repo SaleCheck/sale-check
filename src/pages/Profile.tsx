@@ -67,7 +67,7 @@ export default function Profile() {
 
   useEffect(() => {
     document.title = t('pageTitle.profile');
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = subscribeToAuthStateChanges(

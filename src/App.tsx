@@ -60,7 +60,7 @@ function App() {
 
   useEffect(() => {
     document.title = t('pageTitle.home');
-  }, [t]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = subscribeToAuthStateChanges(

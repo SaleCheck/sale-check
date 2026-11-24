@@ -8,7 +8,7 @@ export default function HowItWorks() {
 
   useEffect(() => {
     document.title = t('pageTitle.howItWorks');
-  }, [t]);
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto mt-24 mb-36 px-6">

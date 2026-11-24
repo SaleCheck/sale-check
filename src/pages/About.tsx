@@ -6,7 +6,7 @@ export default function About() {
 
   useEffect(() => {
     document.title = t('pageTitle.about');
-  }, [t]);
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto mt-24 px-6">

@@ -14,7 +14,7 @@ export default function Contact() {
 
   useEffect(() => {
     document.title = t('pageTitle.contact');
-  }, [t]);
+  }, []);
 
   const [formData, setFormData] = useState<FormData>({
     name: '',
